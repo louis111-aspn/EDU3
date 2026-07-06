@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SAC 2026-2027 Product Roadmap — Full Analysis</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Noto+Sans+KR:wght@400;500;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F7F8FA;
+  --bg-panel:#FFFFFF;
+  --ink:#1F2430;
+  --ink-soft:#5B6472;
+  --line:#E2E5EA;
+  --navy:#003366;
+  --navy-soft:#0B4A78;
+  --orange:#FF6A00; /* BTP orange — Product Vision / 제안 요소 전용 */
+  --orange-soft:#FFE9D6;
+  --mono:'JetBrains Mono','Noto Sans KR',monospace;
+  --serif:'DM Serif Display', 'Noto Sans KR', serif;
+  --sans:'Noto Sans KR', -apple-system, sans-serif;
+}
+*{box-sizing:border-box; margin:0; padding:0;}
+html{overflow-x:clip;}
+body{
+  background:var(--bg); color:var(--ink); font-family:var(--sans);
+  line-height:1.65; -webkit-font-smoothing:antialiased;
+}
+::selection{background:var(--navy); color:#fff;}
+
+/* ============ NAV ============ */
+.topnav{
+  position:sticky; top:0; z-index:100;
+  background:rgba(247,248,250,0.92); backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);
+}
+.topnav-inner{
+  max-width:1200px; margin:0 auto; padding:16px 32px;
+  display:flex; align-items:center; justify-content:space-between;
+}
+.brand{font-family:var(--mono); font-size:13px; font-weight:700; letter-spacing:.04em; color:var(--navy);}
+.brand span{color:var(--orange);}
+.navlinks{display:flex; gap:4px; flex-wrap:wrap;}
+.navlinks a{
+  font-family:var(--mono); font-size:12px; color:var(--ink-soft);
+  text-decoration:none; padding:8px 12px; border-radius:6px; transition:.15s;
+}
+.navlinks a:hover{background:var(--navy); color:#fff;}
+.related-btn{
+  font-family:var(--mono); font-size:12px; font-weight:700;
+  background:var(--orange); color:#fff; padding:8px 14px; border-radius:6px;
+  text-decoration:none; white-space:nowrap;
+}
+.related-btn:hover{background:#e65e00;}
+
+/* ============ HERO ============ */
+.hero{max-width:1200px; margin:0 auto; padding:72px 32px 48px;}
+.eyebrow{font-family:var(--mono); font-size:12px; color:var(--orange); font-weight:700; letter-spacing:.08em; margin-bottom:16px;}
+h1.title{font-family:var(--serif); font-size:44px; line-height:1.25; color:var(--navy); max-width:820px; margin-bottom:20px;}
+.hero p.lead{font-size:16px; color:var(--ink-soft); max-width:680px;}
+.hero-stats{display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--line); margin-top:40px; border:1px solid var(--line);}
+.stat{background:var(--bg-panel); padding:24px;}
+.stat .num{font-family:var(--mono); font-size:32px; font-weight:700; color:var(--navy);}
+.stat .lbl{font-size:12px; color:var(--ink-soft); margin-top:4px;}
+
+/* ============ SECTION SHELL ============ */
+section{max-width:1200px; margin:0 auto; padding:64px 32px; border-top:1px solid var(--line);}
+.sec-head{display:flex; align-items:baseline; gap:16px; margin-bottom:36px; flex-wrap:wrap;}
+.sec-num{font-family:var(--mono); font-size:13px; color:var(--orange); font-weight:700;}
+h2.sec-title{font-family:var(--serif); font-size:28px; color:var(--navy);}
+.sec-sub{font-size:14px; color:var(--ink-soft); margin-top:-24px; margin-bottom:32px; max-width:720px;}
+
+/* ============ DISCLAIMER BOX ============ */
+.disclaimer{
+  background:#FFF8F0; border:1px solid #FFD8AE; border-radius:8px;
+  padding:20px 24px; font-size:13px; color:#8a4a00; margin-top:24px;
+}
+.disclaimer b{color:var(--orange);}
+
+/* ============ CAPABILITY LANDSCAPE ============ */
+.cap-bars{display:flex; flex-direction:column; gap:10px;}
+.cap-row{display:grid; grid-template-columns:230px 1fr 50px; align-items:center; gap:16px;}
+.cap-name{font-size:13px; color:var(--ink);}
+.cap-track{background:var(--line); border-radius:4px; height:22px; overflow:hidden;}
+.cap-fill{height:100%; background:var(--navy); border-radius:4px; transition:width .6s ease;}
+.cap-fill.ai{background:var(--orange);}
+.cap-count{font-family:var(--mono); font-size:13px; text-align:right; color:var(--ink-soft);}
+
+/* ============ TIMELINE / KANBAN ============ */
+.filters{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:28px;}
+.chip{
+  font-family:var(--mono); font-size:12px; padding:7px 14px; border-radius:20px;
+  border:1px solid var(--line); background:var(--bg-panel); cursor:pointer; color:var(--ink-soft);
+  transition:.15s;
+}
+.chip.active{background:var(--navy); color:#fff; border-color:var(--navy);}
+.searchbox{
+  width:100%; max-width:340px; padding:9px 14px; border:1px solid var(--line); border-radius:20px;
+  font-family:var(--sans); font-size:13px; background:var(--bg-panel);
+}
+.kanban{display:grid; grid-template-columns:repeat(4,1fr); gap:16px;}
+.kb-col{background:var(--bg-panel); border:1px solid var(--line); border-radius:10px; padding:16px; min-height:120px;}
+.kb-col h3{font-family:var(--mono); font-size:12px; color:var(--navy); font-weight:700; margin-bottom:4px;}
+.kb-col .cnt{font-family:var(--mono); font-size:11px; color:var(--ink-soft); margin-bottom:14px;}
+.kb-col.vision h3{color:var(--orange);}
+.card{
+  background:var(--bg); border:1px solid var(--line); border-radius:8px; padding:12px;
+  margin-bottom:10px; cursor:pointer; transition:.15s; font-size:12.5px;
+}
+.card:hover{border-color:var(--navy); transform:translateY(-1px);}
+.card .cap-tag{font-family:var(--mono); font-size:9.5px; color:var(--ink-soft); text-transform:uppercase; margin-bottom:4px;}
+.card .ai-badge{display:inline-block; font-family:var(--mono); font-size:9px; background:var(--orange-soft); color:#a34700; padding:1px 6px; border-radius:4px; margin-left:4px;}
+.card.dim{opacity:.25; pointer-events:none;}
+@media(max-width:900px){.kanban{grid-template-columns:1fr 1fr;}}
+
+/* ============ THEMES ============ */
+.themes-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:20px;}
+.theme-card{background:var(--bg-panel); border:1px solid var(--line); border-radius:10px; padding:24px;}
+.theme-card h4{font-family:var(--serif); font-size:18px; color:var(--navy); margin-bottom:6px;}
+.theme-card .count{font-family:var(--mono); font-size:12px; color:var(--orange); margin-bottom:12px;}
+.theme-card ul{list-style:none; font-size:12.5px; color:var(--ink-soft);}
+.theme-card li{padding:4px 0; border-top:1px solid var(--line);}
+.theme-card li:first-child{border-top:none;}
+@media(max-width:900px){.themes-grid{grid-template-columns:1fr;}}
+
+/* ============ INSIGHTS ============ */
+.insight-list{display:flex; flex-direction:column; gap:1px; background:var(--line); border:1px solid var(--line);}
+.insight{background:var(--bg-panel); padding:26px 28px; display:grid; grid-template-columns:44px 1fr; gap:20px;}
+.insight .n{font-family:var(--mono); font-size:22px; color:var(--orange); font-weight:700;}
+.insight h4{font-family:var(--serif); font-size:19px; color:var(--navy); margin-bottom:8px;}
+.insight p{font-size:13.5px; color:var(--ink-soft);}
+
+/* ============ ADVISORY ============ */
+.advisory-grid{display:grid; grid-template-columns:1fr 1fr; gap:24px;}
+.advisory-card{background:var(--navy); color:#fff; border-radius:10px; padding:28px;}
+.advisory-card h4{font-family:var(--serif); font-size:18px; margin-bottom:14px; color:#fff;}
+.advisory-card ul{padding-left:18px; font-size:13px; opacity:.92;}
+.advisory-card li{margin-bottom:8px;}
+.checklist{background:var(--bg-panel); border:1px solid var(--line); border-radius:10px; padding:28px;}
+.checklist h4{font-family:var(--serif); font-size:18px; color:var(--navy); margin-bottom:14px;}
+.checklist label{display:flex; gap:10px; align-items:flex-start; font-size:13px; margin-bottom:12px; color:var(--ink);}
+.checklist input{margin-top:3px;}
+@media(max-width:900px){.advisory-grid{grid-template-columns:1fr;}}
+
+/* ============ KEY TAKEAWAYS ============ */
+.takeaway-band{background:var(--navy); border-radius:14px; padding:48px; color:#fff;}
+.takeaway-band h2{font-family:var(--serif); color:#fff; font-size:26px; margin-bottom:28px;}
+.tk-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:1px; background:rgba(255,255,255,.15);}
+.tk-item{background:var(--navy-soft); padding:22px; display:flex; gap:14px;}
+.tk-item .dot{width:8px; height:8px; border-radius:50%; background:var(--orange); flex-shrink:0; margin-top:7px;}
+.tk-item p{font-size:13.5px; opacity:.95;}
+@media(max-width:900px){.tk-grid{grid-template-columns:1fr;}}
+
+/* ============ MODAL ============ */
+.modal-overlay{
+  display:none; position:fixed; inset:0; background:rgba(15,20,30,.55); z-index:200;
+  align-items:center; justify-content:center; padding:24px;
+}
+.modal-overlay.open{display:flex;}
+.modal{
+  background:#fff; max-width:560px; width:100%; border-radius:12px; padding:32px;
+  max-height:80vh; overflow-y:auto;
+}
+.modal .cap-tag{font-family:var(--mono); font-size:10px; color:var(--ink-soft); text-transform:uppercase;}
+.modal h3{font-family:var(--serif); font-size:22px; color:var(--navy); margin:10px 0 16px;}
+.modal .field{margin-bottom:14px;}
+.modal .field b{font-family:var(--mono); font-size:11px; color:var(--orange); text-transform:uppercase; display:block; margin-bottom:4px;}
+.modal .field span{font-size:13.5px; color:var(--ink);}
+.modal-close{position:absolute; top:16px; right:20px; cursor:pointer; font-size:20px; color:var(--ink-soft); background:none; border:none;}
+.modal{position:relative;}
+.no-detail-note{font-size:12px; color:var(--ink-soft); font-style:italic; margin-top:8px;}
+
+footer{max-width:1200px; margin:0 auto; padding:40px 32px 80px; font-size:12px; color:var(--ink-soft); font-family:var(--mono);}
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="topnav-inner">
+    <div class="brand">ASPN <span>//</span> SAC ROADMAP INTELLIGENCE</div>
+    <div class="navlinks">
+      <a href="#overview">01 개요</a>
+      <a href="#landscape">02 랜드스케이프</a>
+      <a href="#timeline">03 타임라인</a>
+      <a href="#themes">04 테마</a>
+      <a href="#insights">05 인사이트</a>
+      <a href="#advisory">06 어드바이저리</a>
+      <a href="#takeaways">07 요약</a>
+    </div>
+    <a class="related-btn" href="report2_sac_ai_deepdive.html">AI Deep Dive →</a>
+  </div>
+</nav>
+
+<div class="hero" id="overview">
+  <div class="eyebrow">SAP ROAD MAP EXPLORER · PRODUCT: SAP ANALYTICS CLOUD · CURRENT–LAST</div>
+  <h1 class="title">SAC 로드맵 107건은 "AI 확장"이 아니라 "플래닝 심화"가 본류다</h1>
+  <p class="lead">2026년 7월 6일 기준, SAP Road Map Explorer에서 필터 없이 추출한 SAP Analytics Cloud 전체 로드맵 항목을 분석했다. 전 항목은 <b>PLANNED</b> 또는 <b>PRODUCT VISION</b> 단계이며, 현재 시점 기준 배포 확정(GA) 항목은 없다.</p>
+  <div class="hero-stats">
+    <div class="stat"><div class="num">107</div><div class="lbl">고유 Road Map Item (ID 기준)</div></div>
+    <div class="stat"><div class="num">78</div><div class="lbl">고유 기능명 (제목 기준)</div></div>
+    <div class="stat"><div class="num">12</div><div class="lbl">Solution Capability</div></div>
+    <div class="stat"><div class="num">14</div><div class="lbl">AI Focus Topic 관련 항목</div></div>
+  </div>
+  <div class="disclaimer">
+    <b>데이터 범위 고지</b> — 이 보고서는 2026-07-06 다운로드 시점의 SAC 로드맵 익스포트와, 이후 대화에서 공유된 Q3 2026 / Q4 2026 / Q1 2027 / Product Vision 4개 구간의 원문(Overview·Benefits)만을 근거로 작성됐다. 78건 중 44건은 원문 상세가 확인됐고 나머지는 제목·Capability·일정 정보만 존재한다 — 상세 미확인 항목은 추정하지 않고 "상세 미확인"으로 표기했다. 모든 항목은 SAP의 공식 면책조항대로 구속력 없는 계획이다.
+  </div>
+</div>
+
+<section id="landscape">
+  <div class="sec-head"><span class="sec-num">02</span><h2 class="sec-title">Capability Landscape</h2></div>
+  <p class="sec-sub">12개 Solution Capability에 태깅된 항목 수(교차 태깅 포함, 총 107건 기준). 막대가 길수록 해당 분기 로드맵에서 투자 비중이 크다는 뜻이다.</p>
+  <div class="cap-bars" id="capBars"></div>
+</section>
+
+<section id="timeline">
+  <div class="sec-head"><span class="sec-num">03</span><h2 class="sec-title">Release Timeline</h2></div>
+  <p class="sec-sub">Q3 2026 → Q4 2026 → Q1 2027 → Product Vision. 카드를 클릭하면 상세 정보를 확인할 수 있다. 필터와 검색으로 원하는 항목을 좁혀볼 수 있다.</p>
+  <div class="filters" id="capFilters"></div>
+  <input class="searchbox" id="searchBox" placeholder="기능명으로 검색…" oninput="renderKanban()">
+  <div class="kanban" id="kanban"></div>
+</section>
+
+<section id="themes">
+  <div class="sec-head"><span class="sec-num">04</span><h2 class="sec-title">Cross-Release Themes</h2></div>
+  <p class="sec-sub">12개 Capability를 6개 MECE 테마로 재구성했다. 태그 인스턴스 합은 107로 원본 랜드스케이프와 정확히 일치한다.</p>
+  <div class="themes-grid" id="themesGrid"></div>
+</section>
+
+<section id="insights">
+  <div class="sec-head"><span class="sec-num">05</span><h2 class="sec-title">Strategic Insights</h2></div>
+  <div class="insight-list">
+    <div class="insight">
+      <div class="n">01</div>
+      <div><h4>Classic Experience Deprecation — 구조적 전환점</h4>
+      <p>Q3 2026에 Classic Stories, Classic Analytic Applications, Data Analyzer 1.0 자산의 폐기(deprecation)가 예정되어 있다. 마이그레이션 미완료 고객은 폐기 시점 이후 해당 자산에 접근할 수 없다 — 이는 기능 추가가 아니라 <b>플랫폼 표준화를 위한 강제 전환</b>이며, SAC를 운영 중인 고객사 전체에 영향을 미치는 가장 시급한 항목이다.</p></div>
+    </div>
+    <div class="insight">
+      <div class="n">02</div>
+      <div><h4>SAP Business Data Cloud(BDC) 동시 배포가 사실상 표준</h4>
+      <p>78개 고유 기능 중 절대다수가 SAC와 BDC에 동시 배포된다(단독 배포는 소수). AI 기능뿐 아니라 일반 기능까지 BDC 동시 배포가 일반화되어 있어, BDC가 SAC의 부가 옵션이 아니라 <b>공통 플랫폼 기반</b>으로 자리잡고 있음을 시사한다. SAC 신규 기능 도입 검토 시 BDC 라이선스·아키텍처 전제조건을 함께 짚어야 한다.</p></div>
+    </div>
+    <div class="insight">
+      <div class="n">03</div>
+      <div><h4>SAP Datasphere가 데이터 연결의 중심 허브로 수렴</h4>
+      <p>통화 환율 테이블 재사용, Smart Insights의 데이터 소스, Q4의 동적 회계연도 필터 등 다수 항목이 "SAP Datasphere 모델"을 전제로 설계되어 있다. 개별 Data Connectivity 기능들이 각자 확장되기보다, <b>Datasphere를 경유하는 통합 아키텍처</b>로 수렴하는 패턴이 관찰된다.</p></div>
+    </div>
+    <div class="insight">
+      <div class="n">04</div>
+      <div><h4>Product Vision 유일 항목이 가리키는 방향: 신원 전파형 거버넌스</h4>
+      <p>유일한 Product Vision 항목("Multi Actions: API step to support business user authentication")은 Cross-application 워크플로에서 <b>최종 사용자 신원을 그대로 전파</b>하는 기능이며, SAP Group Reporting과의 연동을 명시적 예시로 든다. 다만 SAP Road Map Explorer의 칸반 UI 설계상 4분기 이후 항목이 하나의 Vision 컬럼에 통합 표시되는 구조이므로, 이 항목이 "유일한 장기 비전"이라고 단정하는 것은 과장이다 — 이번에 공유받은 범위 내에서 확인되는 유일한 항목이라는 의미로 한정한다.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="advisory">
+  <div class="sec-head"><span class="sec-num">06</span><h2 class="sec-title">Customer Advisory</h2></div>
+  <p class="sec-sub">SAC 운영 고객사 대상 실무 체크리스트. 항목 수는 이번 데이터셋 기준이며 구체적 적용 여부는 고객사별 구성에 따라 다르다.</p>
+  <div class="advisory-grid">
+    <div class="advisory-card">
+      <h4>고객 영향도 매트릭스</h4>
+      <ul>
+        <li><b>즉시 영향</b> — Classic Experience 사용 고객: Q3 2026 이전 마이그레이션 필수</li>
+        <li><b>아키텍처 영향</b> — BDC 미도입 고객: 신규 AI·데이터 연결 기능 다수가 BDC 전제, 로드맵 검토 시 라이선스 확인 필요</li>
+        <li><b>플래닝 영향</b> — Data Actions·Validation Rules 다수 개선: 배치 계산 성능·데이터 품질 관리 프로세스 재점검 권장</li>
+        <li><b>거버넌스 영향</b> — GR 연동 고객: Product Vision 신원 전파 기능은 장기 검토 대상으로 별도 트래킹 권장</li>
+      </ul>
+    </div>
+    <div class="checklist">
+      <h4>Upgrade / Migration 체크리스트</h4>
+      <label><input type="checkbox"> Classic Stories / Classic Analytic Applications / Data Analyzer 1.0 사용 여부 인벤토리 확인</label>
+      <label><input type="checkbox"> 최적화 경험(Optimized Experience)으로의 마이그레이션 일정 수립</label>
+      <label><input type="checkbox"> BDC 라이선스 보유 여부 및 Live Connection 아키텍처(SAP_COM_0065/0087) 확인</label>
+      <label><input type="checkbox"> Datasphere 모델 의존 기능(통화 테이블, 동적 필터 등) 사용 여부 점검</label>
+      <label><input type="checkbox"> Data Action / Validation Rule 관련 변경사항이 기존 배치 프로세스에 미치는 영향 검토</label>
+      <label><input type="checkbox"> Excel add-in 연동 기능(멀티 액션, 워크북 이관) 사용 부서 대상 공지</label>
+    </div>
+  </div>
+</section>
+
+<section id="takeaways">
+  <div class="sec-head"><span class="sec-num">07</span><h2 class="sec-title">Key Takeaways</h2></div>
+  <div class="takeaway-band">
+    <h2>임원 보고용 5줄 요약</h2>
+    <div class="tk-grid">
+      <div class="tk-item"><div class="dot"></div><p>Business Planning and Forecasting(23건)이 전체 Capability 중 최대 투자 영역 — SAC의 본류는 여전히 플래닝이다.</p></div>
+      <div class="tk-item"><div class="dot"></div><p>Dashboard/Story 관련 기능(Dashboard Design·Extensibility·Reporting 합산 28건)도 지속 확대 — 저작 경험 고도화가 두 번째 축.</p></div>
+      <div class="tk-item"><div class="dot"></div><p>AI(12건, 전체의 약 11%)는 아직 전체의 일부지만, Q4에 자율 실행 에이전트(Agent)가 등장하며 전략적 무게는 건수 이상이다.</p></div>
+      <div class="tk-item"><div class="dot"></div><p>Product Vision(장기 비전) 방향은 Datasphere·Joule·신원전파 거버넌스로 수렴 — 개별 기능보다 플랫폼 통합이 우선순위.</p></div>
+      <div class="tk-item"><div class="dot"></div><p>Classic Experience는 Q3 2026 폐기 예정 — 사실상 종료 단계이며 가장 시급한 마이그레이션 이슈.</p></div>
+    </div>
+  </div>
+</section>
+
+<footer>SOURCE: SAP Road Map Explorer, downloaded 2026-07-06 · Filter: Product = SAP Analytics Cloud, Range = Current–Last · All items PLANNED / PRODUCT VISION, non-binding per SAP disclaimer · ASPN BAC Internal Reference</footer>
+
+<div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div id="modalBody"></div>
+  </div>
+</div>
+
+<script id="dataset" type="application/json">
+[{"title": "Automated transfer of Excel workbooks from one tenant to another tenant", "capabilities": ["Office Suite Integration"], "planned_for": "Q1 2027", "available_as_of": "Q1 2027", "products": "SAP Analytics Cloud, SAP Analytics Cloud, add-in for Microsoft Office, SAP Business Data Cloud", "overview": "A system replacement feature that allows easier repointing of Microsoft Excel workbooks across tenants for SAP Analytics Cloud (for example, from development to production); keeps workbooks storage in the file repository", "benefits": "Offer an automated, centralized, and controlled process to transport Excel add-in workbooks", "focus_topics": [], "tier": "", "has_detail": true}, {"title": "Live data connectivity to Microsoft SharePoint lists", "capabilities": ["Data Connectivity Management", "Data Replication and ETL"], "planned_for": "Q4 2026", "available_as_of": "Q4 2026", "products": "SAP Analytics Cloud, SAP Business Data Cloud", "overview": "Extension of external live data access for planning-capable models to Microsoft SharePoint lists, retaining the original source as the single point of truth", "benefits": "Enable the customer to connect to SharePoint lists as a \"live\" source; reduce complexity and TCO", "focus_topics": [], "tier": "", "has_detail": true}, {"title": "Custom widgets library", "capabilities": ["Dashboard Extensibility"], "planned_for": "Q3 2026", "available_as_of": "Q3 2026", "products": "SAP Analytics Cloud, SAP Business Data Cloud", "overview": "Deliver a centralized custom widget library that lets business analysts, customers, and story creators extend and consume SAP visualizations quickly and securely", "benefits": "Accelerate time to insight by enabling story designers to add new visualizations instantly rather than waiting for bespoke development", "focus_topics": [], "tier": "", "has_detail": true}, {"title": "Job Monitor: in-story monitoring", "capabilities": ["Business Planning and Forecasting"], "planned_for": "Q3 2026", "available_as_of": "Q3 2026", "products": "SAP Analytics Cloud, SAP Business Data Cloud", "overview": "", "benefits": "", "focus_topics": [], "tier": "", "has_detail": false}, {"title": "Sankey chart", "capabilities": ["Dashboard Design"], "planned_for": "Q3 2026", "available_as_of": "Q3 2026", "products": "SAP Analytics Cloud, SAP Business Data Cloud", "overview": "", "benefits": "", "focus_topics": [], "tier": "", "has_detail": false}, {"title": "Multi Actions: API step to support business user authentication", "capabilities": ["Business Planning and Forecasting"], "planned_for": "Product Vision", "available_as_of": "Product Vision", "products": "SAP Analytics Cloud, SAP Business Data Cloud", "overview": "Ability to pass the credentials of the executing user through to the target API being called by the multi action (API) step. For example, transferring and validating data collected in SAP Analytics Cloud to SAP Group Reporting using the specific end-user credentials initiating the process.", "benefits": "Facilitate insight to action for cross application planning workflows", "focus_topics": [], "tier": "", "has_detail": true}, {"title": "My Metrics for KPIs monitoring: creating new metrics", "capabilities": ["Data and Analytics Administration"], "planned_for": "Q4 2026", "available_as_of": "Q4 2026", "products": "SAP Analytics Cloud, SAP Business Data Cloud", "overview": "Enable the creation of new metrics within the \"My Metrics\" module, with a dedicated entry point and metrics library", "benefits": "Enable users to create metrics tailored to their specific needs and business objectives", "focus_topics": [], "tier": "", "has_detail": true}, {"title": "Incremental load for New Model Load Jobs", "capabilities": ["Data Connectivity Management", "Data Replication and ETL"], "planned_for": "Q4 2026", "available_as_of": "Q4 2026", "products": "SAP Analytics Cloud, SAP Business Data Cloud", "overview": "Add incremental load support for import jobs from Java database connectivity (JDBC) data sources", "benefits": "Enhance management of model fact data; increase performance in data load jobs", "focus_topics": [], "tier": "", "has_detail": true}, {"title": "Gauge chart", "capabilities": ["Dashboard Design"], "planned_for": "Q3 2026", "available_as_of": "Q3 2026", "products": "SAP Analytics Cloud, SAP Business Data Cloud", "overview": "", "benefits": "", "focus_topics": [], "tier": "", "has_detail": false}, {"title": "Data import API: hierarchy support", "capabilities": ["Data Connectivity Management", "Data Design and Modelling", "Data Replication and ETL"], "planned_for": "Q4 2026", "available_as_of": "Q4 2026", "products": "SAP Analytics Cloud, SAP Business Data Cloud", "overview": "Support for parent-child and level-based hierarchy metadata for SAP Analytics Cloud standalone models and models stored in SAP Datasphere", "benefits": "Enable users to push their hierarchical source content into SAP Analytics Cloud through the import API", "focus_topics": [], "tier": "", "has_detail": true}, {"title": "Live data connectivity to Microsoft SharePoint Excel files", "capabilities": ["Data Connectivity Management", "Data Replication and ETL"], "planned_for": "Q4 2026", "available_as_of": "Q4 2026", "products": "SAP Analytics Cloud, SAP Business Data Cloud", "overview": "Extend external live data access for planning-capable models to Microsoft Excel files stored on Microsoft SharePoint; connection is \"live-only\", data always read from the original SharePoint at runtime", "benefits": "Enable customers to connect to Microsoft Excel files stored on Microsoft SharePoint as a live source", "focus_topics": [], "tier": "", "has_detail": true}, {"title": "Funnel chart", "capabilities": ["Dashboard Design"], "planned_for": "Q3 2026", "available_as_of": "Q3 2026", "products": "SAP Analytics Cloud, SAP Business Data Cloud", "overview": "", "benefits": "", "focus_topics": [], "tier": "", "has_detail": false}, {"title": "Modeling: reuse currency rate table from SAP Datasphere", "capabilities": ["Business Planning and Forecasting", "Data Design and Modelling"], "planned_for": "Q3 2026", "available_as_of": "Q3 2026", "products": "SAP Analytics Cloud, SAP Business Data Cloud", "overview": "Use the existing rate table from SAP Datasphere for currency conversion in SAP Analytics Cloud", "benefits": "Facilitate reuse of data products for planning and modeling in SAP Analytics Cloud", "focus_topics": [], "tier": "", "has_detail": true}, {"title": "Support for adding multiple new combinations to a table in the Excel add-in", "capabilities": ["Office Suite Integration"], "planned_for": "Q4 2026", "available_as_of": "Q4 2026", "products": "SAP Analytics Cloud, SAP Analytics Cloud, add-in for Microsoft Office, SAP Business Data Cloud", "overview": "New capability to enable quick entry of new member combinations in table lines in Microsoft Excel", "benefits": "Accelerate data entry and table creation in Excel", "focus_topics": [], "tier": "", "has_detail": true}, {"title": "Plan Entry: copy and paste optimization", "capabilities": ["Business Planning and Forecasting"], "planned_for": "Q3 2026", "available_as_of": "Q3 2026", "products": "SAP Analytics Cloud, SAP Business Data Cloud", "overview": "", "benefits": "", "focus_topics": [], "tier": "", "has_detail": false}, {"title": "AI-assisted story code generation", "capabilities": ["AI for Planning and Analytics", "Dashboard Design", "Dashboard Extensibility", "Enterprise Reporting"], "planned_for": "Q3 2026", "available_as_of": "Q3 2026", "products": "SAP Analytics Cloud, SAP Business Data Cloud", "overview": "Automatic generation of the required JavaScript for building low-code, intelligent dashboard applications in SAP Analytics Cloud AI-assisted story code generation that provides clear, contextual explanations of the generated scripts, including their functionality and the reasoning behind key design and implementation choices Integration into the script editor for SAP Analytics Cloud during design time, supporting a smooth and productive development experience", "benefits": "Increase development efficiency by reducing the time and effort required to build dashboards by automatically generating JavaScript code, enabling faster delivery of analytics solutions as well as greater flexibility and customization Lower the technical barrier by empowering business users and less-experienced developers to create advanced, interactive applications without deep coding expertise Improve and empower users to confidently adapt, extend, or optimize the code as needed", "focus_topics": ["Artificial Intelligence"], "tier": "Tier 1", "has_detail": true}, {"title": "Customization of validation rule handling for unassigned members", "capabilities": ["Business Planning and Forecasting", "Data Design and Modelling"], "planned_for": "Q3 2026", "available_as_of": "Q3 2026", "products": "SAP Analytics Cloud, SAP Business Data Cloud", "overview": "", "benefits": "", "focus_topics": [], "tier": "", "has_detail": false}, {"title": "Data analyzer: dynamic filter support for fiscal dimensions based on live models in SAP Datasphere", "capabilities": ["Exploratory Data Analysis"], "planned_for": "Q4 2026", "available_as_of": "Q4 2026", "products": "SAP Analytics Cloud, SAP Business Data Cloud", "overview": "Define dynamic filter ranges within the range filter dialog based on fiscal dimensions depending on the granularity defined in the underlying model in SAP Datasphere", "benefits": "Optimizes operational efficiency through dynamic fiscal analysis; reduces time spent on manual reporting processes", "focus_topics": [], "tier": "", "has_detail": true}, {"title": "Scheduling a story in presentation mode", "capabilities": ["Insight Sharing and Collaboration"], "planned_for": "Q1 2027", "available_as_of": "Q1 2027", "products": "SAP Analytics Cloud, SAP Business Data Cloud", "overview": "Enable schedulers to schedule a story in the presentation mode and have the output file generated in PDF and PPT be the same as the one defined in the presentation mode", "benefits": "Enable recipients to receive the PDF and PPT file for a story as defined in the presentation mode", "focus_topics": [], "tier": "", "has_detail": true}, {"title": "Data analyzer: ability to save insights without preselecting mandatory prompts", "capabilities": ["Exploratory Data Analysis"], "planned_for": "Q3 2026", "available_as_of": "Q3 2026", "products": "SAP Analytics Cloud, SAP Business Data Cloud", "overview": "", "benefits": "", "focus_topics": [], "tier": "", "has_detail": false}, {"title": "Multi Actions: option to reduce preprocessing validation checks", "capabilities": ["Business Planning and Forecasting"], "planned_for": "Q4 2026", "available_as_of": "Q4 2026", "products": "SAP Analytics Cloud, SAP Business Data Cloud", "overview": "Optional setting on the multi action starter to minimize the pre-execution validation checks and streamline overall execution time for shorter running multi actions", "benefits": "Enhance performance for multistep batch processing operations", "focus_topics": [], "tier": "", "has_detail": true}, {"title": "Plan entry: insertion of multiple new lines", "capabilities": ["Business Planning and Forecasting"], "planned_for": "Q4 2026", "available_as_of": "Q4 2026", "products": "SAP Analytics Cloud, SAP Business Data Cloud", "overview": "Provide the ability to automatically insert multiple new lines in a single request, up to a maximum of 100 new lines, with automatic validation of pasted data", "benefits": "Simplify end-user data-entry scenarios as well as scenarios requiring the copying and pasting of data from an external source", "focus_topics": [], "tier": "", "has_detail": true}, {"title": "AI-powered story insight generation", "capabilities": ["AI for Planning and Analytics", "Dashboard Design", "Dashboard Extensibility", "Enterprise Reporting"], "planned_for": "Q3 2026", "available_as_of": "Q3 2026", "products": "SAP Analytics Cloud, SAP Business Data Cloud", "overview": "Automatically transform business data into comprehensive analytical stories using advanced AI technologies including large language models, analytic insights and more. Process user queries, business context, and data patterns to generate SAP Analytics Cloud stories containing visualizations, trend analysis, and actionable insights.", "benefits": "Accelerate insight creation by enabling both viewers and designers to build customized stories more quickly and efficiently Enable users to move rapidly from questions to informed decisions without requiring technical expertise", "focus_topics": ["Artificial Intelligence"], "tier": "Tier 1", "has_detail": true}, {"title": "Smart insights from table cells", "capabilities": ["AI for Planning and Analytics"], "planned_for": "Q3 2026", "available_as_of": "Q3 2026", "products": "SAP Analytics Cloud, SAP Business Data Cloud", "overview": "SAP Analytics Cloud smart insights feature is available when selecting a table cell in optimized stories, enabling users to visualize top contributors and get natural language description, and uncover facts and explanation from the SAP Datasphere models and SAP Analytics Cloud models beyond the data that is readily visible is the story", "benefits": "Expand the availability of smart insights to more dashboards and more users", "focus_topics": ["Data to Insight", "Artificial Intelligence"], "tier": "Tier 2", "has_detail": true}, {"title": "User-defined handling of mismatches between facts and primary data in the modeler", "capabilities": ["Data Design and Modelling"], "planned_for": "Q4 2026", "available_as_of": "Q4 2026", "products": "SAP Analytics Cloud, SAP Business Data Cloud", "overview": "Define how facts without matching primary data should be treated on a per-dimension basis (show only matching, show all labeled \"not in hierarchy\", or performance mode)", "benefits": "Provide enhanced control over solution behavior", "focus_topics": [], "tier": "", "has_detail": true}, {"title": "Deprecation of Classic Experience", "capabilities": ["Dashboard Design", "Dashboard Extensibility", "Exploratory Data Analysis"], "planned_for": "Q3 2026", "available_as_of": "Q3 2026", "products": "SAP Analytics Cloud, SAP Business Data Cloud", "overview": "SAP Analytics Cloud will be deprecating the classic experience, including Classic Stories, Classic Analytic Applications, and Data Analyzer 1.0 assets. After the deprecation date, these assets will no longer be accessible within the platform.", "benefits": "By consolidating on a single, modern experience, customers benefit from a streamlined, future-proof analytics environment with improved performance, consistent UX, and access to the latest SAP Analytics Cloud innovations", "focus_topics": [], "tier": "", "has_detail": true}, {"title": "Support for input controls within a composite", "capabilities": ["Dashboard Extensibility"], "planned_for": "Q3 2026", "available_as_of": "Q3 2026", "products": "SAP Analytics Cloud, SAP Business Data Cloud", "overview": "", "benefits": "", "focus_topics": [], "tier": "", "has_detail": false}, {"title": "Plan Entry: repost data", "capabilities": ["Business Planning and Forecasting"], "planned_for": "Q4 2026", "available_as_of": "Q4 2026", "products": "SAP Analytics Cloud, SAP Business Data Cloud", "overview": "Enable users to update dimension values associated with existing plan combinations; repost existing combinations when target combinations are unbooked", "benefits": "Streamline plan and forecast data update processes", "focus_topics": [], "tier": "", "has_detail": true}, {"title": "Data analyzer: changing dimension member order in a table and chart", "capabilities": ["Exploratory Data Analysis"], "planned_for": "Q1 2027", "available_as_of": "Q1 2027", "products": "SAP Analytics Cloud, SAP Business Data Cloud", "overview": "Create a custom order for dimension members in table or chart using the Create Custom Order configuration panel; drag the members to rearrange them and provide a name", "benefits": "Advanced ad hoc analysis capabilities by rearranging the order of the members in table and chart", "focus_topics": [], "tier": "", "has_detail": true}, {"title": "Job Monitor: inclusion of Data Import API jobs", "capabilities": ["Business Planning and Forecasting", "Data Connectivity Management", "Data Design and Modelling"], "planned_for": "Q3 2026", "available_as_of": "Q3 2026", "products": "SAP Analytics Cloud, SAP Business Data Cloud", "overview": "", "benefits": "", "focus_topics": [], "tier": "", "has_detail": false}, {"title": "Smart insights on models that include multiple account hierarchies", "capabilities": ["AI for Planning and Analytics"], "planned_for": "Q3 2026", "available_as_of": "Q3 2026", "products": "SAP Analytics Cloud, SAP Business Data Cloud", "overview": "Ability to view smart insights on models that include multiple account hierarchies. Insights are based on the account hierarchy currently in use in the visualization. Changing the account hierarchy may change the smart insights.", "benefits": "Expand the availability of smart insights to more dashboards and more users in particular when different financial reporting perspectives are defined using different account hierarchies such as statutory, management, and profitability.", "focus_topics": [], "tier": "Tier 2", "has_detail": true}, {"title": "Model Repointing for SAP IBP and SAP Universe", "capabilities": ["Dashboard Design"], "planned_for": "Q3 2026", "available_as_of": "Q3 2026", "products": "SAP Analytics Cloud, SAP Business Data Cloud", "overview": "", "benefits": "", "focus_topics": [], "tier": "", "has_detail": false}, {"title": "Data analyzer: option to display the ID of measures on table", "capabilities": ["Exploratory Data Analysis"], "planned_for": "Q3 2026", "available_as_of": "Q3 2026", "products": "SAP Analytics Cloud, SAP Business Data Cloud", "overview": "", "benefits": "", "focus_topics": [], "tier": "", "has_detail": false}, {"title": "Data Actions: filter-parameter", "capabilities": ["Business Planning and Forecasting"], "planned_for": "Q3 2026", "available_as_of": "Q3 2026", "products": "SAP Analytics Cloud, SAP Business Data Cloud", "overview": "", "benefits": "", "focus_topics": [], "tier": "", "has_detail": false}, {"title": "Custom widget: filtering by date range supporting custom dates and account-based filters", "capabilities": ["Dashboard Design"], "planned_for": "Q3 2026", "available_as_of": "Q3 2026", "products": "SAP Analytics Cloud, SAP Business Data Cloud", "overview": "", "benefits": "", "focus_topics": [], "tier": "", "has_detail": false}, {"title": "Advanced Formulas: string manipulation functions", "capabilities": ["Business Planning and Forecasting"], "planned_for": "Q4 2026", "available_as_of": "Q4 2026", "products": "SAP Analytics Cloud, SAP Business Data Cloud", "overview": "Ability to use string manipulation functions within the advanced formula: CONCAT, LEFT, RIGHT, SUBSTR", "benefits": "Improve flexibility for coding relevant batch calculations", "focus_topics": [], "tier": "", "has_detail": true}, {"title": "Compass: story widget for the display of simulation results", "capabilities": ["Business Planning and Forecasting"], "planned_for": "Q3 2026", "available_as_of": "Q3 2026", "products": "SAP Analytics Cloud, SAP Business Data Cloud", "overview": "Ability to insert a compass widget in the story to display risk analysis results, including optimistic, realistic, and pessimistic cases", "benefits": "Enable reporting of risk context together with forecast, plan, or budget review; re-running outdated scenarios directly within widget; view side-by-side scenario comparison within the widget", "focus_topics": [], "tier": "Tier 3-excluded", "has_detail": true}, {"title": "Analytical insights capability in Joule: LLM-based generated explanations", "capabilities": ["AI for Planning and Analytics"], "planned_for": "Q4 2026", "available_as_of": "Q4 2026", "products": "SAP Analytics Cloud, SAP Business Data Cloud", "overview": "Use the analytical insights capability in Joule for LLM-based explanations that describe how the result was generated based on the user query and the available data", "benefits": "Empower business users to better understand how the analytical result from Joule was generated, building greater user trust in the result", "focus_topics": [], "tier": "Tier 1", "has_detail": true}, {"title": "Copy and paste for composite widgets in stories", "capabilities": ["Dashboard Extensibility"], "planned_for": "Q3 2026", "available_as_of": "Q3 2026", "products": "SAP Analytics Cloud, SAP Business Data Cloud", "overview": "", "benefits": "", "focus_topics": [], "tier": "", "has_detail": false}, {"title": "Public dimension tables in the file repository", "capabilities": ["Data Design and Modelling", "Data and Analytics Administration"], "planned_for": "Q3 2026", "available_as_of": "Q3 2026", "products": "SAP Analytics Cloud, SAP Business Data Cloud", "overview": "", "benefits": "", "focus_topics": [], "tier": "", "has_detail": false}, {"title": "Dynamic and hierarchical selection of dimension members in predictive planning", "capabilities": ["AI for Planning and Analytics"], "planned_for": "Q3 2026", "available_as_of": "Q3 2026", "products": "SAP Analytics Cloud", "overview": "Specify which business elements should be forecasted when configuring models in the predictive planning capability for SAP Analytics Cloud Automatically adapt the new member selection with hierarchical-level navigation and include or exclude logic as dimension hierarchy changes, keeping forecasts aligned with current business structures without manual maintenance Support both static and dynamic member selection in predictive planning", "benefits": "Accelerate the configuration of models in predictive planning and reduce required maintenance, especially when working with large member sets and complex hierarchies", "focus_topics": [], "tier": "Tier 3-excluded", "has_detail": true}, {"title": "Compass: predictive range proposals \"Smart Boundaries\"", "capabilities": ["Business Planning and Forecasting"], "planned_for": "Q3 2026", "available_as_of": "Q3 2026", "products": "SAP Analytics Cloud, SAP Business Data Cloud", "overview": "Automated range proposals for possible driver performance fluctuations", "benefits": "Use trends from historical data to define upper and lower bound of driver uncertainties", "focus_topics": [], "tier": "Tier 2", "has_detail": true}, {"title": "Data Actions: automatically derive changed planning context", "capabilities": ["Business Planning and Forecasting"], "planned_for": "Q3 2026", "available_as_of": "Q3 2026", "products": "SAP Analytics Cloud, SAP Business Data Cloud", "overview": "", "benefits": "", "focus_topics": [], "tier": "", "has_detail": false}, {"title": "Version Management: warning on browser tab close with unpublished data", "capabilities": ["Business Planning and Forecasting"], "planned_for": "Q4 2026", "available_as_of": "Q4 2026", "products": "SAP Analytics Cloud, SAP Business Data Cloud", "overview": "Enable a story-level setting to enforce a general warning when users close a browser or tab with unpublished data changes", "benefits": "Simplify solution management; reduce the risk of erroneous or incomplete plan data", "focus_topics": [], "tier": "", "has_detail": true}, {"title": "Support Multi actions in the Excel add-in", "capabilities": ["Office Suite Integration"], "planned_for": "Q3 2026", "available_as_of": "Q3 2026", "products": "SAP Analytics Cloud, SAP Analytics Cloud, add-in for Microsoft Office, SAP Business Data Cloud", "overview": "", "benefits": "", "focus_topics": [], "tier": "", "has_detail": false}, {"title": "Custom device support for responsive stories on iOS and Android", "capabilities": ["Dashboard Design", "Dashboard Extensibility"], "planned_for": "Q3 2026", "available_as_of": "Q3 2026", "products": "SAP Analytics Cloud, SAP Business Data Cloud", "overview": "Ability to define custom devices for responsive layouts to be supported in the iOS and Android mobile apps", "benefits": "Future-proof story rendering for newly released devices; help ensure consistent, predictable layouts across web and mobile", "focus_topics": [], "tier": "", "has_detail": true}, {"title": "Data analyzer: add multiple hyperlinks to table", "capabilities": ["Exploratory Data Analysis"], "planned_for": "Q3 2026", "available_as_of": "Q3 2026", "products": "SAP Analytics Cloud, SAP Business Data Cloud", "overview": "", "benefits": "", "focus_topics": [], "tier": "", "has_detail": false}, {"title": "Data analyzer: support for models with week-granularity or user-managed time dimensions", "capabilities": ["Exploratory Data Analysis"], "planned_for": "Q4 2026", "available_as_of": "Q4 2026", "products": "SAP Analytics Cloud, SAP Business Data Cloud", "overview": "Lift the current limitation and support analyzing SAP Analytics Cloud models with week-granularity or user-managed time dimensions", "benefits": "Optimizes operational efficiency through flexible time analysis", "focus_topics": [], "tier": "", "has_detail": true}, {"title": "Advanced Formulas: performance improvements", "capabilities": ["Business Planning and Forecasting"], "planned_for": "Q4 2026", "available_as_of": "Q4 2026", "products": "SAP Analytics Cloud, SAP Business Data Cloud", "overview": "Improvements in execution times for advanced formulas scenarios: optimization of delete() function, streamlined processing where a large number of members are being used to define the execution scope", "benefits": "Improve execution performance for batch calculations in selective scenarios", "focus_topics": [], "tier": "", "has_detail": true}, {"title": "Updated Select Data dialog", "capabilities": ["Dashboard Design"], "planned_for": "Q3 2026", "available_as_of": "Q3 2026", "products": "SAP Analytics Cloud, SAP Business Data Cloud", "overview": "", "benefits": "", "focus_topics": [], "tier": "", "has_detail": false}, {"title": "Version dimension filter in the “More Actions” menu and table subtitle", "capabilities": ["Dashboard Design"], "planned_for": "Q3 2026", "available_as_of": "Q3 2026", "products": "SAP Analytics Cloud, SAP Business Data Cloud", "overview": "", "benefits": "", "focus_topics": [], "tier": "", "has_detail": false}, {"title": "Import connection for SAP HANA Cloud", "capabilities": ["Data Connectivity Management", "Data Replication and ETL"], "planned_for": "Q3 2026", "available_as_of": "Q3 2026", "products": "SAP Analytics Cloud, SAP Business Data Cloud", "overview": "", "benefits": "", "focus_topics": [], "tier": "", "has_detail": false}, {"title": "Analytical insights capability in Joule: support for metadata-related questions", "capabilities": ["AI for Planning and Analytics"], "planned_for": "Q4 2026", "available_as_of": "Q4 2026", "products": "SAP Analytics Cloud, SAP Business Data Cloud", "overview": "Empower business users to ask questions and give commands related to metadata, such as \"show me available models\" or \"show me all KPIs included in my model X,\" using the analytical insights capability in Joule", "benefits": "Empower business users to find out which data is available for querying", "focus_topics": [], "tier": "Tier 2", "has_detail": true}, {"title": "Data Actions: scale factor with copy step", "capabilities": ["Business Planning and Forecasting"], "planned_for": "Q3 2026", "available_as_of": "Q3 2026", "products": "SAP Analytics Cloud, SAP Business Data Cloud", "overview": "", "benefits": "", "focus_topics": [], "tier": "", "has_detail": false}, {"title": "Merging variables in Microsoft Excel", "capabilities": ["Office Suite Integration"], "planned_for": "Q4 2026", "available_as_of": "Q4 2026", "products": "SAP Analytics Cloud, SAP Analytics Cloud, add-in for Microsoft Office, SAP Business Data Cloud", "overview": "Ability to merge variables by data source in a workbook", "benefits": "Improve data-driven insights with reliable query results in Excel", "focus_topics": [], "tier": "", "has_detail": true}, {"title": "Export to Excel functionality: retain cell formatting as true value type", "capabilities": ["Business Planning and Forecasting", "Dashboard Design", "Enterprise Reporting"], "planned_for": "Q3 2026", "available_as_of": "Q3 2026", "products": "SAP Analytics Cloud, SAP Business Data Cloud", "overview": "Enhancement to the export to Excel functionality by preserving number formats as true Excel cell types, not just formatted text strings.", "benefits": "Eliminate the need for users to manually reformat columns before they can run calculations, build pivot tables, or apply conditional formatting.", "focus_topics": [], "tier": "", "has_detail": true}, {"title": "My Metrics: edit metrics", "capabilities": ["Data and Analytics Administration"], "planned_for": "Q3 2026", "available_as_of": "Q3 2026", "products": "SAP Analytics Cloud, SAP Business Data Cloud", "overview": "", "benefits": "", "focus_topics": [], "tier": "", "has_detail": false}, {"title": "Data analyzer: support for story dynamic filters in interoperability flows", "capabilities": ["Exploratory Data Analysis"], "planned_for": "Q3 2026", "available_as_of": "Q3 2026", "products": "SAP Analytics Cloud, SAP Business Data Cloud", "overview": "", "benefits": "", "focus_topics": [], "tier": "", "has_detail": false}, {"title": "Version Management: story events for version publishing", "capabilities": ["Business Planning and Forecasting"], "planned_for": "Q4 2026", "available_as_of": "Q4 2026", "products": "SAP Analytics Cloud, SAP Business Data Cloud", "overview": "Trigger story events for user pre/post publish actions in story view mode (beforePublish, afterPublish script hooks)", "benefits": "Improve solution automation for end-user plan update scenarios", "focus_topics": [], "tier": "", "has_detail": true}, {"title": "Enterprise Planning and Simulation Agent", "capabilities": ["AI for Planning and Analytics", "Business Planning and Forecasting"], "planned_for": "Q4 2026", "available_as_of": "Q4 2026", "products": "SAP Analytics Cloud, SAP Business Data Cloud", "overview": "Accelerate planning, forecasting, and simulation cycle time, as well as improve accuracy by using natural language in Joule to create private versions and simulations, perform direct updates to plan and forecast data, validate plan feasibility and suggest optimizations, ensure plan adherence and perform outlier detection, author and persist data actions. Sample prompts include \"redistribute planned cost of goods sold based on revenue for all quarters in 2027\", \"decrease travel expense for 2027 by 5% but hold Q1 constant\", or \"create a data action for FY2026 OPEX planning model that copies the values of 2025 to 2026, and scale the copy by a factor of 2%\"", "benefits": "Streamline plan, forecast, and simulation creation and accuracy; reduce solution development time and effort", "focus_topics": ["Artificial Intelligence", "Autonomous Enterprise"], "tier": "Tier 0", "has_detail": true}, {"title": "Analytical insights capability in Joule and just ask feature: intent framework", "capabilities": ["AI for Planning and Analytics"], "planned_for": "Q4 2026", "available_as_of": "Q4 2026", "products": "SAP Analytics Cloud, SAP Business Data Cloud", "overview": "Enable data engineers to specify so-called \"intents\" modeling company-specific business acumen used by their business users", "benefits": "Empower business users to use day-to-day language when querying their data", "focus_topics": [], "tier": "Tier 2", "has_detail": true}, {"title": "AI-assisted prompt insights", "capabilities": ["AI for Planning and Analytics", "Dashboard Design", "Enterprise Reporting"], "planned_for": "Q3 2026", "available_as_of": "Q3 2026", "products": "SAP Analytics Cloud, SAP Business Data Cloud", "overview": "Enable story designers to add AI-assisted prompt insight widgets that combine a customizable prompt with data from a table or chart, and send that context directly to the LLM Enrich dashboards for planning and analytics scenarios, supporting structured analysis, risk assessment, and other insight-driven workflows", "benefits": "Gain governed access to SAP solutions data for running prompts with data from SAP Analytics Cloud Enable controlled rollout of prompting capabilities to viewers of SAP Analytics Cloud", "focus_topics": ["Artificial Intelligence"], "tier": "Tier 1", "has_detail": true}, {"title": "Updated default theme for new stories", "capabilities": ["Dashboard Design"], "planned_for": "Q3 2026", "available_as_of": "Q3 2026", "products": "SAP Analytics Cloud, SAP Business Data Cloud", "overview": "", "benefits": "", "focus_topics": [], "tier": "", "has_detail": false}, {"title": "Native capability to jump from models to Microsoft Excel", "capabilities": ["Office Suite Integration"], "planned_for": "Q4 2026", "available_as_of": "Q4 2026", "products": "SAP Analytics Cloud, SAP Analytics Cloud, add-in for Microsoft Office, SAP Business Data Cloud", "overview": "New capability to enable a native jump from a model in SAP Analytics Cloud to a Microsoft Excel add-in", "benefits": "Provide the freedom to jump into Microsoft Excel for more analysis or extract data in real time", "focus_topics": [], "tier": "", "has_detail": true}, {"title": "Multi Actions: comment management step", "capabilities": ["Business Planning and Forecasting"], "planned_for": "Q3 2026", "available_as_of": "Q3 2026", "products": "SAP Analytics Cloud, SAP Business Data Cloud", "overview": "", "benefits": "", "focus_topics": [], "tier": "", "has_detail": false}, {"title": "Improved data wrangling in master data load jobs", "capabilities": ["Data Connectivity Management", "Data Design and Modelling", "Data Replication and ETL"], "planned_for": "Q3 2026", "available_as_of": "Q3 2026", "products": "SAP Analytics Cloud, SAP Business Data Cloud", "overview": "", "benefits": "", "focus_topics": [], "tier": "", "has_detail": false}, {"title": "Chart footer in smart insights feature", "capabilities": ["AI for Planning and Analytics"], "planned_for": "Q4 2026", "available_as_of": "Q4 2026", "products": "SAP Analytics Cloud, SAP Business Data Cloud", "overview": "Enable story designers to add smart insights as chart footer. Provide an explanation of chart data based on the underlying data model. Highlight the top contributor and preview insights available in the smart insights panel", "benefits": "Expand the visibility of smart insights to more dashboards and more users", "focus_topics": ["Artificial Intelligence", "Data to Insight"], "tier": "Tier 2", "has_detail": true}, {"title": "Just ask feature: LLM-based generated explanations", "capabilities": ["AI for Planning and Analytics"], "planned_for": "Q3 2026", "available_as_of": "Q3 2026", "products": "SAP Analytics Cloud, SAP Business Data Cloud", "overview": "LLM-based generated explanations in the just ask feature that describe how the result was generated based on the user query and the available data", "benefits": "Empower business users to better understand how the result from the just ask feature was generated, building greater user trust in the result", "focus_topics": [], "tier": "Tier 1", "has_detail": true}, {"title": "Custom sorting within hierarchy in Microsoft Excel", "capabilities": ["Office Suite Integration"], "planned_for": "Q3 2026", "available_as_of": "Q3 2026", "products": "SAP Analytics Cloud, SAP Analytics Cloud, add-in for Microsoft Office, SAP Business Data Cloud", "overview": "", "benefits": "", "focus_topics": [], "tier": "", "has_detail": false}, {"title": "New search and replace filter function", "capabilities": ["Dashboard Design"], "planned_for": "Q3 2026", "available_as_of": "Q3 2026", "products": "SAP Analytics Cloud, SAP Business Data Cloud", "overview": "", "benefits": "", "focus_topics": [], "tier": "", "has_detail": false}, {"title": "Running total story calculation for live SAP Business Warehouse (SAP BW)", "capabilities": ["Dashboard Design"], "planned_for": "Q1 2027", "available_as_of": "Q1 2027", "products": "SAP Analytics Cloud, SAP Business Data Cloud", "overview": "New story calculation \"Running Total\" provides the sum, average, minimum, maximum, or count of the current data point and previous data points. Calculation is defined by total reset dimensions and dimensions with the show total option. Running Total was previously released for acquired and live SAP HANA models; this extends it to live SAP BW.", "benefits": "Provide insight on the totality of a time interval that spans across time periods as opposed to periodic measures (for example, comparison of actual against planned year to date)", "focus_topics": [], "tier": "", "has_detail": true}, {"title": "Data Validations", "capabilities": ["Business Planning and Forecasting"], "planned_for": "Q4 2026", "available_as_of": "Q4 2026", "products": "SAP Analytics Cloud, SAP Business Data Cloud", "overview": "Provide a configurable post-data validation feature that can be run after data collection to verify specific data entry constraints and check consolidated actuals and plans against customer-defined financial and management rules", "benefits": "Improve plan data quality; enforce high-level financial and organizational fiscal rules", "focus_topics": [], "tier": "", "has_detail": true}, {"title": "Validation rules: improved input readiness during design time", "capabilities": ["Business Planning and Forecasting"], "planned_for": "Q3 2026", "available_as_of": "Q3 2026", "products": "SAP Analytics Cloud, SAP Business Data Cloud", "overview": "", "benefits": "", "focus_topics": [], "tier": "", "has_detail": false}, {"title": "Support for currency conversion in the Microsoft Excel add-in", "capabilities": ["Office Suite Integration"], "planned_for": "Q3 2026", "available_as_of": "Q3 2026", "products": "SAP Analytics Cloud, SAP Analytics Cloud, add-in for Microsoft Office, SAP Business Data Cloud", "overview": "", "benefits": "", "focus_topics": [], "tier": "", "has_detail": false}, {"title": "Data lock visualization in the grid in the Microsoft Excel add-in", "capabilities": ["Office Suite Integration"], "planned_for": "Q4 2026", "available_as_of": "Q4 2026", "products": "SAP Analytics Cloud, SAP Analytics Cloud, add-in for Microsoft Office, SAP Business Data Cloud", "overview": "New capability to make it visible if a cell is locked for data entry in the Microsoft Excel grid", "benefits": "Help planning business users accelerate data entry in Microsoft Excel reports", "focus_topics": [], "tier": "", "has_detail": true}, {"title": "Bulk deletion of comments from the comment management dashboard", "capabilities": ["Insight Sharing and Collaboration"], "planned_for": "Q3 2026", "available_as_of": "Q3 2026", "products": "SAP Analytics Cloud, SAP Business Data Cloud", "overview": "", "benefits": "", "focus_topics": [], "tier": "", "has_detail": false}, {"title": "Live SAP Business Warehouse (SAP BW): dynamic filter support for fiscal dimensions", "capabilities": ["Dashboard Design", "Data Connectivity Management", "Exploratory Data Analysis"], "planned_for": "Q3 2026", "available_as_of": "Q3 2026", "products": "SAP Analytics Cloud, SAP Business Data Cloud", "overview": "", "benefits": "", "focus_topics": [], "tier": "", "has_detail": false}, {"title": "Preview of comments associated with models in SAP Analytics Cloud in the Comment Management dashboard", "capabilities": ["Other"], "planned_for": "Q3 2026", "available_as_of": "Q3 2026", "products": "SAP Analytics Cloud, SAP Business Data Cloud", "overview": "", "benefits": "", "focus_topics": [], "tier": "", "has_detail": false}]
+
+</script>
+<script>
+const DATA = JSON.parse(document.getElementById('dataset').textContent);
+
+const THEME_MAP = {
+  'Business Planning and Forecasting': 'Planning',
+  'Dashboard Design': 'Analytics / Story',
+  'Dashboard Extensibility': 'Analytics / Story',
+  'Enterprise Reporting': 'Analytics / Story',
+  'Exploratory Data Analysis': 'Analytics / Story',
+  'Data Connectivity Management': 'Connectivity & Governance',
+  'Data Replication and ETL': 'Connectivity & Governance',
+  'Data Design and Modelling': 'Connectivity & Governance',
+  'Data and Analytics Administration': 'Connectivity & Governance',
+  'Office Suite Integration': 'Office Integration',
+  'AI for Planning and Analytics': 'AI',
+  'Insight Sharing and Collaboration': 'UX / Platform',
+  'Other': 'UX / Platform'
+};
+
+// ---- Capability Landscape ----
+const capCounts = {};
+DATA.forEach(d => d.capabilities.forEach(c => { capCounts[c] = (capCounts[c]||0)+1; }));
+const maxCap = Math.max(...Object.values(capCounts));
+const capBars = document.getElementById('capBars');
+Object.entries(capCounts).sort((a,b)=>b[1]-a[1]).forEach(([cap,count])=>{
+  const row = document.createElement('div'); row.className='cap-row';
+  row.innerHTML = `<div class="cap-name">${cap}</div>
+    <div class="cap-track"><div class="cap-fill ${cap==='AI for Planning and Analytics'?'ai':''}" style="width:${count/maxCap*100}%"></div></div>
+    <div class="cap-count">${count}</div>`;
+  capBars.appendChild(row);
+});
+
+// ---- Filters ----
+let activeCap = 'ALL';
+const caps = ['ALL', ...Object.keys(capCounts).sort()];
+const capFilters = document.getElementById('capFilters');
+caps.forEach(c=>{
+  const chip = document.createElement('div'); chip.className='chip'+(c==='ALL'?' active':'');
+  chip.textContent = c==='ALL' ? '전체' : c;
+  chip.onclick = ()=>{ activeCap=c; document.querySelectorAll('.chip').forEach(x=>x.classList.remove('active')); chip.classList.add('active'); renderKanban(); };
+  capFilters.appendChild(chip);
+});
+
+// ---- Kanban ----
+const RELEASES = ['Q3 2026','Q4 2026','Q1 2027','Product Vision'];
+function renderKanban(){
+  const kanban = document.getElementById('kanban');
+  kanban.innerHTML='';
+  const q = document.getElementById('searchBox').value.toLowerCase();
+  RELEASES.forEach(rel=>{
+    const items = DATA.filter(d=>d.planned_for===rel);
+    const col = document.createElement('div'); col.className='kb-col'+(rel==='Product Vision'?' vision':'');
+    col.innerHTML = `<h3>${rel}</h3><div class="cnt">${items.length}건</div>`;
+    items.forEach(item=>{
+      const match = (activeCap==='ALL' || item.capabilities.includes(activeCap)) && item.title.toLowerCase().includes(q);
+      const card = document.createElement('div'); card.className='card'+(match?'':' dim');
+      card.innerHTML = `<div class="cap-tag">${item.capabilities[0]}${item.tier && item.tier.startsWith('Tier')&&item.tier!=='Tier 3-excluded' ? '<span class="ai-badge">'+item.tier+'</span>':''}</div>${item.title}`;
+      card.onclick = ()=>openModal(item);
+      col.appendChild(card);
+    });
+    kanban.appendChild(col);
+  });
+}
+renderKanban();
+
+// ---- Themes ----
+const themeCounts = {};
+const themeItems = {};
+DATA.forEach(d => d.capabilities.forEach(c=>{
+  const theme = THEME_MAP[c] || 'UX / Platform';
+  themeCounts[theme] = (themeCounts[theme]||0)+1;
+  themeItems[theme] = themeItems[theme] || new Set();
+  themeItems[theme].add(d.title);
+}));
+const themesGrid = document.getElementById('themesGrid');
+Object.entries(themeCounts).sort((a,b)=>b[1]-a[1]).forEach(([theme,count])=>{
+  const card = document.createElement('div'); card.className='theme-card';
+  const items = [...themeItems[theme]].slice(0,5);
+  card.innerHTML = `<h4>${theme}</h4><div class="count">${count}건 (태그 인스턴스)</div>
+    <ul>${items.map(t=>`<li>${t}</li>`).join('')}</ul>`;
+  themesGrid.appendChild(card);
+});
+
+// ---- Modal ----
+function openModal(item){
+  const body = document.getElementById('modalBody');
+  body.innerHTML = `
+    <div class="cap-tag">${item.capabilities.join(' · ')}</div>
+    <h3>${item.title}</h3>
+    <div class="field"><b>Planned For</b><span>${item.planned_for}</span></div>
+    <div class="field"><b>Products</b><span>${item.products}</span></div>
+    ${item.focus_topics && item.focus_topics.length ? `<div class="field"><b>Focus Topics</b><span>${item.focus_topics.join(', ')}</span></div>`:''}
+    ${item.has_detail ? `
+      <div class="field"><b>Overview</b><span>${item.overview}</span></div>
+      <div class="field"><b>Benefits</b><span>${item.benefits}</span></div>
+    ` : `<p class="no-detail-note">이 항목은 제목·Capability·일정 정보만 확보되어 있으며, 원문 Overview/Benefits는 확인되지 않았습니다.</p>`}
+  `;
+  document.getElementById('modalOverlay').classList.add('open');
+}
+function closeModal(){ document.getElementById('modalOverlay').classList.remove('open'); }
+</script>
+</body>
+</html>

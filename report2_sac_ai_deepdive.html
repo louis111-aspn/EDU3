@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SAC AI Roadmap — Tier Deep Dive</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Noto+Sans+KR:wght@400;500;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F7F8FA; --bg-panel:#FFFFFF; --ink:#1F2430; --ink-soft:#5B6472; --line:#E2E5EA;
+  --navy:#003366; --navy-soft:#0B4A78; --orange:#FF6A00; --orange-soft:#FFE9D6;
+  --t0:#7A1F3D; --t0-soft:#F9E3EA;
+  --t1:#0B6E4F; --t1-soft:#DFF3E9;
+  --t2:#3D5A80; --t2-soft:#E7EDF5;
+  --t3:#8A8F98; --t3-soft:#EEEEEF;
+  --mono:'JetBrains Mono','Noto Sans KR',monospace; --serif:'DM Serif Display','Noto Sans KR',serif; --sans:'Noto Sans KR',-apple-system,sans-serif;
+}
+*{box-sizing:border-box; margin:0; padding:0;}
+html{overflow-x:clip;}
+body{background:var(--bg); color:var(--ink); font-family:var(--sans); line-height:1.65;}
+::selection{background:var(--navy); color:#fff;}
+
+.topnav{position:sticky; top:0; z-index:100; background:rgba(247,248,250,.92); backdrop-filter:blur(10px); border-bottom:1px solid var(--line);}
+.topnav-inner{max-width:1200px; margin:0 auto; padding:16px 32px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px;}
+.brand{font-family:var(--mono); font-size:13px; font-weight:700; color:var(--navy);}
+.brand span{color:var(--orange);}
+.navlinks{display:flex; gap:2px; flex-wrap:wrap;}
+.navlinks a{font-family:var(--mono); font-size:11.5px; color:var(--ink-soft); text-decoration:none; padding:7px 10px; border-radius:6px;}
+.navlinks a:hover{background:var(--navy); color:#fff;}
+.related-btn{font-family:var(--mono); font-size:12px; font-weight:700; background:var(--navy); color:#fff; padding:8px 14px; border-radius:6px; text-decoration:none; white-space:nowrap;}
+.related-btn:hover{background:var(--navy-soft);}
+
+.hero{max-width:1200px; margin:0 auto; padding:72px 32px 48px;}
+.eyebrow{font-family:var(--mono); font-size:12px; color:var(--orange); font-weight:700; letter-spacing:.08em; margin-bottom:16px;}
+h1.title{font-family:var(--serif); font-size:42px; line-height:1.28; color:var(--navy); max-width:840px; margin-bottom:20px;}
+.hero p.lead{font-size:16px; color:var(--ink-soft); max-width:680px;}
+.hero-stats{display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--line); margin-top:40px; border:1px solid var(--line);}
+.stat{background:var(--bg-panel); padding:24px;}
+.stat .num{font-family:var(--mono); font-size:32px; font-weight:700; color:var(--navy);}
+.stat .lbl{font-size:12px; color:var(--ink-soft); margin-top:4px;}
+
+section{max-width:1200px; margin:0 auto; padding:64px 32px; border-top:1px solid var(--line);}
+.sec-head{display:flex; align-items:baseline; gap:16px; margin-bottom:16px; flex-wrap:wrap;}
+.sec-num{font-family:var(--mono); font-size:13px; color:var(--orange); font-weight:700;}
+h2.sec-title{font-family:var(--serif); font-size:28px; color:var(--navy);}
+.sec-sub{font-size:14px; color:var(--ink-soft); margin-bottom:32px; max-width:720px;}
+
+.disclaimer{background:#FFF8F0; border:1px solid #FFD8AE; border-radius:8px; padding:20px 24px; font-size:13px; color:#8a4a00; margin-top:24px;}
+.disclaimer b{color:var(--orange);}
+
+/* Taxonomy */
+.tax-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:20px;}
+.tax-card{background:var(--bg-panel); border:1px solid var(--line); border-radius:10px; padding:24px;}
+.tax-card h4{font-family:var(--serif); font-size:18px; color:var(--navy); margin-bottom:10px;}
+.tax-card p{font-size:13px; color:var(--ink-soft);}
+@media(max-width:900px){.tax-grid{grid-template-columns:1fr;}}
+
+/* Tier framework */
+.tier-framework{display:flex; flex-direction:column; gap:14px;}
+.tier-def{display:grid; grid-template-columns:110px 1fr; gap:20px; align-items:center; background:var(--bg-panel); border:1px solid var(--line); border-radius:10px; padding:20px 24px;}
+.tier-badge{font-family:var(--mono); font-weight:700; font-size:14px; padding:10px 0; text-align:center; border-radius:8px; color:#fff;}
+.tier-badge.t0{background:var(--t0);} .tier-badge.t1{background:var(--t1);} .tier-badge.t2{background:var(--t2);} .tier-badge.t3{background:var(--t3);}
+.tier-def h4{font-size:15px; color:var(--ink); margin-bottom:4px;}
+.tier-def p{font-size:13px; color:var(--ink-soft);}
+
+/* Feature matrix */
+.matrix-wrap{overflow-x:auto; border:1px solid var(--line); border-radius:10px;}
+table.matrix{width:100%; border-collapse:collapse; font-size:13px; background:var(--bg-panel);}
+table.matrix th{background:var(--navy); color:#fff; font-family:var(--mono); font-size:11px; text-transform:uppercase; padding:12px 16px; text-align:left;}
+table.matrix td{padding:12px 16px; border-top:1px solid var(--line);}
+table.matrix tr:hover td{background:#F4F6F9;}
+.tier-pill{font-family:var(--mono); font-size:10.5px; font-weight:700; padding:3px 9px; border-radius:12px; color:#fff; display:inline-block;}
+.tier-pill.t0{background:var(--t0);} .tier-pill.t1{background:var(--t1);} .tier-pill.t2{background:var(--t2);} .tier-pill.t3{background:var(--t3);}
+
+/* Deep dive cards */
+.deepdive-group{margin-bottom:40px;}
+.deepdive-group h3{font-family:var(--serif); font-size:20px; margin-bottom:16px; display:flex; align-items:center; gap:12px;}
+.dd-card{background:var(--bg-panel); border:1px solid var(--line); border-left-width:5px; border-radius:8px; padding:22px 24px; margin-bottom:14px;}
+.dd-card.t0{border-left-color:var(--t0);} .dd-card.t1{border-left-color:var(--t1);} .dd-card.t2{border-left-color:var(--t2);} .dd-card.t3{border-left-color:var(--t3);}
+.dd-card h4{font-size:16px; margin-bottom:8px; color:var(--ink);}
+.dd-card .meta{font-family:var(--mono); font-size:11px; color:var(--ink-soft); margin-bottom:10px;}
+.dd-card p{font-size:13.5px; color:var(--ink-soft); margin-bottom:8px;}
+.dd-card .note{background:var(--orange-soft); border-radius:6px; padding:10px 14px; font-size:12.5px; color:#8a4a00; margin-top:10px;}
+
+/* Timeline */
+.tl-track{display:flex; gap:16px; overflow-x:auto; padding-bottom:12px;}
+.tl-col{flex:0 0 260px; background:var(--bg-panel); border:1px solid var(--line); border-radius:10px; padding:18px;}
+.tl-col h4{font-family:var(--mono); font-size:12px; color:var(--navy); margin-bottom:12px;}
+.tl-item{font-size:12.5px; padding:8px 10px; border-radius:6px; margin-bottom:8px; background:var(--bg);}
+
+/* Strategic interpretation */
+.strat-flow{display:flex; align-items:stretch; gap:1px; background:var(--line); border:1px solid var(--line); border-radius:10px; overflow:hidden;}
+.strat-step{flex:1; background:var(--bg-panel); padding:24px 20px;}
+.strat-step .stage{font-family:var(--mono); font-size:11px; color:var(--orange); margin-bottom:8px;}
+.strat-step h4{font-size:15px; margin-bottom:8px; color:var(--navy);}
+.strat-step p{font-size:12.5px; color:var(--ink-soft);}
+@media(max-width:900px){.strat-flow{flex-direction:column;}}
+
+/* Ecosystem */
+.eco-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:20px;}
+.eco-card{background:var(--navy); color:#fff; border-radius:10px; padding:24px;}
+.eco-card h4{font-family:var(--serif); font-size:17px; margin-bottom:8px;}
+.eco-card p{font-size:13px; opacity:.9;}
+@media(max-width:900px){.eco-grid{grid-template-columns:1fr;}}
+
+/* Evidence appendix */
+.evidence-item{background:var(--bg-panel); border:1px solid var(--line); border-radius:8px; padding:20px 24px; margin-bottom:12px;}
+.evidence-item .src{font-family:var(--mono); font-size:11px; color:var(--ink-soft); margin-bottom:8px;}
+.evidence-item blockquote{font-size:13px; color:var(--ink); border-left:3px solid var(--orange); padding-left:14px; margin-bottom:10px;}
+.evidence-item .verdict{font-family:var(--mono); font-size:11.5px; color:var(--navy);}
+
+/* Watchlist */
+.watch-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:16px;}
+.watch-card{background:var(--bg-panel); border:1px dashed var(--orange); border-radius:10px; padding:20px;}
+.watch-card h4{font-family:var(--mono); font-size:13px; color:var(--orange); margin-bottom:8px;}
+.watch-card p{font-size:12.5px; color:var(--ink-soft);}
+@media(max-width:900px){.watch-grid{grid-template-columns:1fr;}}
+
+footer{max-width:1200px; margin:0 auto; padding:40px 32px 80px; font-size:12px; color:var(--ink-soft); font-family:var(--mono);}
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="topnav-inner">
+    <div class="brand">ASPN <span>//</span> SAC AI DEEP DIVE</div>
+    <div class="navlinks">
+      <a href="#summary">01 요약</a>
+      <a href="#taxonomy">02 택소노미</a>
+      <a href="#tiers">03 Tier</a>
+      <a href="#matrix">04 매트릭스</a>
+      <a href="#deepdive">05 Deep Dive</a>
+      <a href="#timeline">06 타임라인</a>
+      <a href="#strategic">07 해석</a>
+      <a href="#ecosystem">08 생태계</a>
+      <a href="#evidence">09 근거</a>
+      <a href="#watchlist">10 워치리스트</a>
+    </div>
+    <a class="related-btn" href="report1_sac_roadmap.html">← Full Roadmap Analysis</a>
+  </div>
+</nav>
+
+<div class="hero" id="summary">
+  <div class="eyebrow">SAP ROAD MAP EXPLORER · AI FOR PLANNING AND ANALYTICS · Q3 2026 – PRODUCT VISION</div>
+  <h1 class="title">SAC AI 로드맵 14건: "설명하는 AI"에서 "실행하는 에이전트"로</h1>
+  <p class="lead">SAC 전체 로드맵 78개 고유 기능 중 AI 관련 Focus Topic이 태깅된 항목은 14건(약 18%)이다. 이 중 13건은 기존 화면에 설명·제안을 얹는 보조형이고, 단 1건(Enterprise Planning and Simulation Agent)만이 계획 데이터를 직접 수정하는 자율 실행형이다.</p>
+  <div class="hero-stats">
+    <div class="stat"><div class="num">14</div><div class="lbl">AI 관련 항목 (전체 78건 중)</div></div>
+    <div class="stat"><div class="num">1</div><div class="lbl">Tier 0 (자율 실행 에이전트)</div></div>
+    <div class="stat"><div class="num">5</div><div class="lbl">Tier 1 (LLM 명시 생성/설명)</div></div>
+    <div class="stat"><div class="num">6</div><div class="lbl">Tier 2 (자연어 인터페이스)</div></div>
+  </div>
+  <div class="disclaimer">
+    <b>핵심 결론</b> — SAP은 Q3 2026에 "임베디드 어시스트"(스토리 안에 심어진 설명·생성 보조)를 배치하고, Q4 2026에 "Autonomous Enterprise" Focus Topic이 별도로 태깅된 자율 실행 에이전트를 배치한다. 이 2단계 구분은 SAP 공식 로드맵 태그 체계에서 실제로 확인되는 분류이며, 추정이 아니다.
+  </div>
+</div>
+
+<section id="taxonomy">
+  <div class="sec-head"><span class="sec-num">02</span><h2 class="sec-title">SAP AI Taxonomy</h2></div>
+  <p class="sec-sub">SAP 로드맵 원문에 실제로 등장하는 Focus Topic 태그 체계와, 이 보고서가 별도 Tier 체계를 만든 이유.</p>
+  <div class="tax-grid">
+    <div class="tax-card">
+      <h4>Focus Topic: Artificial Intelligence</h4>
+      <p>Smart Insights, Just ask/Joule LLM 설명, 스토리 코드/인사이트 자동 생성 등 <b>보조·설명형 AI</b> 전반에 부여되는 SAP 공식 태그. 이 보고서 원문 확인 기준 6건에서 명시적으로 확인됨.</p>
+    </div>
+    <div class="tax-card">
+      <h4>Focus Topic: Autonomous Enterprise</h4>
+      <p>Enterprise Planning and Simulation Agent 단 1건에만 "Artificial Intelligence"와 함께 <b>이중 태깅</b>된 SAP 공식 상위 분류. 자연어로 계획 데이터를 직접 수정·실행하는 기능에만 부여되는 것으로 확인됨.</p>
+    </div>
+    <div class="tax-card">
+      <h4>왜 별도 Tier 체계인가</h4>
+      <p>SAP의 "AI for Planning and Analytics" Capability 태그는 LLM 사용 여부와 무관하게 느슨하게 묶여 있다. 원문에 "LLM"이 명시된 항목과, 이름만 "Smart/Compass"인 통계·규칙 기반 항목이 같은 Capability에 섞여 있어, <b>과장 없는 커뮤니케이션</b>을 위해 원문 근거 기반 Tier로 재분류했다.</p>
+    </div>
+  </div>
+</section>
+
+<section id="tiers">
+  <div class="sec-head"><span class="sec-num">03</span><h2 class="sec-title">Tier Framework</h2></div>
+  <p class="sec-sub">각 Tier는 원문의 명시적 표현(LLM 언급 여부, 실행 권한 범위, SAP 공식 Focus Topic)을 기준으로 구분했다.</p>
+  <div class="tier-framework">
+    <div class="tier-def"><div class="tier-badge t0">TIER 0</div><div><h4>자율 실행 에이전트 (Agentic AI)</h4><p>자연어 프롬프트로 계획·예측 데이터를 <b>직접 수정하고 영속화(persist)</b>. SAP Focus Topic "Autonomous Enterprise" 병기.</p></div></div>
+    <div class="tier-def"><div class="tier-badge t1">TIER 1</div><div><h4>LLM 명시 생성·설명형 AI</h4><p>원문에 "LLM" 또는 "large language model"이 직접 명시됨. 콘텐츠 생성(코드, 스토리) 또는 결과 설명이 핵심 기능.</p></div></div>
+    <div class="tier-def"><div class="tier-badge t2">TIER 2</div><div><h4>자연어 인터페이스 · LLM 비명시</h4><p>"Smart", "Joule" 등 AI 연상 명칭을 쓰지만 원문에 LLM이 명시되지 않음. 자연어 조회/제안이나 생성형 여부는 원문만으로 단정 불가.</p></div></div>
+    <div class="tier-def"><div class="tier-badge t3">TIER 3</div><div><h4>AI 아님 (재분류 제외)</h4><p>초기 SAP Capability 분류상 "AI for Planning and Analytics"에 속했으나, 원문 확인 결과 규칙 기반 자동화 또는 결과 렌더링 위젯으로 확인되어 AI 로드맵에서 제외.</p></div></div>
+  </div>
+</section>
+
+<section id="matrix">
+  <div class="sec-head"><span class="sec-num">04</span><h2 class="sec-title">AI Feature Matrix</h2></div>
+  <p class="sec-sub">14건 전체를 한 장에 — 이후 Deep Dive와 근거 부록의 기준점.</p>
+  <div class="matrix-wrap">
+    <table class="matrix" id="matrixTable">
+      <thead><tr><th>Feature</th><th>Tier</th><th>SAP Focus Topic</th><th>Release</th><th>Capability</th></tr></thead>
+      <tbody id="matrixBody"></tbody>
+    </table>
+  </div>
+</section>
+
+<section id="deepdive">
+  <div class="sec-head"><span class="sec-num">05</span><h2 class="sec-title">Tier Deep Dive</h2></div>
+  <p class="sec-sub">Tier별 상세 — Overview·Benefits 원문 요약과 자문 관점 유의사항.</p>
+  <div id="deepdiveContainer"></div>
+</section>
+
+<section id="timeline">
+  <div class="sec-head"><span class="sec-num">06</span><h2 class="sec-title">Release Timeline</h2></div>
+  <p class="sec-sub">AI 항목만 놓고 본 시간 흐름 — Q1 2027에는 AI 항목이 전무하다.</p>
+  <div class="tl-track" id="tlTrack"></div>
+</section>
+
+<section id="strategic">
+  <div class="sec-head"><span class="sec-num">07</span><h2 class="sec-title">Strategic Interpretation</h2></div>
+  <p class="sec-sub">14건의 배치 순서에서 읽히는 SAP의 롤아웃 전략.</p>
+  <div class="strat-flow">
+    <div class="strat-step"><div class="stage">STAGE 1 · Q3 2026</div><h4>Embedded AI</h4><p>스토리/대시보드 내부에 심어진 보조 기능(코드 생성, 인사이트 생성, 프롬프트 위젯). 사용자가 작업하던 화면을 벗어나지 않음.</p></div>
+    <div class="strat-step"><div class="stage">STAGE 2 · Q4 2026</div><h4>Agentic AI</h4><p>Joule을 통한 대화형 조회(Tier 2)와 함께, 유일하게 데이터를 직접 실행·수정하는 Enterprise Planning Agent(Tier 0) 등장.</p></div>
+    <div class="strat-step"><div class="stage">STAGE 3 · Q1 2027</div><h4>Infrastructure Phase</h4><p>AI 신규 항목 없음. Running Total, 워크북 이관 자동화 등 데이터 정합성·운영 인프라 정비 — 정황상 AI 기능이 안정적으로 작동하기 위한 기반 다지기로 해석 가능(문서상 직접 연결고리는 없음).</p></div>
+    <div class="strat-step"><div class="stage">STAGE 4 · Vision</div><h4>Governance</h4><p>AI 태그는 없지만, 신원 전파 기반 cross-app 거버넌스(Multi Actions API step)가 유일한 Vision 항목 — 자율 실행 확대에 따른 책임소재 설계 필요성과 맥이 닿는 정황.</p></div>
+  </div>
+</section>
+
+<section id="ecosystem">
+  <div class="sec-head"><span class="sec-num">08</span><h2 class="sec-title">SAP Ecosystem Impact</h2></div>
+  <p class="sec-sub">SAC AI 로드맵이 다른 SAP 솔루션과 맞닿는 지점.</p>
+  <div class="eco-grid">
+    <div class="eco-card"><h4>Group Reporting</h4><p>Product Vision의 신원 전파 기능이 GR을 명시적 예시로 든다. GR 팀 자체의 AI 로드맵(별도 확인 필요)과 SAC AI가 향후 cross-app 워크플로에서 만날 지점.</p></div>
+    <div class="eco-card"><h4>SAP Datasphere</h4><p>Smart Insights(Tier 2)가 Datasphere 모델 데이터를 근거로 설명을 생성 — Datasphere가 AI 기능의 데이터 소스 역할을 수행.</p></div>
+    <div class="eco-card"><h4>Joule</h4><p>Tier 1·2 다수가 Joule 브랜드 아래 통합되는 추세 — "just ask"와 Joule의 기능 동기화(LLM 설명이 양쪽에 병행 배치)가 관찰됨.</p></div>
+    <div class="eco-card"><h4>SAP Business Data Cloud</h4><p>14건 중 대다수가 SAC-BDC 동시 배포 — AI 레이어가 BDC의 통합 시맨틱 레이어에 의존하는 구조로 가는 정황.</p></div>
+  </div>
+</section>
+
+<section id="evidence">
+  <div class="sec-head"><span class="sec-num">09</span><h2 class="sec-title">Evidence Appendix</h2></div>
+  <p class="sec-sub">각 Tier 판단에 쓰인 원문 근거. 2026-07-06 다운로드 시점 및 대화 중 공유된 Q3/Q4/Q1/Vision 4개 원문 블록 범위 내로 한정.</p>
+  <div id="evidenceContainer"></div>
+</section>
+
+<section id="watchlist">
+  <div class="sec-head"><span class="sec-num">10</span><h2 class="sec-title">Future Watchlist</h2></div>
+  <p class="sec-sub">확정된 로드맵 항목은 아니지만, 이번 분석에서 드러난 방향성을 볼 때 향후 로드맵에서 주목할 필요가 있는 영역. 추측이며 확정 기능이 아님을 명시한다.</p>
+  <div class="watch-grid">
+    <div class="watch-card"><h4>Approval Workflow for Agents</h4><p>Enterprise Planning Agent가 데이터를 직접 persist하는 만큼, 승인 게이트가 별도로 추가될지 여부를 다음 로드맵 갱신에서 확인 필요.</p></div>
+    <div class="watch-card"><h4>Multi-Agent Collaboration</h4><p>현재는 단일 Agent(Planning/Simulation)만 확인됨. 다른 도메인 Agent와의 협업 시나리오 등장 여부.</p></div>
+    <div class="watch-card"><h4>AI Governance</h4><p>Product Vision의 신원 전파 기능이 Agent의 책임소재 추적과 연결될지 여부.</p></div>
+    <div class="watch-card"><h4>GR Integration</h4><p>SAC AI와 SAP Group Reporting AI 로드맵의 실제 접점이 구체화되는지 여부 — 별도 GR 로드맵 확인 권장.</p></div>
+    <div class="watch-card"><h4>Joule Expansion</h4><p>just ask와 Joule의 기능 통합이 완전히 하나의 인터페이스로 수렴하는지 여부.</p></div>
+    <div class="watch-card"><h4>SAP Knowledge Graph</h4><p>Intent framework(Tier 2)가 향후 온톨로지/지식그래프 기반 구조로 발전하는지 여부 — 현재는 데이터 엔지니어의 수동 정의 방식.</p></div>
+  </div>
+</section>
+
+<footer>SOURCE: SAP Road Map Explorer, downloaded 2026-07-06 + conversation-shared Q3/Q4/Q1/Vision text blocks · Tier classification is an ASPN-derived analytical framework, not an official SAP taxonomy · All items PLANNED / PRODUCT VISION, non-binding per SAP disclaimer · ASPN BAC Internal Reference</footer>
+
+<script id="dataset" type="application/json">
+[{"title": "AI-assisted story code generation", "capabilities": ["AI for Planning and Analytics", "Dashboard Design", "Dashboard Extensibility", "Enterprise Reporting"], "planned_for": "Q3 2026", "available_as_of": "Q3 2026", "products": "SAP Analytics Cloud, SAP Business Data Cloud", "overview": "Automatic generation of the required JavaScript for building low-code, intelligent dashboard applications in SAP Analytics Cloud AI-assisted story code generation that provides clear, contextual explanations of the generated scripts, including their functionality and the reasoning behind key design and implementation choices Integration into the script editor for SAP Analytics Cloud during design time, supporting a smooth and productive development experience", "benefits": "Increase development efficiency by reducing the time and effort required to build dashboards by automatically generating JavaScript code, enabling faster delivery of analytics solutions as well as greater flexibility and customization Lower the technical barrier by empowering business users and less-experienced developers to create advanced, interactive applications without deep coding expertise Improve and empower users to confidently adapt, extend, or optimize the code as needed", "focus_topics": ["Artificial Intelligence"], "tier": "Tier 1", "has_detail": true}, {"title": "AI-powered story insight generation", "capabilities": ["AI for Planning and Analytics", "Dashboard Design", "Dashboard Extensibility", "Enterprise Reporting"], "planned_for": "Q3 2026", "available_as_of": "Q3 2026", "products": "SAP Analytics Cloud, SAP Business Data Cloud", "overview": "Automatically transform business data into comprehensive analytical stories using advanced AI technologies including large language models, analytic insights and more. Process user queries, business context, and data patterns to generate SAP Analytics Cloud stories containing visualizations, trend analysis, and actionable insights.", "benefits": "Accelerate insight creation by enabling both viewers and designers to build customized stories more quickly and efficiently Enable users to move rapidly from questions to informed decisions without requiring technical expertise", "focus_topics": ["Artificial Intelligence"], "tier": "Tier 1", "has_detail": true}, {"title": "Smart insights from table cells", "capabilities": ["AI for Planning and Analytics"], "planned_for": "Q3 2026", "available_as_of": "Q3 2026", "products": "SAP Analytics Cloud, SAP Business Data Cloud", "overview": "SAP Analytics Cloud smart insights feature is available when selecting a table cell in optimized stories, enabling users to visualize top contributors and get natural language description, and uncover facts and explanation from the SAP Datasphere models and SAP Analytics Cloud models beyond the data that is readily visible is the story", "benefits": "Expand the availability of smart insights to more dashboards and more users", "focus_topics": ["Data to Insight", "Artificial Intelligence"], "tier": "Tier 2", "has_detail": true}, {"title": "Smart insights on models that include multiple account hierarchies", "capabilities": ["AI for Planning and Analytics"], "planned_for": "Q3 2026", "available_as_of": "Q3 2026", "products": "SAP Analytics Cloud, SAP Business Data Cloud", "overview": "Ability to view smart insights on models that include multiple account hierarchies. Insights are based on the account hierarchy currently in use in the visualization. Changing the account hierarchy may change the smart insights.", "benefits": "Expand the availability of smart insights to more dashboards and more users in particular when different financial reporting perspectives are defined using different account hierarchies such as statutory, management, and profitability.", "focus_topics": [], "tier": "Tier 2", "has_detail": true}, {"title": "Compass: story widget for the display of simulation results", "capabilities": ["Business Planning and Forecasting"], "planned_for": "Q3 2026", "available_as_of": "Q3 2026", "products": "SAP Analytics Cloud, SAP Business Data Cloud", "overview": "Ability to insert a compass widget in the story to display risk analysis results, including optimistic, realistic, and pessimistic cases", "benefits": "Enable reporting of risk context together with forecast, plan, or budget review; re-running outdated scenarios directly within widget; view side-by-side scenario comparison within the widget", "focus_topics": [], "tier": "Tier 3-excluded", "has_detail": true}, {"title": "Analytical insights capability in Joule: LLM-based generated explanations", "capabilities": ["AI for Planning and Analytics"], "planned_for": "Q4 2026", "available_as_of": "Q4 2026", "products": "SAP Analytics Cloud, SAP Business Data Cloud", "overview": "Use the analytical insights capability in Joule for LLM-based explanations that describe how the result was generated based on the user query and the available data", "benefits": "Empower business users to better understand how the analytical result from Joule was generated, building greater user trust in the result", "focus_topics": [], "tier": "Tier 1", "has_detail": true}, {"title": "Dynamic and hierarchical selection of dimension members in predictive planning", "capabilities": ["AI for Planning and Analytics"], "planned_for": "Q3 2026", "available_as_of": "Q3 2026", "products": "SAP Analytics Cloud", "overview": "Specify which business elements should be forecasted when configuring models in the predictive planning capability for SAP Analytics Cloud Automatically adapt the new member selection with hierarchical-level navigation and include or exclude logic as dimension hierarchy changes, keeping forecasts aligned with current business structures without manual maintenance Support both static and dynamic member selection in predictive planning", "benefits": "Accelerate the configuration of models in predictive planning and reduce required maintenance, especially when working with large member sets and complex hierarchies", "focus_topics": [], "tier": "Tier 3-excluded", "has_detail": true}, {"title": "Compass: predictive range proposals \"Smart Boundaries\"", "capabilities": ["Business Planning and Forecasting"], "planned_for": "Q3 2026", "available_as_of": "Q3 2026", "products": "SAP Analytics Cloud, SAP Business Data Cloud", "overview": "Automated range proposals for possible driver performance fluctuations", "benefits": "Use trends from historical data to define upper and lower bound of driver uncertainties", "focus_topics": [], "tier": "Tier 2", "has_detail": true}, {"title": "Analytical insights capability in Joule: support for metadata-related questions", "capabilities": ["AI for Planning and Analytics"], "planned_for": "Q4 2026", "available_as_of": "Q4 2026", "products": "SAP Analytics Cloud, SAP Business Data Cloud", "overview": "Empower business users to ask questions and give commands related to metadata, such as \"show me available models\" or \"show me all KPIs included in my model X,\" using the analytical insights capability in Joule", "benefits": "Empower business users to find out which data is available for querying", "focus_topics": [], "tier": "Tier 2", "has_detail": true}, {"title": "Enterprise Planning and Simulation Agent", "capabilities": ["AI for Planning and Analytics", "Business Planning and Forecasting"], "planned_for": "Q4 2026", "available_as_of": "Q4 2026", "products": "SAP Analytics Cloud, SAP Business Data Cloud", "overview": "Accelerate planning, forecasting, and simulation cycle time, as well as improve accuracy by using natural language in Joule to create private versions and simulations, perform direct updates to plan and forecast data, validate plan feasibility and suggest optimizations, ensure plan adherence and perform outlier detection, author and persist data actions. Sample prompts include \"redistribute planned cost of goods sold based on revenue for all quarters in 2027\", \"decrease travel expense for 2027 by 5% but hold Q1 constant\", or \"create a data action for FY2026 OPEX planning model that copies the values of 2025 to 2026, and scale the copy by a factor of 2%\"", "benefits": "Streamline plan, forecast, and simulation creation and accuracy; reduce solution development time and effort", "focus_topics": ["Artificial Intelligence", "Autonomous Enterprise"], "tier": "Tier 0", "has_detail": true}, {"title": "Analytical insights capability in Joule and just ask feature: intent framework", "capabilities": ["AI for Planning and Analytics"], "planned_for": "Q4 2026", "available_as_of": "Q4 2026", "products": "SAP Analytics Cloud, SAP Business Data Cloud", "overview": "Enable data engineers to specify so-called \"intents\" modeling company-specific business acumen used by their business users", "benefits": "Empower business users to use day-to-day language when querying their data", "focus_topics": [], "tier": "Tier 2", "has_detail": true}, {"title": "AI-assisted prompt insights", "capabilities": ["AI for Planning and Analytics", "Dashboard Design", "Enterprise Reporting"], "planned_for": "Q3 2026", "available_as_of": "Q3 2026", "products": "SAP Analytics Cloud, SAP Business Data Cloud", "overview": "Enable story designers to add AI-assisted prompt insight widgets that combine a customizable prompt with data from a table or chart, and send that context directly to the LLM Enrich dashboards for planning and analytics scenarios, supporting structured analysis, risk assessment, and other insight-driven workflows", "benefits": "Gain governed access to SAP solutions data for running prompts with data from SAP Analytics Cloud Enable controlled rollout of prompting capabilities to viewers of SAP Analytics Cloud", "focus_topics": ["Artificial Intelligence"], "tier": "Tier 1", "has_detail": true}, {"title": "Chart footer in smart insights feature", "capabilities": ["AI for Planning and Analytics"], "planned_for": "Q4 2026", "available_as_of": "Q4 2026", "products": "SAP Analytics Cloud, SAP Business Data Cloud", "overview": "Enable story designers to add smart insights as chart footer. Provide an explanation of chart data based on the underlying data model. Highlight the top contributor and preview insights available in the smart insights panel", "benefits": "Expand the visibility of smart insights to more dashboards and more users", "focus_topics": ["Artificial Intelligence", "Data to Insight"], "tier": "Tier 2", "has_detail": true}, {"title": "Just ask feature: LLM-based generated explanations", "capabilities": ["AI for Planning and Analytics"], "planned_for": "Q3 2026", "available_as_of": "Q3 2026", "products": "SAP Analytics Cloud, SAP Business Data Cloud", "overview": "LLM-based generated explanations in the just ask feature that describe how the result was generated based on the user query and the available data", "benefits": "Empower business users to better understand how the result from the just ask feature was generated, building greater user trust in the result", "focus_topics": [], "tier": "Tier 1", "has_detail": true}]
+</script>
+<script>
+const DATA = JSON.parse(document.getElementById('dataset').textContent);
+const TIER_LABEL = {'Tier 0':'t0','Tier 1':'t1','Tier 2':'t2','Tier 3-excluded':'t3'};
+const TIER_NAME = {'Tier 0':'Tier 0 — Agentic','Tier 1':'Tier 1 — Generative','Tier 2':'Tier 2 — NL Interface','Tier 3-excluded':'Tier 3 — Not AI'};
+
+// Matrix
+const matrixBody = document.getElementById('matrixBody');
+const order = {'Tier 0':0,'Tier 1':1,'Tier 2':2,'Tier 3-excluded':3};
+[...DATA].sort((a,b)=>order[a.tier]-order[b.tier]).forEach(d=>{
+  const tr = document.createElement('tr');
+  tr.innerHTML = `<td>${d.title}</td>
+    <td><span class="tier-pill ${TIER_LABEL[d.tier]}">${d.tier}</span></td>
+    <td>${d.focus_topics && d.focus_topics.length ? d.focus_topics.join(', ') : '—'}</td>
+    <td>${d.planned_for}</td>
+    <td>${d.capabilities[0]}</td>`;
+  matrixBody.appendChild(tr);
+});
+
+// Deep dive
+const deepdiveContainer = document.getElementById('deepdiveContainer');
+const NOTES = {
+  'Enterprise Planning and Simulation Agent': '원문에 승인 게이트(approval step)에 대한 언급이 없다. 실배포 시 Hard AVC나 워크플로 승인 같은 통제 장치가 구성에 포함되는지는 원문만으로 단정할 수 없다.',
+  'AI-assisted prompt insights': '"governed access", "controlled rollout to viewers"라는 거버넌스 문구가 원문에 명시되어 있다 — 프롬프팅 기능 배포에 권한 통제가 기본 설계로 포함됨.',
+  'Analytical insights capability in Joule and just ask feature: intent framework': '"intent"는 데이터 엔지니어가 사전에 정의하는 방식이다. LLM이 스스로 의도를 학습하는 구조가 아니라, 사람이 미리 매핑한 규칙을 자연어로 호출하는 구조에 가깝다.',
+  'Compass: predictive range proposals "Smart Boundaries"': '원문의 "trends from historical data"는 통계적 추세 추정에 가까운 표현이다. LLM/생성형 AI 근거는 원문에 없다.'
+};
+Object.entries(TIER_NAME).forEach(([tier,label])=>{
+  const items = DATA.filter(d=>d.tier===tier);
+  if(!items.length) return;
+  const group = document.createElement('div'); group.className='deepdive-group';
+  group.innerHTML = `<h3><span class="tier-pill ${TIER_LABEL[tier]}">${tier}</span> ${label.split('—')[1]}</h3>`;
+  items.forEach(d=>{
+    const card = document.createElement('div'); card.className='dd-card '+TIER_LABEL[tier];
+    card.innerHTML = `<h4>${d.title}</h4>
+      <div class="meta">${d.planned_for} · ${d.capabilities.join(', ')} · ${d.products}</div>
+      ${d.overview ? `<p><b>Overview</b> — ${d.overview}</p>`:''}
+      ${d.benefits ? `<p><b>Benefits</b> — ${d.benefits}</p>`:''}
+      ${NOTES[d.title] ? `<div class="note">⚠ ${NOTES[d.title]}</div>`:''}`;
+    group.appendChild(card);
+  });
+  deepdiveContainer.appendChild(group);
+});
+
+// Timeline
+const RELEASES = ['Q3 2026','Q4 2026','Q1 2027','Product Vision'];
+const tlTrack = document.getElementById('tlTrack');
+RELEASES.forEach(rel=>{
+  const items = DATA.filter(d=>d.planned_for===rel);
+  const col = document.createElement('div'); col.className='tl-col';
+  col.innerHTML = `<h4>${rel} (AI ${items.length}건)</h4>`;
+  if(items.length===0){
+    col.innerHTML += `<div class="tl-item" style="color:#999;font-style:italic;">해당 없음</div>`;
+  }
+  items.forEach(d=>{
+    col.innerHTML += `<div class="tl-item"><span class="tier-pill ${TIER_LABEL[d.tier]}" style="margin-right:6px;">${d.tier.replace('Tier ','T')}</span>${d.title}</div>`;
+  });
+  tlTrack.appendChild(col);
+});
+
+// Evidence appendix — only items with detail
+const evidenceContainer = document.getElementById('evidenceContainer');
+DATA.filter(d=>d.has_detail).forEach(d=>{
+  const div = document.createElement('div'); div.className='evidence-item';
+  div.innerHTML = `<div class="src">${d.title} · ${d.planned_for} · <span class="tier-pill ${TIER_LABEL[d.tier]}">${d.tier}</span></div>
+    <blockquote>${d.overview}</blockquote>
+    <div class="verdict">판단 근거: ${d.focus_topics && d.focus_topics.length ? 'SAP Focus Topic "'+d.focus_topics.join(', ')+'" 명시' : '원문 내 LLM/자연어 인터페이스 표현 기준 분류'}</div>`;
+  evidenceContainer.appendChild(div);
+});
+</script>
+</body>
+</html>
