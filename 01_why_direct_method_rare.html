@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 1. 직접법이 여전히 드문 이유 | Cash Flow Data Asset</title>
+<style>
+  :root{
+    --navy:#003366;
+    --navy-light:#e8eef5;
+    --bg:#f0f3f8;
+    --white:#ffffff;
+    --gray-900:#1a1f28;
+    --gray-600:#5a6472;
+    --gray-300:#d7dee6;
+    --warn:#a15c00;
+    --warn-bg:#fdf3e3;
+    --correct:#0a6e4d;
+    --correct-bg:#e6f5ef;
+    --wrong:#a3273c;
+    --wrong-bg:#fbe9ec;
+    --radius:10px;
+    --pad-x:96px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--gray-900);
+    font-family:'Noto Sans KR','Inter',sans-serif;
+    font-size:15px;
+    line-height:1.7;
+    word-break:keep-all;
+  }
+  h1,h2,h3,.serif{
+    font-family:'DM Serif Display','Noto Sans KR',serif;
+    font-weight:400;
+  }
+  code, .mono{
+    font-family:'JetBrains Mono','Noto Sans KR',monospace;
+  }
+
+  /* ---------- Sticky Nav ---------- */
+  .topnav{
+    position:sticky; top:0; z-index:100;
+    background:rgba(255,255,255,0.96);
+    backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--gray-300);
+    overflow-x:clip;
+  }
+  .topnav-inner{
+    max-width:1100px; margin:0 auto;
+    padding:14px var(--pad-x);
+    display:flex; align-items:center; justify-content:space-between;
+    gap:24px;
+  }
+  .brand{font-size:14px; font-weight:700; color:var(--navy); white-space:nowrap;}
+  .brand span{color:var(--gray-600); font-weight:400; margin-left:8px;}
+  .tabs{display:flex; gap:6px; flex-wrap:wrap;}
+  .tabs a{
+    font-size:13px; color:var(--gray-600); text-decoration:none;
+    padding:6px 12px; border-radius:20px; white-space:nowrap;
+    transition:all .15s ease;
+  }
+  .tabs a.active{background:var(--navy); color:#fff;}
+  .tabs a:not(.active):hover{background:var(--navy-light); color:var(--navy);}
+
+  /* ---------- Hero ---------- */
+  .hero{
+    max-width:1100px; margin:0 auto;
+    padding:72px var(--pad-x) 48px;
+  }
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:8px;
+    font-size:13px; font-weight:700; color:var(--navy);
+    letter-spacing:.04em; text-transform:uppercase;
+    margin-bottom:18px;
+  }
+  .eyebrow::before{content:"";width:24px;height:2px;background:var(--navy);display:inline-block;}
+  .hero h1{font-size:42px; color:var(--gray-900); margin:0 0 14px; line-height:1.3;}
+  .hero .subtitle{font-size:16px; color:var(--gray-600); max-width:680px; margin:0 0 28px;}
+  .action-title{
+    background:var(--navy); color:#fff;
+    border-radius:var(--radius);
+    padding:24px 28px;
+    font-size:17px;
+    font-weight:700;
+    line-height:1.6;
+    max-width:820px;
+  }
+  .action-title .label{
+    display:block; font-size:12px; font-weight:700; letter-spacing:.06em;
+    text-transform:uppercase; color:#9fbdd9; margin-bottom:8px;
+  }
+
+  /* ---------- Section shell ---------- */
+  section.block{
+    max-width:1100px; margin:0 auto;
+    padding:56px var(--pad-x);
+    border-top:1px solid var(--gray-300);
+  }
+  .stage-tag{
+    display:inline-block;
+    font-size:13px; font-weight:700;
+    padding:4px 12px; border-radius:20px;
+    margin-bottom:16px;
+  }
+  .stage-tag.misconception{background:var(--wrong-bg); color:var(--wrong);}
+  .stage-tag.fact{background:var(--navy-light); color:var(--navy);}
+  .stage-tag.evidence{background:#eef1f5; color:var(--gray-900); border:1px solid var(--gray-300);}
+  .stage-tag.conclusion{background:var(--correct-bg); color:var(--correct);}
+
+  section.block h2{font-size:30px; margin:0 0 20px; color:var(--gray-900);}
+  section.block p{font-size:15px; color:var(--gray-900); max-width:760px;}
+  section.block p.lead{font-size:16px; color:var(--gray-600); max-width:760px;}
+
+  /* ---------- Callouts ---------- */
+  .callout{
+    border-radius:var(--radius);
+    padding:20px 24px;
+    margin:20px 0;
+    max-width:760px;
+    border-left:4px solid;
+    font-size:14px;
+  }
+  .callout .callout-title{font-weight:700; font-size:14px; margin-bottom:6px; display:flex; align-items:center; gap:8px;}
+  .callout.navy{background:var(--navy-light); border-color:var(--navy); color:var(--navy);}
+  .callout.warn{background:var(--warn-bg); border-color:var(--warn); color:var(--warn);}
+  .callout.correct{background:var(--correct-bg); border-color:var(--correct); color:var(--correct);}
+  .callout.wrong{background:var(--wrong-bg); border-color:var(--wrong); color:var(--wrong);}
+  .callout p{color:inherit; margin:0; font-size:14px;}
+
+  /* ---------- Misconception vs Reality flip cards ---------- */
+  .flip-row{display:flex; gap:20px; flex-wrap:wrap; margin-top:24px;}
+  .flip-card{
+    flex:1 1 320px; min-height:180px; perspective:1200px; cursor:pointer;
+  }
+  .flip-inner{
+    position:relative; width:100%; height:100%; min-height:180px;
+    transition:transform .5s cubic-bezier(.4,.2,.2,1); transform-style:preserve-3d;
+  }
+  .flip-card.flipped .flip-inner{transform:rotateY(180deg);}
+  .flip-face{
+    position:absolute; inset:0; border-radius:var(--radius);
+    padding:22px; backface-visibility:hidden;
+    display:flex; flex-direction:column; justify-content:center;
+  }
+  .flip-front{background:var(--wrong-bg); border:1px solid var(--wrong);}
+  .flip-back{background:var(--correct-bg); border:1px solid var(--correct); transform:rotateY(180deg);}
+  .flip-face .tag{font-size:12px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; margin-bottom:10px;}
+  .flip-front .tag{color:var(--wrong);}
+  .flip-back .tag{color:var(--correct);}
+  .flip-face .body{font-size:14px; color:var(--gray-900);}
+  .flip-hint{font-size:12px; color:var(--gray-600); margin-top:10px; font-style:italic;}
+
+  /* ---------- IAS quote card ---------- */
+  .ias-card{
+    background:var(--white); border:1px solid var(--gray-300);
+    border-radius:var(--radius); padding:24px 28px; max-width:800px; margin:24px 0;
+  }
+  .ias-card .ias-ref{
+    display:inline-block; font-family:'JetBrains Mono','Noto Sans KR',monospace;
+    font-size:12px; font-weight:700; color:var(--navy);
+    background:var(--navy-light); padding:3px 10px; border-radius:6px; margin-bottom:12px;
+  }
+  .ias-card blockquote{
+    margin:0 0 12px; padding-left:16px; border-left:3px solid var(--navy);
+    font-size:14.5px; color:var(--gray-900); font-style:italic;
+  }
+  .ias-card .interpretation{font-size:13.5px; color:var(--gray-600); margin:0;}
+
+  /* ---------- Path split diagram (19a vs 19b) ---------- */
+  .path-diagram{
+    display:flex; gap:0; margin:32px 0; max-width:900px;
+    flex-wrap:wrap;
+  }
+  .path-root{
+    flex:0 0 100%;
+    text-align:center; margin-bottom:8px;
+  }
+  .path-root .box{
+    display:inline-block; background:var(--gray-900); color:#fff;
+    border-radius:var(--radius); padding:14px 24px; font-size:14px; font-weight:700;
+  }
+  .path-branches{display:flex; gap:20px; flex:1; flex-wrap:wrap;}
+  .path-branch{
+    flex:1 1 340px; border:1px solid var(--gray-300); border-radius:var(--radius);
+    padding:20px; background:var(--white); position:relative;
+  }
+  .path-branch .ptag{
+    font-size:12px; font-weight:700; padding:3px 10px; border-radius:20px;
+    display:inline-block; margin-bottom:10px;
+  }
+  .path-branch.a .ptag{background:#eef1f5; color:var(--gray-900);}
+  .path-branch.b .ptag{background:var(--navy-light); color:var(--navy);}
+  .path-branch h4{margin:0 0 8px; font-size:15px; font-family:'Noto Sans KR'; font-weight:700;}
+  .path-branch ul{margin:8px 0 0; padding-left:18px; font-size:13.5px; color:var(--gray-600);}
+  .path-branch .difficulty{
+    margin-top:14px; font-size:12.5px; font-weight:700;
+    display:flex; align-items:center; gap:6px;
+  }
+  .diff-dot{width:8px; height:8px; border-radius:50%; display:inline-block;}
+
+  /* ---------- Worked example ---------- */
+  .worked-example{
+    background:var(--white); border:1px solid var(--gray-300);
+    border-radius:var(--radius); padding:28px; max-width:820px; margin:24px 0;
+  }
+  .worked-example h4{margin:0 0 16px; font-size:15px; color:var(--navy);}
+  .calc-row{
+    display:flex; justify-content:space-between; align-items:center;
+    padding:10px 0; border-bottom:1px dashed var(--gray-300);
+    font-size:14.5px;
+  }
+  .calc-row:last-child{border-bottom:none; font-weight:700; color:var(--navy); padding-top:14px;}
+  .calc-row .val{font-family:'JetBrains Mono','Noto Sans KR',monospace;}
+
+  /* ---------- Timeline / obstacle list ---------- */
+  .obstacle-grid{
+    display:grid; grid-template-columns:repeat(2,1fr); gap:16px; margin-top:24px;
+  }
+  .obstacle-card{
+    background:var(--white); border:1px solid var(--gray-300); border-radius:var(--radius);
+    padding:18px 20px;
+  }
+  .obstacle-card .num{font-family:'JetBrains Mono'; font-size:12px; color:var(--navy); font-weight:700;}
+  .obstacle-card h5{margin:6px 0 6px; font-size:14.5px;}
+  .obstacle-card p{font-size:13.5px; color:var(--gray-600); margin:0;}
+
+  /* ---------- Quiz ---------- */
+  .quiz-box{
+    background:var(--white); border:1px solid var(--gray-300); border-radius:var(--radius);
+    padding:28px; max-width:820px; margin-top:24px;
+  }
+  .quiz-q{font-size:15px; font-weight:700; margin:0 0 16px;}
+  .quiz-options{display:flex; flex-direction:column; gap:10px;}
+  .quiz-opt{
+    text-align:left; border:1px solid var(--gray-300); background:var(--white);
+    border-radius:8px; padding:13px 16px; font-size:14px; cursor:pointer;
+    font-family:'Noto Sans KR'; color:var(--gray-900); transition:all .15s ease;
+  }
+  .quiz-opt:hover{border-color:var(--navy); background:var(--navy-light);}
+  .quiz-opt.correct-ans{border-color:var(--correct); background:var(--correct-bg); color:var(--correct); font-weight:700;}
+  .quiz-opt.wrong-ans{border-color:var(--wrong); background:var(--wrong-bg); color:var(--wrong);}
+  .quiz-feedback{margin-top:14px; font-size:13.5px; padding:14px; border-radius:8px; display:none;}
+  .quiz-feedback.show{display:block;}
+  .quiz-feedback.ok{background:var(--correct-bg); color:var(--correct);}
+  .quiz-feedback.bad{background:var(--wrong-bg); color:var(--wrong);}
+  .transition-line{max-width:760px; margin:32px 0 0; padding:22px 28px; background:var(--gray-900); color:#fff; border-radius:var(--radius); font-size:16px; font-weight:700; font-family:'DM Serif Display','Noto Sans KR',serif;}
+  .lo-box{
+    max-width:820px; margin:0 0 8px; background:var(--white); border:1px solid var(--gray-300);
+    border-left:4px solid var(--navy); border-radius:8px; padding:20px 24px;
+  }
+  .lo-box .lo-title{font-size:12px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; color:var(--navy); margin-bottom:10px;}
+  .lo-box ul{margin:0; padding-left:18px; font-size:13.5px; color:var(--gray-900);}
+  .lo-box li{margin-bottom:6px;}
+  .kt-box{
+    max-width:760px; margin:28px 0 0; background:var(--correct-bg); border:1px solid var(--correct);
+    border-radius:var(--radius); padding:22px 26px;
+  }
+  .kt-box .kt-title{font-size:12px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; color:var(--correct); margin-bottom:10px;}
+  .kt-box ul{margin:0; padding-left:18px; font-size:14px; color:var(--gray-900);}
+  .kt-box li{margin-bottom:6px; font-weight:600;}
+
+  /* ---------- Footer nav ---------- */
+  .footer-nav{
+    max-width:1100px; margin:0 auto; padding:48px var(--pad-x) 80px;
+    display:flex; justify-content:space-between; align-items:center; gap:20px;
+    border-top:1px solid var(--gray-300);
+  }
+  .footer-nav a{
+    text-decoration:none; color:var(--navy); font-weight:700; font-size:14px;
+    display:flex; align-items:center; gap:8px;
+  }
+  .footer-nav .next{margin-left:auto;}
+  .progress-dots{display:flex; gap:6px; align-items:center;}
+  .progress-dots span{width:8px; height:8px; border-radius:50%; background:var(--gray-300); display:inline-block;}
+  .progress-dots span.on{background:var(--navy); width:22px; border-radius:4px;}
+
+  @media (max-width: 760px){
+    :root{--pad-x:24px;}
+    .hero h1{font-size:30px;}
+    section.block h2{font-size:24px;}
+    .obstacle-grid{grid-template-columns:1fr;}
+    .tabs{display:none;}
+  }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="topnav-inner">
+    <a href="index_cash_flow_data_asset.html" class="brand" style="text-decoration:none;">Cash Flow Data Asset <span>직접법 &amp; IFRS 18 &amp; S/4HANA</span></a>
+    <div class="tabs">
+      <a href="#" class="active">1. 왜 드문가</a>
+      <a href="02_ifrs18_changed_less.html">2. IFRS 18</a>
+      <a href="03_s4hana_actually_changed.html">3. S/4HANA</a>
+      <a href="04_four_implementation_models.html">4. 구현 모델</a>
+      <a href="05_cash_flow_data_asset.html">5. Data Asset</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="eyebrow">Chapter 1 / 5</div>
+  <h1>직접법이 여전히 드문 이유</h1>
+  <p class="subtitle">Why Direct Method Is Still Rare — IAS 7이 허용하지만 기업들이 선택하지 않는 이유</p>
+  <div class="action-title">
+    <span class="label">Action Title</span>
+    직접법 현금흐름표가 드문 이유는 IFRS의 요구사항이 엄격해서가 아니라, 발생주의 회계 데이터와 현금 이동을 연결하는 ERP 구조가 갖춰지지 않았기 때문이다.
+  </div>
+</header>
+
+<section class="block" style="padding-top:0; padding-bottom:0; border-top:none;">
+  <div class="lo-box">
+    <div class="lo-title">📋 Learning Objectives</div>
+    <ul>
+      <li>직접법과 간접법의 차이가 "표시 방식"의 문제임을 설명할 수 있다.</li>
+      <li>IAS 7.19(a)/(b) 두 산출 방법의 차이와 각각의 근거를 이해할 수 있다.</li>
+      <li>직접법 구현의 실제 장애물이 계정 체계가 아니라 데이터 연결 구조임을 설명할 수 있다.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ===================== 1. 오해 ===================== -->
+<section class="block" id="misconception">
+  <span class="stage-tag misconception">오해 · MISCONCEPTION</span>
+  <h2>"직접법은 모든 현금거래를 추적해야 하므로<br>사실상 구현이 불가능하다"</h2>
+  <p class="lead">SAP 프로젝트 현장에서 가장 흔하게 듣는 말입니다. 은행 명세, 반제전표(Clearing Document), 지급 문서를 전부 하나하나 집계해야 "진짜 직접법"이라는 인식이 널리 퍼져 있습니다. 이 인식이 어디까지 맞고 어디부터 틀렸는지, 카드를 클릭해서 확인해 보세요.</p>
+
+  <div class="flip-row">
+    <div class="flip-card" onclick="this.classList.toggle('flipped')">
+      <div class="flip-inner">
+        <div class="flip-face flip-front">
+          <div class="tag">흔한 인식</div>
+          <div class="body">"직접법 = 은행거래와 반제전표를 전량 추적하는 것" — 그래서 대기업이 아니면 시도조차 어렵다.</div>
+          <div class="flip-hint">클릭해서 실제 기준 확인 →</div>
+        </div>
+        <div class="flip-face flip-back">
+          <div class="tag">IAS 7의 실제 요구</div>
+          <div class="body">IAS 7이 요구하는 것은 <strong>표시 형식(Presentation)</strong>입니다. 산출 방법은 전량 추적(19a)과 재구성(19b) 중 어느 것이든 인정됩니다.</div>
+        </div>
+      </div>
+    </div>
+    <div class="flip-card" onclick="this.classList.toggle('flipped')">
+      <div class="flip-inner">
+        <div class="flip-face flip-front">
+          <div class="tag">흔한 인식</div>
+          <div class="body">"직접법을 구현하려면 GL 계정 체계를 현금 성격별로 전부 재설계해야 한다."</div>
+          <div class="flip-hint">클릭해서 실제 기준 확인 →</div>
+        </div>
+        <div class="flip-face flip-back">
+          <div class="tag">실제 장애물</div>
+          <div class="body">근본 장애물은 계정 세분화가 아니라, <strong>발생주의 전표와 실제 현금 이동을 연결하는 정보</strong>가 시스템적으로 끊어져 있다는 점입니다.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 2. 사실 ===================== -->
+<section class="block" id="fact">
+  <span class="stage-tag fact">사실 · FACT</span>
+  <h2>직접법과 간접법의 차이는<br><span class="serif">표시 방식(Presentation)</span>의 차이일 뿐이다</h2>
+  <p class="lead">IAS 7 문단 18은 영업활동 현금흐름을 두 가지 방법 중 하나로 보고하도록 허용합니다. 두 방법은 최종 표시되는 소계와 세부항목이 다를 뿐, 도출 가능한 방법론에는 제약이 없습니다.</p>
+
+  <div class="ias-card">
+    <span class="ias-ref">Source : IAS 7.18</span>
+    <blockquote>기업은 영업활동으로 인한 현금흐름을 직접법 또는 간접법 중 하나를 사용하여 보고한다.</blockquote>
+    <p class="interpretation">직접법: 총현금유입과 총현금유출의 주요 항목을 표시. 간접법: 당기순손익에서 비현금항목과 운전자본 변동을 조정하여 표시. — 두 방법 모두 <strong>동일한 영업활동 현금흐름 총액</strong>에 도달하며, IAS 7은 어느 방법으로 그 숫자를 "계산"하는지에 대해서는 규정하지 않습니다.</p>
+  </div>
+
+  <div class="callout navy">
+    <div class="callout-title">💡 핵심 재정의</div>
+    <p>"직접법을 구현한다"는 것은 은행거래 원장을 재구축하는 프로젝트가 아니라, <strong>손익계산서와 재무상태표에 이미 존재하는 정보를 다른 방식으로 재배열해서 표시하는 문제</strong>일 수 있습니다. 이 재정의가 Chapter 1의 출발점입니다.</p>
+  </div>
+</section>
+
+<!-- ===================== 3. 근거 ===================== -->
+<section class="block" id="evidence">
+  <span class="stage-tag evidence">근거 · EVIDENCE</span>
+  <h2>IAS 7.19 — 직접법 산출 방법은<br>두 가지 모두 인정된다</h2>
+  <p class="lead">직접법으로 표시하기로 했다고 해서 반드시 현금거래를 원천에서부터 추적해야 하는 것은 아닙니다. IAS 7 문단 19는 직접법 정보를 얻는 두 가지 경로를 명시적으로 제시합니다.</p>
+
+  <div class="ias-card">
+    <span class="ias-ref">Source : IAS 7.19</span>
+    <blockquote>직접법에 의한 정보는 (a) 회계기록으로부터, 또는 (b) 매출·매출원가 등을 재고자산·영업채권·영업채무의 변동, 비현금 항목, 투자·재무활동 관련 항목으로 조정하여 얻을 수 있다.</blockquote>
+    <p class="interpretation">즉 (a)는 실제 현금거래 기록을 집계하는 방식이고, (b)는 발생주의 손익 데이터를 운전자본 변동으로 "역산"하는 방식입니다. 둘 다 IAS 7이 인정하는 직접법입니다.</p>
+  </div>
+
+  <div class="path-diagram">
+    <div class="path-root"><div class="box">IAS 7.19 — 직접법 산출 경로</div></div>
+    <div class="path-branches">
+      <div class="path-branch a">
+        <span class="ptag">19(a)</span>
+        <h4>회계기록 직접 집계</h4>
+        <ul>
+          <li>은행 입출금 원장 (Bank Statement)</li>
+          <li>지급 문서 (Payment Document)</li>
+          <li>반제 전표 (Clearing Document)</li>
+        </ul>
+        <div class="difficulty"><span class="diff-dot" style="background:var(--wrong)"></span>구현 난이도: 높음</div>
+      </div>
+      <div class="path-branch b">
+        <span class="ptag">19(b)</span>
+        <h4>손익·운전자본 재구성</h4>
+        <ul>
+          <li>매출 − 매출채권(AR) 증가분</li>
+          <li>매입원가 + 재고 증가분 − 매입채무(AP) 증가분</li>
+          <li>비현금 항목 조정 (감가상각비 등)</li>
+        </ul>
+        <div class="difficulty"><span class="diff-dot" style="background:var(--correct)"></span>구현 난이도: 낮음</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="worked-example">
+    <h4>계산 예시 — 19(b) 방식으로 "고객으로부터 받은 현금" 산출</h4>
+    <div class="calc-row"><span>매출 (Revenue)</span><span class="val">1,000</span></div>
+    <div class="calc-row"><span>(−) 매출채권(AR) 기간 중 증가</span><span class="val">(200)</span></div>
+    <div class="calc-row"><span>= 고객으로부터 받은 현금 (Cash received from customers)</span><span class="val">800</span></div>
+  </div>
+
+  <div class="callout warn">
+    <div class="callout-title">⚠️ 일반화 주의</div>
+    <p>19(b) 방식은 고객·공급업체처럼 매출채권/매입채무로 표준화된 항목에는 잘 맞습니다. 그러나 급여, 법인세, 부가가치세, 리스료, 충당부채성 지급 등은 AR/AP 공식으로 처리되지 않고 <strong>계정·부채 항목별 개별 조정 로직</strong>이 필요합니다. "19(b)만 있으면 직접법이 전부 쉬워진다"는 과잉 일반화입니다.</p>
+  </div>
+</section>
+
+<!-- ===================== 4. 결론 ===================== -->
+<section class="block" id="conclusion">
+  <span class="stage-tag conclusion">결론 · CONCLUSION</span>
+  <h2>진짜 장애물은 IFRS가 아니라<br>ERP의 데이터 연결 구조였다</h2>
+  <p class="lead">IAS 7.19(b)가 이미 20년 넘게 존재해 왔음에도 직접법이 드물었던 이유는, 손익계산서 항목과 재무상태표 계정 증감을 연결해서 재구성하는 작업이 R/3 시절의 분산된 서브렛저 구조에서는 번거로웠기 때문입니다.</p>
+
+  <div class="obstacle-grid">
+    <div class="obstacle-card">
+      <span class="num">01</span>
+      <h5>발생주의 vs 현금주의 시점 불일치</h5>
+      <p>매출·매입 인식 시점과 실제 현금 결제 시점이 분리되어 있어, 둘을 연결하는 매핑 로직이 필요합니다.</p>
+    </div>
+    <div class="obstacle-card">
+      <span class="num">02</span>
+      <h5>거래 성격(Nature) 태깅의 부재</h5>
+      <p>고객/공급업체/종업원/과세당국 등 현금 지급 대상별 분류가 계정 하나로 MECE하게 정리되지 않습니다.</p>
+    </div>
+    <div class="obstacle-card">
+      <span class="num">03</span>
+      <h5>상계·순액 결제 처리</h5>
+      <p>선수금 상계, 환차손익 재측정 등은 여러 전표가 하나의 실제 현금이동으로 귀결되어 재구성이 복잡해집니다.</p>
+    </div>
+    <div class="obstacle-card">
+      <span class="num">04</span>
+      <h5>연결 단위에서의 표준화 부담</h5>
+      <p>그룹 차원에서 직접법을 구현하려면 개별사별로 흩어진 Local COA를 일관되게 재구성해야 합니다.</p>
+    </div>
+  </div>
+
+  <div class="callout correct">
+    <div class="callout-title">✅ Chapter 1의 결론</div>
+    <p>직접법이 어려운 이유는 IFRS가 엄격해서가 아니라, <strong>발생주의 데이터와 운전자본 변동을 하나의 데이터 모델에서 연결할 수 있는 ERP 구조가 최근에야 갖춰졌기 때문</strong>입니다. 이 구조 전환이 Chapter 3에서 다룰 S/4HANA Universal Journal입니다. 하지만 그 전에 — 많은 사람들이 IFRS 18이 이 구조 전환의 원인이라고 오해합니다. Chapter 2에서 이 오해를 먼저 짚습니다.</p>
+  </div>
+
+  <div class="transition-line">
+    문제는 IFRS가 아니라 ERP 구조였다. 그렇다면 IFRS 18은 무엇을 바꾼 것일까?
+  </div>
+</section>
+
+<!-- ===================== Quiz ===================== -->
+<section class="block" id="quiz">
+  <h2 style="font-size:22px;">확인 퀴즈</h2>
+  <div class="quiz-box">
+    <p class="quiz-q">Q. IAS 7.19에 따르면, 직접법으로 현금흐름표를 표시하기로 한 기업이 <u>반드시</u> 해야 하는 것은?</p>
+    <div class="quiz-options" id="quiz1">
+      <button class="quiz-opt" onclick="answerQuiz(this, false, 'quiz1fb')">모든 은행거래를 원천에서부터 집계해야 한다</button>
+      <button class="quiz-opt" onclick="answerQuiz(this, true, 'quiz1fb')">현금유입·유출의 주요 항목을 표시하되, 산출 방법은 회계기록 집계 또는 손익·운전자본 재구성 중 선택할 수 있다</button>
+      <button class="quiz-opt" onclick="answerQuiz(this, false, 'quiz1fb')">GL 계정 체계를 현금 성격별로 전면 재설계해야 한다</button>
+    </div>
+    <div class="quiz-feedback" id="quiz1fb"></div>
+  </div>
+
+  <div class="kt-box">
+    <div class="kt-title">✅ Key Takeaways</div>
+    <ul>
+      <li>직접법·간접법의 차이는 표시 방식(Presentation)의 문제일 뿐, 산출 알고리즘을 강제하지 않는다.</li>
+      <li>IAS 7.19는 회계기록 직접 집계(19a)와 손익·운전자본 재구성(19b) 두 방법 모두를 인정한다.</li>
+      <li>직접법이 드물었던 진짜 이유는 발생주의 데이터와 현금 이동을 연결하는 ERP 구조의 부재였다.</li>
+    </ul>
+  </div>
+</section>
+
+<footer class="footer-nav">
+  <div style="display:flex; align-items:center; gap:14px;">
+    <a href="index_cash_flow_data_asset.html" style="text-decoration:none; color:var(--gray-600); font-size:12px; font-weight:700;">☰ 목차로</a>
+    <div class="progress-dots">
+    <span class="on"></span><span></span><span></span><span></span><span></span>
+  </div>
+  </div>
+  <a class="next" href="02_ifrs18_changed_less.html">Chapter 2. IFRS 18이 바꾼 것은 생각보다 적다 →</a>
+</footer>
+
+<script>
+function answerQuiz(btn, isCorrect, fbId){
+  const opts = btn.parentElement.querySelectorAll('.quiz-opt');
+  opts.forEach(o=>{o.onclick=null; o.style.cursor='default';});
+  if(isCorrect){
+    btn.classList.add('correct-ans');
+  } else {
+    btn.classList.add('wrong-ans');
+    opts.forEach(o=>{ if(o.textContent.includes('현금유입·유출의 주요 항목')) o.classList.add('correct-ans'); });
+  }
+  const fb = document.getElementById(fbId);
+  fb.classList.add('show');
+  if(isCorrect){
+    fb.classList.add('ok');
+    fb.textContent = '정답입니다. IAS 7.19는 (a) 회계기록 직접 집계와 (b) 손익·운전자본 재구성, 두 가지 산출 방법을 모두 인정합니다.';
+  } else {
+    fb.classList.add('bad');
+    fb.textContent = '다시 확인해 보세요. IAS 7.19는 산출 알고리즘을 강제하지 않고, 표시 형식에 도달하는 두 가지 경로(19a, 19b)를 모두 허용합니다.';
+  }
+}
+</script>
+
+</body>
+</html>

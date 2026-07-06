@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 4. 네 가지 구현 모델 | Cash Flow Data Asset</title>
+<style>
+  :root{
+    --navy:#003366; --navy-light:#e8eef5; --bg:#f0f3f8; --white:#ffffff;
+    --gray-900:#1a1f28; --gray-600:#5a6472; --gray-300:#d7dee6;
+    --warn:#a15c00; --warn-bg:#fdf3e3;
+    --correct:#0a6e4d; --correct-bg:#e6f5ef;
+    --wrong:#a3273c; --wrong-bg:#fbe9ec;
+    --radius:10px; --pad-x:96px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0; background:var(--bg); color:var(--gray-900); font-family:'Noto Sans KR','Inter',sans-serif; font-size:15px; line-height:1.7; word-break:keep-all;}
+  h1,h2,h3,.serif{font-family:'DM Serif Display','Noto Sans KR',serif; font-weight:400;}
+  code,.mono{font-family:'JetBrains Mono','Noto Sans KR',monospace;}
+
+  .topnav{position:sticky; top:0; z-index:100; background:rgba(255,255,255,0.96); backdrop-filter:blur(6px); border-bottom:1px solid var(--gray-300); overflow-x:clip;}
+  .topnav-inner{max-width:1100px; margin:0 auto; padding:14px var(--pad-x); display:flex; align-items:center; justify-content:space-between; gap:24px;}
+  .brand{font-size:14px; font-weight:700; color:var(--navy); white-space:nowrap;}
+  .brand span{color:var(--gray-600); font-weight:400; margin-left:8px;}
+  .tabs{display:flex; gap:6px; flex-wrap:wrap;}
+  .tabs a{font-size:13px; color:var(--gray-600); text-decoration:none; padding:6px 12px; border-radius:20px; white-space:nowrap; transition:all .15s ease;}
+  .tabs a.active{background:var(--navy); color:#fff;}
+  .tabs a:not(.active):hover{background:var(--navy-light); color:var(--navy);}
+
+  .hero{max-width:1100px; margin:0 auto; padding:72px var(--pad-x) 48px;}
+  .eyebrow{display:inline-flex; align-items:center; gap:8px; font-size:13px; font-weight:700; color:var(--navy); letter-spacing:.04em; text-transform:uppercase; margin-bottom:18px;}
+  .eyebrow::before{content:"";width:24px;height:2px;background:var(--navy);display:inline-block;}
+  .hero h1{font-size:42px; color:var(--gray-900); margin:0 0 14px; line-height:1.3;}
+  .hero .subtitle{font-size:16px; color:var(--gray-600); max-width:680px; margin:0 0 28px;}
+  .action-title{background:var(--navy); color:#fff; border-radius:var(--radius); padding:24px 28px; font-size:17px; font-weight:700; line-height:1.6; max-width:820px;}
+  .action-title .label{display:block; font-size:12px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:#9fbdd9; margin-bottom:8px;}
+
+  section.block{max-width:1100px; margin:0 auto; padding:56px var(--pad-x); border-top:1px solid var(--gray-300);}
+  .stage-tag{display:inline-block; font-size:13px; font-weight:700; padding:4px 12px; border-radius:20px; margin-bottom:16px;}
+  .stage-tag.misconception{background:var(--wrong-bg); color:var(--wrong);}
+  .stage-tag.fact{background:var(--navy-light); color:var(--navy);}
+  .stage-tag.evidence{background:#eef1f5; color:var(--gray-900); border:1px solid var(--gray-300);}
+  .stage-tag.conclusion{background:var(--correct-bg); color:var(--correct);}
+  section.block h2{font-size:30px; margin:0 0 20px; color:var(--gray-900);}
+  section.block p{font-size:15px; color:var(--gray-900); max-width:760px;}
+  section.block p.lead{font-size:16px; color:var(--gray-600); max-width:760px;}
+
+  .callout{border-radius:var(--radius); padding:20px 24px; margin:20px 0; max-width:760px; border-left:4px solid; font-size:14px;}
+  .callout .callout-title{font-weight:700; font-size:14px; margin-bottom:6px; display:flex; align-items:center; gap:8px;}
+  .callout.navy{background:var(--navy-light); border-color:var(--navy); color:var(--navy);}
+  .callout.warn{background:var(--warn-bg); border-color:var(--warn); color:var(--warn);}
+  .callout.correct{background:var(--correct-bg); border-color:var(--correct); color:var(--correct);}
+  .callout p{color:inherit; margin:0; font-size:14px;}
+
+  .myth-reality{max-width:820px; margin:24px 0; border-radius:var(--radius); overflow:hidden; border:1px solid var(--gray-300);}
+  .myth-row, .reality-row{padding:20px 24px; display:flex; gap:16px; align-items:flex-start;}
+  .myth-row{background:var(--wrong-bg);}
+  .reality-row{background:var(--correct-bg);}
+  .mr-icon{font-size:18px; line-height:1.4;}
+  .mr-label{font-size:12px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; margin-bottom:4px;}
+  .myth-row .mr-label{color:var(--wrong);}
+  .reality-row .mr-label{color:var(--correct);}
+  .mr-text{font-size:14.5px; color:var(--gray-900); font-weight:600;}
+  .mr-sub{font-size:13px; color:var(--gray-600); font-weight:400; margin-top:4px;}
+
+  /* Level cards */
+  .level-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin:28px 0;}
+  .level-card{background:var(--white); border:1px solid var(--gray-300); border-radius:var(--radius); padding:18px; border-top:4px solid var(--navy);}
+  .level-card.conceptual{border-top-color:var(--warn);}
+  .conceptual-tag{color:var(--warn) !important; background:var(--warn-bg) !important;}
+  .level-card .lname{font-size:12px; font-weight:700; color:var(--navy); letter-spacing:.03em; text-transform:uppercase; margin-bottom:8px;}
+  .level-card h5{margin:0 0 10px; font-size:14.5px;}
+  .level-card p{font-size:12.5px; color:var(--gray-600); margin:0;}
+  .source-tag{
+    display:inline-block; margin-top:10px; font-family:'JetBrains Mono','Noto Sans KR',monospace;
+    font-size:10.5px; font-weight:700; color:var(--navy); background:var(--navy-light);
+    padding:2px 8px; border-radius:6px;
+  }
+
+  /* Multi-dimension comparison table with dots */
+  .dim-table{width:100%; border-collapse:collapse; background:var(--white); border-radius:var(--radius); overflow:hidden; border:1px solid var(--gray-300); max-width:900px; margin:24px 0;}
+  .dim-table th{background:var(--navy); color:#fff; font-size:13px; padding:14px; text-align:center; font-weight:700;}
+  .dim-table th:first-child{text-align:left;}
+  .dim-table td{padding:14px; font-size:13.5px; border-bottom:1px solid var(--gray-300); text-align:center;}
+  .dim-table td:first-child{text-align:left; font-weight:700; color:var(--gray-900);}
+  .dim-table tr:last-child td{border-bottom:none;}
+  .dots{color:var(--navy); font-size:15px; letter-spacing:2px;}
+  .dots.empty{color:var(--gray-300);}
+
+  /* 2x2 matrix */
+  .matrix-wrap{max-width:640px; margin:32px 0;}
+  .matrix{
+    position:relative; width:100%; aspect-ratio:1/1; background:var(--white);
+    border:1px solid var(--gray-300); border-radius:var(--radius);
+  }
+  .matrix::before, .matrix::after{content:""; position:absolute; background:var(--gray-300);}
+  .matrix::before{left:50%; top:0; bottom:0; width:1px;}
+  .matrix::after{top:50%; left:0; right:0; height:1px;}
+  .axis-label{position:absolute; font-size:12px; color:var(--gray-600); font-weight:700;}
+  .axis-x{bottom:-28px; left:50%; transform:translateX(-50%);}
+  .axis-y{left:-14px; top:50%; transform:rotate(-90deg) translateX(50%); transform-origin:left center;}
+  .quad-label{position:absolute; font-size:10.5px; color:var(--gray-300); font-weight:700; text-transform:uppercase; letter-spacing:.03em;}
+  .ql-tl{top:10px; left:10px;} .ql-tr{top:10px; right:10px; text-align:right;}
+  .ql-bl{bottom:10px; left:10px;} .ql-br{bottom:10px; right:10px; text-align:right;}
+  .matrix-node{
+    position:absolute; width:74px; height:74px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center; flex-direction:column;
+    color:#fff; font-weight:700; font-size:13px; transform:translate(-50%,50%);
+    box-shadow:0 2px 8px rgba(0,0,0,0.15);
+  }
+  .matrix-node .sub{font-size:9px; font-weight:400; margin-top:2px;}
+  .node-l1{background:var(--gray-600);}
+  .node-l2{background:#5b7fa6;}
+  .node-l3a{background:var(--wrong);}
+  .node-l3b{background:var(--warn);}
+
+  /* Best fit scenario table */
+  .fit-table{width:100%; border-collapse:collapse; background:var(--white); border-radius:var(--radius); overflow:hidden; border:1px solid var(--gray-300); max-width:900px; margin:24px 0;}
+  .fit-table th{background:var(--navy); color:#fff; font-size:13px; padding:14px 18px; text-align:left; font-weight:700;}
+  .fit-table td{padding:14px 18px; font-size:14px; border-bottom:1px solid var(--gray-300);}
+  .fit-table tr:last-child td{border-bottom:none;}
+  .fit-table .level-pill{
+    display:inline-block; background:var(--navy-light); color:var(--navy);
+    font-size:12px; font-weight:700; padding:3px 10px; border-radius:12px;
+  }
+  .fit-table .conceptual-pill{background:var(--warn-bg); color:var(--warn);}
+
+  /* Governance flow for 3b */
+  .gov-flow{display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin:20px 0; max-width:900px;}
+  .gov-step{background:var(--white); border:1px solid var(--gray-300); border-radius:8px; padding:12px 16px; font-size:12.5px; text-align:center; flex:1 1 130px;}
+  .gov-step.hl{border-color:var(--warn); color:var(--warn); font-weight:700; background:var(--warn-bg);}
+  .gov-arrow{color:var(--gray-300); font-size:16px;}
+
+  .transition-line{max-width:760px; margin:32px 0 0; padding:22px 28px; background:var(--gray-900); color:#fff; border-radius:var(--radius); font-size:16px; font-weight:700; font-family:'DM Serif Display','Noto Sans KR',serif;}
+  .lo-box{max-width:820px; margin:0 0 8px; background:var(--white); border:1px solid var(--gray-300); border-left:4px solid var(--navy); border-radius:8px; padding:20px 24px;}
+  .lo-box .lo-title{font-size:12px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; color:var(--navy); margin-bottom:10px;}
+  .lo-box ul{margin:0; padding-left:18px; font-size:13.5px; color:var(--gray-900);}
+  .lo-box li{margin-bottom:6px;}
+  .kt-box{max-width:760px; margin:28px 0 0; background:var(--correct-bg); border:1px solid var(--correct); border-radius:var(--radius); padding:22px 26px;}
+  .kt-box .kt-title{font-size:12px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; color:var(--correct); margin-bottom:10px;}
+  .kt-box ul{margin:0; padding-left:18px; font-size:14px; color:var(--gray-900);}
+  .kt-box li{margin-bottom:6px; font-weight:600;}
+
+  .quiz-box{background:var(--white); border:1px solid var(--gray-300); border-radius:var(--radius); padding:28px; max-width:820px; margin-top:24px;}
+  .quiz-q{font-size:15px; font-weight:700; margin:0 0 16px;}
+  .quiz-options{display:flex; flex-direction:column; gap:10px;}
+  .quiz-opt{text-align:left; border:1px solid var(--gray-300); background:var(--white); border-radius:8px; padding:13px 16px; font-size:14px; cursor:pointer; font-family:'Noto Sans KR'; color:var(--gray-900); transition:all .15s ease;}
+  .quiz-opt:hover{border-color:var(--navy); background:var(--navy-light);}
+  .quiz-opt.correct-ans{border-color:var(--correct); background:var(--correct-bg); color:var(--correct); font-weight:700;}
+  .quiz-opt.wrong-ans{border-color:var(--wrong); background:var(--wrong-bg); color:var(--wrong);}
+  .quiz-feedback{margin-top:14px; font-size:13.5px; padding:14px; border-radius:8px; display:none;}
+  .quiz-feedback.show{display:block;}
+  .quiz-feedback.ok{background:var(--correct-bg); color:var(--correct);}
+  .quiz-feedback.bad{background:var(--wrong-bg); color:var(--wrong);}
+
+  .footer-nav{max-width:1100px; margin:0 auto; padding:48px var(--pad-x) 80px; display:flex; justify-content:space-between; align-items:center; gap:20px; border-top:1px solid var(--gray-300);}
+  .footer-nav a{text-decoration:none; color:var(--navy); font-weight:700; font-size:14px; display:flex; align-items:center; gap:8px;}
+  .footer-nav .next{margin-left:auto;}
+  .progress-dots{display:flex; gap:6px; align-items:center;}
+  .progress-dots span{width:8px; height:8px; border-radius:50%; background:var(--gray-300); display:inline-block;}
+  .progress-dots span.on{background:var(--navy); width:22px; border-radius:4px;}
+
+  @media (max-width: 760px){
+    :root{--pad-x:24px;}
+    .hero h1{font-size:30px;}
+    section.block h2{font-size:24px;}
+    .level-grid{grid-template-columns:1fr 1fr;}
+    .dim-table{font-size:12px;}
+    .tabs{display:none;}
+  }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="topnav-inner">
+    <a href="index_cash_flow_data_asset.html" class="brand" style="text-decoration:none;">Cash Flow Data Asset <span>직접법 &amp; IFRS 18 &amp; S/4HANA</span></a>
+    <div class="tabs">
+      <a href="01_why_direct_method_rare.html">1. 왜 드문가</a>
+      <a href="02_ifrs18_changed_less.html">2. IFRS 18</a>
+      <a href="03_s4hana_actually_changed.html">3. S/4HANA</a>
+      <a href="#" class="active">4. 구현 모델</a>
+      <a href="05_cash_flow_data_asset.html">5. Data Asset</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="eyebrow">Chapter 4 / 5</div>
+  <h1>네 가지 구현 모델</h1>
+  <p class="subtitle">Four Implementation Models — Level은 성숙도가 아니라 전략적 선택이다</p>
+  <div class="action-title">
+    <span class="label">Action Title</span>
+    직접법 구현의 네 가지 Level은 서로 경쟁하는 상하위 버전이 아니라, 기업의 운영 특성과 투자 여력에 따라 선택하는 서로 다른 전략이다.
+  </div>
+</header>
+
+<section class="block" style="padding-top:0; padding-bottom:0; border-top:none;">
+  <div class="lo-box">
+    <div class="lo-title">📋 Learning Objectives</div>
+    <ul>
+      <li>Level 1~3b의 구현 방식과 트레이드오프(난이도·운영부담·자동화·내부통제·확장성)를 설명할 수 있다.</li>
+      <li>"Level이 높을수록 좋다"가 아니라 "Best Fit" 관점에서 최적 Level을 판단할 수 있다.</li>
+      <li>기업의 운영 특성에 따라 적합한 Level을 추천할 수 있다.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ===================== 오해 ===================== -->
+<section class="block" id="misconception">
+  <span class="stage-tag misconception">오해 · MISCONCEPTION</span>
+  <h2>"Level이 높을수록 더 좋은 구현이다"</h2>
+  <p class="lead">Level 1부터 3b까지 순서대로 나열하면, 마치 3b가 "졸업 학년"처럼 보입니다. 이 오해가 위험한 이유는, 실제로는 맞지 않는 Level을 무리하게 도입했을 때 투자 대비 효과가 오히려 나빠지기 때문입니다.</p>
+
+  <div class="myth-reality">
+    <div class="myth-row">
+      <div class="mr-icon">❌</div>
+      <div><div class="mr-label">Myth</div><div class="mr-text">Level 3b가 가장 발전된 모델이므로, 모든 기업이 궁극적으로 지향해야 한다.</div></div>
+    </div>
+    <div class="reality-row">
+      <div class="mr-icon">✅</div>
+      <div><div class="mr-label">Reality</div><div class="mr-text">Level은 Best가 아니라 Best Fit의 문제다. 내부통제 수준, Treasury 성숙도, 글로벌 운영 복잡성에 따라 최적 Level은 기업마다 다르다.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 사실 ===================== -->
+<section class="block" id="fact">
+  <span class="stage-tag fact">사실 · FACT</span>
+  <h2>네 가지 모델은 다차원적으로 다르다</h2>
+  <p class="lead">난이도 하나만으로 비교하면 서열처럼 보이지만, 다섯 가지 축으로 펼쳐보면 각 Level이 서로 다른 트레이드오프를 갖는다는 것이 드러납니다.</p>
+
+  <div class="level-grid">
+    <div class="level-card">
+      <div class="lname">Level 1</div>
+      <h5>IAS 7.19(b) 재구성</h5>
+      <p>Revenue ± ΔAR 등, S/4HANA Universal Journal만으로 충분</p>
+      <div class="source-tag">Source : IAS 7.19(b)</div>
+    </div>
+    <div class="level-card">
+      <div class="lname">Level 2</div>
+      <h5>Clearing 기반 집계</h5>
+      <p>Cash Management 활용, 반제전표 기반 집계</p>
+    </div>
+    <div class="level-card">
+      <div class="lname">Level 3a</div>
+      <h5>Manual Cash Flow Tagging</h5>
+      <p>모든 현금 거래에 사람이 직접 Nature 태깅</p>
+    </div>
+    <div class="level-card conceptual">
+      <div class="lname">Level 3b</div>
+      <h5>Governed Cash Flow Intelligence</h5>
+      <p>Rule + AI 추천 + 회계 승인 + Repository</p>
+      <div class="source-tag conceptual-tag">Conceptual (Ch.5 참조)</div>
+    </div>
+  </div>
+
+  <table class="dim-table">
+    <thead><tr><th>비교 항목</th><th>Level 1</th><th>Level 2</th><th>Level 3a</th><th>Level 3b</th></tr></thead>
+    <tbody>
+      <tr><td>구현 난이도</td><td><span class="dots">●</span></td><td><span class="dots">●●</span></td><td><span class="dots">●●●●</span></td><td><span class="dots">●●●</span></td></tr>
+      <tr><td>운영 부담</td><td><span class="dots">●</span></td><td><span class="dots">●●</span></td><td><span class="dots">●●●●</span></td><td><span class="dots">●●</span></td></tr>
+      <tr><td>자동화 수준</td><td><span class="dots">●</span></td><td><span class="dots">●●</span></td><td><span class="dots">●</span></td><td><span class="dots">●●●●</span></td></tr>
+      <tr><td>내부통제</td><td><span class="dots">●</span></td><td><span class="dots">●●</span></td><td><span class="dots">●●●</span></td><td><span class="dots">●●●●</span></td></tr>
+      <tr><td>확장성</td><td><span class="dots">●</span></td><td><span class="dots">●●</span></td><td><span class="dots">●●</span></td><td><span class="dots">●●●●</span></td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout warn">
+    <div class="callout-title">⚠️ 여기서 주목할 점</div>
+    <p>Level 3a는 <strong>운영 부담이 가장 높으면서 자동화 수준은 오히려 가장 낮습니다.</strong> 이는 Level 3a가 "3b보다 낮은 단계"가 아니라 <strong>완전히 다른 설계 철학</strong>(전량 수동 태깅)이라는 것을 보여줍니다. 서열이 아니라 대안입니다.</p>
+  </div>
+</section>
+
+<!-- ===================== 근거 ===================== -->
+<section class="block" id="evidence">
+  <span class="stage-tag evidence">근거 · EVIDENCE</span>
+  <h2>2×2 매트릭스 — 자동화와 거버넌스는<br>서로 다른 축이다</h2>
+  <p class="lead">X축을 자동화 수준, Y축을 거버넌스 성숙도로 놓으면 네 모델의 위치가 명확해집니다. 핵심은 Level 3b가 3a의 "상위 버전"이 아니라, <strong>자동화와 거버넌스를 동시에 높인 별도의 사분면</strong>에 위치한다는 점입니다.</p>
+
+  <div class="matrix-wrap">
+    <div class="matrix">
+      <span class="axis-label axis-x">자동화 수준 →</span>
+      <span class="axis-label axis-y">거버넌스 성숙도 →</span>
+      <span class="quad-label ql-tl">통제형 · 저자동화</span>
+      <span class="quad-label ql-tr">통제형 · 고자동화</span>
+      <span class="quad-label ql-bl">방임형 · 저자동화</span>
+      <span class="quad-label ql-br">방임형 · 고자동화</span>
+
+      <div class="matrix-node node-l1" style="left:22%; bottom:30%;">L1<span class="sub">재구성</span></div>
+      <div class="matrix-node node-l2" style="left:42%; bottom:48%;">L2<span class="sub">Clearing</span></div>
+      <div class="matrix-node node-l3a" style="left:32%; bottom:78%;">L3a<span class="sub">수동태깅</span></div>
+      <div class="matrix-node node-l3b" style="left:75%; bottom:82%;">L3b<span class="sub">Governed</span></div>
+    </div>
+  </div>
+
+  <div class="callout navy">
+    <div class="callout-title">💡 매트릭스가 보여주는 것</div>
+    <p>L3a는 거버넌스(사람의 직접 태깅)는 높지만 자동화는 낮습니다. L3b는 <strong>동일한 수준의 거버넌스를 유지하면서 자동화까지 확보</strong>한 모델입니다. 즉 L3b는 L3a의 업그레이드가 아니라, L3a가 갖지 못한 축(자동화)을 추가로 확보한 <strong>다른 설계</strong>입니다.</p>
+  </div>
+
+  <h2 style="font-size:22px; margin-top:48px;">운영 특성별 Best Fit — 규모가 아니라 특성 기준</h2>
+  <p class="lead">기업 규모만으로는 최적 Level을 설명할 수 없습니다. 동일 규모라도 Treasury 성숙도나 법인 수 구조에 따라 적합한 Level이 달라지기 때문에, 운영 특성을 기준으로 판단하는 것이 더 오래 유효합니다.</p>
+
+  <table class="fit-table">
+    <thead><tr><th>운영 특성</th><th>Best Fit Level</th><th>이유</th></tr></thead>
+    <tbody>
+      <tr><td>단일 법인 중심</td><td><span class="level-pill">Level 1</span></td><td>운전자본 변동 조정만으로 충분한 정확도 확보</td></tr>
+      <tr><td>국내 다법인 구조</td><td><span class="level-pill">Level 2</span></td><td>법인 간 Clearing 관리가 필요해지는 시점</td></tr>
+      <tr><td>글로벌 그룹, 다수 은행계좌</td><td><span class="level-pill">Level 3a</span></td><td>거래 유형이 다양해 자동 규칙만으로 분류가 어려움</td></tr>
+      <tr><td>Treasury 고도화 진행 중</td><td><span class="level-pill">Level 2</span> → <span class="level-pill conceptual-pill">3b</span></td><td>기존 Cash Management 인프라를 Rule 기반으로 확장</td></tr>
+      <tr><td>디지털 전환 · AI 기반 운영 혁신 추진</td><td><span class="level-pill conceptual-pill">Level 3b</span></td><td>자동분류 + Governed Repository 투자를 정당화할 조직 역량 보유</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout correct">
+    <div class="callout-title">✅ Level 3b를 다시 정의하면</div>
+    <p>Level 3b의 핵심은 AI가 아닙니다. <strong>AI는 Rule을 만들지 않고, Rule Repository를 유지하기 위한 거버넌스를 지원할 뿐</strong>입니다. "Governed Cash Flow Intelligence"라는 이름 자체가, 지능화보다 거버넌스가 먼저라는 것을 의미합니다.</p>
+  </div>
+</section>
+
+<!-- ===================== 결론 ===================== -->
+<section class="block" id="conclusion">
+  <span class="stage-tag conclusion">결론 · CONCLUSION</span>
+  <h2>네 가지 모델은 경쟁 대안이 아니라<br>서로 다른 운영 전략이다</h2>
+  <p class="lead">Chapter 4의 결론은 "어느 Level이 정답인가"가 아니라 "우리 조직의 운영 특성에 어떤 Level이 맞는가"를 판단하는 프레임을 제공하는 데 있습니다.</p>
+
+  <div class="gov-flow">
+    <div class="gov-step">Level 1<br>재구성</div>
+    <div class="gov-arrow">≠</div>
+    <div class="gov-step">Level 2<br>Clearing</div>
+    <div class="gov-arrow">≠</div>
+    <div class="gov-step">Level 3a<br>수동 태깅</div>
+    <div class="gov-arrow">≠</div>
+    <div class="gov-step hl">Level 3b<br>Governed Intelligence</div>
+  </div>
+  <p style="font-size:13px; color:var(--gray-600); max-width:760px;">서열(&gt;)이 아니라 서로 다른 전략(≠)이라는 표기가 이번 챕터의 핵심 메시지입니다.</p>
+
+  <div class="transition-line">
+    전략은 선택했다. 그렇다면 그 전략들이 공통적으로 관리해야 하는 데이터는 무엇일까? → Cash Flow Rule Repository
+  </div>
+</section>
+
+<!-- ===================== Quiz ===================== -->
+<section class="block" id="quiz">
+  <h2 style="font-size:22px;">확인 퀴즈</h2>
+  <div class="quiz-box">
+    <p class="quiz-q">Q. Level 1~3b에 대한 설명으로 가장 정확한 것은?</p>
+    <div class="quiz-options" id="quiz1">
+      <button class="quiz-opt" onclick="answerQuiz(this, false, 'quiz1fb')">모든 기업은 결국 Level 3b를 목표로 단계적으로 발전해야 한다</button>
+      <button class="quiz-opt" onclick="answerQuiz(this, true, 'quiz1fb')">각 Level은 운영 특성과 투자 여력에 따라 선택하는 서로 다른 전략이며, 우열 관계가 아니다</button>
+      <button class="quiz-opt" onclick="answerQuiz(this, false, 'quiz1fb')">Level 3a는 Level 3b의 이전 버전이므로 3b로 대체되어야 한다</button>
+    </div>
+    <div class="quiz-feedback" id="quiz1fb"></div>
+  </div>
+
+  <div class="kt-box">
+    <div class="kt-title">✅ Key Takeaways</div>
+    <ul>
+      <li>Level 1~3b는 우열 관계가 아니라 서로 다른 운영 전략이다.</li>
+      <li>Level 3a와 3b는 같은 "수동 대비 자동" 축이 아니라, 거버넌스와 자동화라는 서로 다른 두 축에서 다르게 위치한다.</li>
+      <li>최적 Level은 기업 규모가 아니라 운영 특성(법인 구조, Treasury 성숙도, 디지털 전환 의지)으로 판단해야 한다.</li>
+    </ul>
+  </div>
+</section>
+
+<footer class="footer-nav">
+  <a href="03_s4hana_actually_changed.html">← Chapter 3. S/4HANA가 실제로 바꾼 것</a>
+  <div style="display:flex; align-items:center; gap:14px;">
+    <a href="index_cash_flow_data_asset.html" style="text-decoration:none; color:var(--gray-600); font-size:12px; font-weight:700;">☰ 목차로</a>
+    <div class="progress-dots">
+    <span></span><span></span><span></span><span class="on"></span><span></span>
+  </div>
+  </div>
+  <a class="next" href="05_cash_flow_data_asset.html">Chapter 5. 현금흐름표에서 데이터 자산으로 →</a>
+</footer>
+
+<script>
+function answerQuiz(btn, isCorrect, fbId){
+  const opts = btn.parentElement.querySelectorAll('.quiz-opt');
+  opts.forEach(o=>{o.onclick=null; o.style.cursor='default';});
+  if(isCorrect){
+    btn.classList.add('correct-ans');
+  } else {
+    btn.classList.add('wrong-ans');
+    opts.forEach(o=>{ if(o.textContent.includes('서로 다른 전략')) o.classList.add('correct-ans'); });
+  }
+  const fb = document.getElementById(fbId);
+  fb.classList.add('show');
+  if(isCorrect){
+    fb.classList.add('ok');
+    fb.textContent = '정답입니다. Level은 성숙도 사다리가 아니라 전략적 선택이며, 최적 Level은 운영 특성에 따라 달라집니다.';
+  } else {
+    fb.classList.add('bad');
+    fb.textContent = '다시 확인해 보세요. Level 3a와 3b는 서로 다른 설계 철학(수동 통제 vs 거버넌스형 자동화)이며, 우열 관계가 아닙니다.';
+  }
+}
+</script>
+
+</body>
+</html>

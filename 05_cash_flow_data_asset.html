@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 5. 현금흐름표에서 현금흐름 데이터 자산으로 | Cash Flow Data Asset</title>
+<style>
+  :root{
+    --navy:#003366; --navy-light:#e8eef5; --bg:#f0f3f8; --white:#ffffff;
+    --gray-900:#1a1f28; --gray-600:#5a6472; --gray-300:#d7dee6;
+    --warn:#a15c00; --warn-bg:#fdf3e3;
+    --correct:#0a6e4d; --correct-bg:#e6f5ef;
+    --wrong:#a3273c; --wrong-bg:#fbe9ec;
+    --radius:10px; --pad-x:96px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0; background:var(--bg); color:var(--gray-900); font-family:'Noto Sans KR','Inter',sans-serif; font-size:15px; line-height:1.7; word-break:keep-all;}
+  h1,h2,h3,.serif{font-family:'DM Serif Display','Noto Sans KR',serif; font-weight:400;}
+  code,.mono{font-family:'JetBrains Mono','Noto Sans KR',monospace;}
+
+  .topnav{position:sticky; top:0; z-index:100; background:rgba(255,255,255,0.96); backdrop-filter:blur(6px); border-bottom:1px solid var(--gray-300); overflow-x:clip;}
+  .topnav-inner{max-width:1100px; margin:0 auto; padding:14px var(--pad-x); display:flex; align-items:center; justify-content:space-between; gap:24px;}
+  .brand{font-size:14px; font-weight:700; color:var(--navy); white-space:nowrap;}
+  .brand span{color:var(--gray-600); font-weight:400; margin-left:8px;}
+  .tabs{display:flex; gap:6px; flex-wrap:wrap;}
+  .tabs a{font-size:13px; color:var(--gray-600); text-decoration:none; padding:6px 12px; border-radius:20px; white-space:nowrap; transition:all .15s ease;}
+  .tabs a.active{background:var(--navy); color:#fff;}
+  .tabs a:not(.active):hover{background:var(--navy-light); color:var(--navy);}
+
+  .hero{max-width:1100px; margin:0 auto; padding:72px var(--pad-x) 40px;}
+  .eyebrow{display:inline-flex; align-items:center; gap:8px; font-size:13px; font-weight:700; color:var(--navy); letter-spacing:.04em; text-transform:uppercase; margin-bottom:18px;}
+  .eyebrow::before{content:"";width:24px;height:2px;background:var(--navy);display:inline-block;}
+  .hero h1{font-size:40px; color:var(--gray-900); margin:0 0 14px; line-height:1.3;}
+  .hero .subtitle{font-size:16px; color:var(--gray-600); max-width:680px; margin:0 0 24px;}
+  .action-title{background:var(--navy); color:#fff; border-radius:var(--radius); padding:24px 28px; font-size:17px; font-weight:700; line-height:1.6; max-width:820px; margin-bottom:20px;}
+  .action-title .label{display:block; font-size:12px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:#9fbdd9; margin-bottom:8px;}
+
+  /* Reference architecture badge */
+  .ref-badge{
+    display:inline-flex; align-items:flex-start; gap:10px; max-width:820px;
+    background:var(--warn-bg); border:1px solid var(--warn); color:var(--warn);
+    border-radius:var(--radius); padding:16px 20px; font-size:13px;
+  }
+  .ref-badge .icon{font-size:16px;}
+  .ref-badge strong{display:block; font-size:13px; margin-bottom:4px;}
+
+  section.block{max-width:1100px; margin:0 auto; padding:52px var(--pad-x); border-top:1px solid var(--gray-300); position:relative;}
+  .stage-tag{display:inline-block; font-size:13px; font-weight:700; padding:4px 12px; border-radius:20px; margin-bottom:16px;}
+  .stage-tag.part{background:var(--navy-light); color:var(--navy);}
+  .ra-badge{
+    position:absolute; top:24px; right:var(--pad-x);
+    font-size:10.5px; font-weight:700; letter-spacing:.03em; text-transform:uppercase;
+    color:var(--warn); background:var(--warn-bg); border:1px solid var(--warn);
+    padding:5px 12px; border-radius:20px; text-align:right; line-height:1.4;
+  }
+  .lo-box{max-width:820px; margin:0 0 8px; background:var(--white); border:1px solid var(--gray-300); border-left:4px solid var(--navy); border-radius:8px; padding:20px 24px;}
+  .lo-box .lo-title{font-size:12px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; color:var(--navy); margin-bottom:10px;}
+  .lo-box ul{margin:0; padding-left:18px; font-size:13.5px; color:var(--gray-900);}
+  .lo-box li{margin-bottom:6px;}
+  .kt-box{max-width:760px; margin:28px 0 0; background:var(--correct-bg); border:1px solid var(--correct); border-radius:var(--radius); padding:22px 26px;}
+  .kt-box .kt-title{font-size:12px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; color:var(--correct); margin-bottom:10px;}
+  .kt-box ul{margin:0; padding-left:18px; font-size:14px; color:var(--gray-900);}
+  .kt-box li{margin-bottom:6px; font-weight:600;}
+  .ref-list{max-width:760px; margin:20px 0; background:var(--white); border:1px solid var(--gray-300); border-radius:var(--radius); padding:22px 26px;}
+  .ref-list ol{margin:0; padding-left:20px; font-size:13.5px; color:var(--gray-900);}
+  .ref-list li{margin-bottom:8px;}
+  .limitation-box{max-width:760px; margin:24px 0; background:var(--warn-bg); border:1px solid var(--warn); border-radius:var(--radius); padding:20px 24px; font-size:13.5px; color:var(--warn);}
+  .source-tag{
+    display:inline-block; margin-top:10px; font-family:'JetBrains Mono','Noto Sans KR',monospace;
+    font-size:11px; font-weight:700; color:var(--navy); background:var(--navy-light);
+    padding:3px 10px; border-radius:6px;
+  }
+  section.block h2{font-size:28px; margin:0 0 18px; color:var(--gray-900);}
+  section.block p{font-size:15px; color:var(--gray-900); max-width:760px;}
+  section.block p.lead{font-size:16px; color:var(--gray-600); max-width:760px;}
+
+  .callout{border-radius:var(--radius); padding:20px 24px; margin:20px 0; max-width:760px; border-left:4px solid; font-size:14px;}
+  .callout .callout-title{font-weight:700; font-size:14px; margin-bottom:6px; display:flex; align-items:center; gap:8px;}
+  .callout.navy{background:var(--navy-light); border-color:var(--navy); color:var(--navy);}
+  .callout.warn{background:var(--warn-bg); border-color:var(--warn); color:var(--warn);}
+  .callout.correct{background:var(--correct-bg); border-color:var(--correct); color:var(--correct);}
+  .callout p{color:inherit; margin:0; font-size:14px;}
+
+  /* 5-1 Report as output diagram */
+  .funnel{display:flex; align-items:center; gap:0; max-width:820px; margin:24px 0; flex-wrap:wrap;}
+  .funnel-box{flex:1 1 200px; background:var(--white); border:1px solid var(--gray-300); border-radius:8px; padding:16px; text-align:center; font-size:13px;}
+  .funnel-arrow{flex:0 0 36px; text-align:center; color:var(--gray-300); font-size:18px;}
+  .funnel-box.final{background:var(--gray-900); color:#fff; font-weight:700;}
+
+  /* 5-2 Hero statement */
+  .hero-statement{
+    max-width:820px; margin:24px 0; padding:40px 44px;
+    background:var(--navy); color:#fff; border-radius:var(--radius);
+    text-align:center;
+  }
+  .hero-statement .serif{font-size:24px; line-height:1.6;}
+  .nature-vs{display:flex; gap:16px; max-width:820px; margin:24px 0; flex-wrap:wrap;}
+  .nv-box{flex:1 1 300px; border-radius:8px; padding:18px 20px; font-size:13.5px;}
+  .nv-box.wrong{background:var(--wrong-bg); color:var(--wrong); border:1px solid var(--wrong);}
+  .nv-box.correct{background:var(--correct-bg); color:var(--correct); border:1px solid var(--correct);}
+  .nv-box strong{display:block; font-size:12px; text-transform:uppercase; margin-bottom:6px;}
+  .dim-table{width:100%; border-collapse:collapse; background:var(--white); border-radius:var(--radius); overflow:hidden; border:1px solid var(--gray-300); margin:24px 0;}
+  .dim-table th{background:var(--navy); color:#fff; font-size:12.5px; padding:12px 16px; text-align:center; font-weight:700;}
+  .dim-table td{padding:12px 16px; font-size:13.5px; border-bottom:1px solid var(--gray-300); text-align:center;}
+  .dim-table td:first-child{text-align:left; font-weight:700; color:var(--gray-900);}
+  .dim-table tr:last-child td{border-bottom:none;}
+
+  /* 5-3 Master data card */
+  .md-card{
+    max-width:820px; background:var(--white); border:2px solid var(--navy); border-radius:var(--radius);
+    padding:0; margin:24px 0; overflow:hidden;
+  }
+  .md-card-header{background:var(--navy); color:#fff; padding:14px 22px; font-size:13px; font-weight:700; letter-spacing:.03em;}
+  .md-fields{display:grid; grid-template-columns:1fr 1fr; gap:0;}
+  .md-field{padding:16px 22px; border-bottom:1px solid var(--gray-300); border-right:1px solid var(--gray-300);}
+  .md-field:nth-child(2n){border-right:none;}
+  .md-field .fkey{font-size:11px; color:var(--gray-600); text-transform:uppercase; letter-spacing:.03em; margin-bottom:4px;}
+  .md-field .fval{font-size:14px; font-weight:700; color:var(--gray-900); font-family:'JetBrains Mono','Noto Sans KR',monospace;}
+
+  .engine-chain{display:flex; align-items:stretch; gap:0; max-width:900px; margin:20px 0; flex-wrap:wrap;}
+  .ec-box{
+    flex:1 1 180px; background:var(--white); border:1px solid var(--gray-300); border-radius:8px;
+    padding:16px; text-align:center; font-size:13px; font-weight:700; color:var(--gray-900);
+  }
+  .ec-box.hl{border:2px solid var(--navy); color:var(--navy); background:var(--navy-light);}
+  .ec-box span{display:block; font-size:11px; font-weight:400; color:var(--gray-600); margin-top:6px;}
+  .ec-arrow{flex:0 0 30px; display:flex; align-items:center; justify-content:center; color:var(--gray-300); font-size:16px;}
+
+  /* 5-4 Governance flow */
+  .gflow{display:flex; flex-direction:column; align-items:center; gap:0; max-width:520px; margin:28px auto;}
+  .gnode{
+    width:100%; text-align:center; padding:13px 18px; border-radius:8px; font-size:13.5px;
+    background:var(--white); border:1px solid var(--gray-300); margin-bottom:4px;
+  }
+  .gnode.decision{background:var(--navy-light); border-color:var(--navy); color:var(--navy); font-weight:700;}
+  .gnode.approval{
+    background:var(--navy); color:#fff; font-weight:700; font-size:17px; padding:22px;
+    box-shadow:0 4px 16px rgba(0,51,102,0.3);
+  }
+  .gnode.small{font-size:12px; color:var(--gray-600); background:transparent; border:none; padding:4px;}
+  .garrow{color:var(--gray-300); font-size:16px; margin-bottom:4px;}
+  .gbranch{display:flex; gap:24px; width:100%; margin-bottom:4px;}
+  .gbranch .gcol{flex:1; display:flex; flex-direction:column; align-items:center;}
+  .gbranch .glabel{font-size:11px; font-weight:700; color:var(--gray-600); margin-bottom:6px;}
+
+  /* 5-5 Consumer diagram */
+  .consumer-flow{max-width:900px; margin:28px 0;}
+  .cf-source{text-align:center; margin-bottom:16px;}
+  .cf-source .box{display:inline-block; background:var(--gray-900); color:#fff; border-radius:8px; padding:14px 26px; font-size:14px; font-weight:700;}
+  .cf-arrow-down{text-align:center; font-size:20px; color:var(--gray-300); margin:6px 0;}
+  .consumer-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-top:16px;}
+  .consumer-card{
+    background:var(--white); border:1px solid var(--gray-300); border-radius:8px; padding:16px;
+    text-align:center; font-size:13px; font-weight:700; color:var(--gray-900);
+    border-top:3px solid var(--navy);
+  }
+  .consumer-card.hl{border-top-color:var(--wrong); color:var(--wrong);}
+
+  /* Principles */
+  .principles-grid{display:grid; grid-template-columns:repeat(5,1fr); gap:14px; margin:24px 0;}
+  .principle-card{background:var(--white); border:1px solid var(--gray-300); border-radius:8px; padding:16px 14px;}
+  .principle-card .pnum{font-family:'JetBrains Mono'; font-size:11px; color:var(--navy); font-weight:700;}
+  .principle-card h5{font-size:13px; margin:6px 0 6px;}
+  .principle-card p{font-size:12px; color:var(--gray-600); margin:0;}
+
+  /* Established vs Conceptual split */
+  .split-wrap{display:grid; grid-template-columns:1fr 1fr; gap:20px; margin:28px 0;}
+  .split-col{border-radius:var(--radius); padding:22px 24px;}
+  .split-col.established{background:var(--white); border:2px solid var(--correct);}
+  .split-col.conceptual{background:var(--white); border:2px solid var(--warn); border-style:dashed;}
+  .split-col h4{margin:0 0 14px; font-size:14px; text-transform:uppercase; letter-spacing:.03em; display:flex; align-items:center; gap:8px;}
+  .split-col.established h4{color:var(--correct);}
+  .split-col.conceptual h4{color:var(--warn);}
+  .split-col ul{margin:0; padding-left:18px; font-size:13.5px; color:var(--gray-900);}
+  .split-col li{margin-bottom:8px;}
+
+  /* Final triptych */
+  .triptych{max-width:820px; margin:32px 0;}
+  .trip-line{
+    padding:20px 26px; margin-bottom:2px; font-size:16px; font-family:'DM Serif Display','Noto Sans KR',serif;
+    background:var(--white); border-left:4px solid var(--gray-300);
+  }
+  .trip-line:nth-child(1){border-left-color:var(--gray-600);}
+  .trip-line:nth-child(2){border-left-color:var(--navy);}
+  .trip-line:nth-child(3){
+    border-left-color:var(--wrong); background:var(--gray-900); color:#fff; font-size:18px; font-weight:700;
+  }
+
+  .think-box{
+    max-width:640px; margin:36px auto 0; padding:36px 40px; text-align:center;
+    background:var(--white); border:2px dashed var(--navy); border-radius:var(--radius);
+  }
+  .think-label{
+    display:inline-block; font-size:12px; font-weight:700; letter-spacing:.06em; text-transform:uppercase;
+    color:var(--navy); background:var(--navy-light); padding:5px 16px; border-radius:20px; margin-bottom:20px;
+  }
+  .think-q{font-size:16px; color:var(--gray-900); margin:0; line-height:1.6;}
+  .think-divider{font-size:18px; color:var(--gray-300); margin:14px 0;}
+
+  .closing-disclaimer{
+    max-width:820px; margin:32px 0; padding:24px 28px; background:var(--warn-bg); border:1px solid var(--warn);
+    border-radius:var(--radius); font-size:13px; color:var(--warn); font-style:italic; line-height:1.7;
+  }
+
+  .footer-nav{max-width:1100px; margin:0 auto; padding:48px var(--pad-x) 80px; display:flex; justify-content:space-between; align-items:center; gap:20px; border-top:1px solid var(--gray-300);}
+  .footer-nav a{text-decoration:none; color:var(--navy); font-weight:700; font-size:14px; display:flex; align-items:center; gap:8px;}
+  .progress-dots{display:flex; gap:6px; align-items:center;}
+  .progress-dots span{width:8px; height:8px; border-radius:50%; background:var(--gray-300); display:inline-block;}
+  .progress-dots span.on{background:var(--navy); width:22px; border-radius:4px;}
+
+  @media (max-width: 760px){
+    :root{--pad-x:24px;}
+    .hero h1{font-size:28px;}
+    section.block h2{font-size:22px;}
+    .md-fields{grid-template-columns:1fr;}
+    .split-wrap{grid-template-columns:1fr;}
+    .principles-grid{grid-template-columns:1fr 1fr;}
+    .consumer-grid{grid-template-columns:1fr 1fr;}
+    .gbranch{flex-direction:column;}
+    .tabs{display:none;}
+  }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="topnav-inner">
+    <a href="index_cash_flow_data_asset.html" class="brand" style="text-decoration:none;">Cash Flow Data Asset <span>직접법 &amp; IFRS 18 &amp; S/4HANA</span></a>
+    <div class="tabs">
+      <a href="01_why_direct_method_rare.html">1. 왜 드문가</a>
+      <a href="02_ifrs18_changed_less.html">2. IFRS 18</a>
+      <a href="03_s4hana_actually_changed.html">3. S/4HANA</a>
+      <a href="04_four_implementation_models.html">4. 구현 모델</a>
+      <a href="#" class="active">5. Data Asset</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="eyebrow">Chapter 5 / 5 · Final Chapter</div>
+  <h1>현금흐름표에서<br>현금흐름 데이터 자산으로</h1>
+  <p class="subtitle">From Cash Flow Statement to Cash Flow Data Asset</p>
+  <div class="action-title">
+    <span class="label">Action Title</span>
+    현금흐름표는 보고서가 아니라 데이터 자산의 소비자(Consumer) 중 하나이며, 이 자산을 관리하는 것이 S/4HANA와 SAP BTP로 오늘도 구축 가능한 참조 아키텍처다.
+  </div>
+  <div class="ref-badge">
+    <span class="icon">📐</span>
+    <div>
+      <strong>Reference Architecture (Conceptual Design)</strong>
+      This section presents a proposed architecture based on SAP standard capabilities (S/4HANA, BTP, Business Rules, AI services, Workflow) rather than an existing SAP standard feature. It is not a forecast of the future — it is a design achievable with today's technology.
+    </div>
+  </div>
+</header>
+
+<section class="block" style="padding-top:0; padding-bottom:0; border-top:none;">
+  <div class="lo-box">
+    <div class="lo-title">📋 Learning Objectives</div>
+    <ul>
+      <li>Cash Flow Category와 Cash Flow Nature의 개념적 차이를 설명할 수 있다.</li>
+      <li>Cash Flow Rule Repository가 왜 단순 Rule Table이 아니라 Master Data인지 이해할 수 있다.</li>
+      <li>Governed Intelligence 구조에서 AI와 승인(Approval)의 역할 차이를 설명할 수 있다.</li>
+      <li>이 아키텍처가 SAP 표준 기능이 아니라 개념적 참조 모델임을 정확히 구분할 수 있다.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ===================== 5-1 ===================== -->
+<section class="block" id="p1">
+  <span class="stage-tag part">5-1</span>
+  <h2>Why Reports Are Not Enough<br><span class="serif" style="font-size:20px;">보고서만으로는 충분하지 않은 이유</span></h2>
+  <p class="lead">지금까지 Chapter 1~4는 모두 "현금흐름표를 어떻게 만들 것인가"라는 질문에 답해왔습니다. 그런데 이 질문 자체가 이미 좁은 프레임입니다. 현금흐름표는 결산기마다 새로 계산되는 산출물이지만, 그 계산의 재료인 "현금이 왜 움직였는가"라는 의미는 매번 새로 만들어지는 것이 아니라 <strong>기업이 지속적으로 축적해야 할 정보</strong>입니다.</p>
+
+  <div class="funnel">
+    <div class="funnel-box">Bank Transaction<br><span style="color:var(--gray-600);font-size:11px;">원천 현금 이동</span></div>
+    <div class="funnel-arrow">→</div>
+    <div class="funnel-box">현재: 결산 시점에만 재구성</div>
+    <div class="funnel-arrow">→</div>
+    <div class="funnel-box final">보고서 (Cash Flow Statement)</div>
+  </div>
+  <div class="callout warn">
+    <div class="callout-title">⚠️ 지금까지의 한계</div>
+    <p>Level 1~3의 모든 논의는 "결산 시점에 현금흐름표를 어떻게 만들 것인가"에 머물러 있었습니다. 이 관점에서는 매 결산기마다 동일한 재구성 작업을 반복하게 됩니다. 관점을 바꿔야 합니다 — 현금흐름표가 아니라, <strong>그 재료가 되는 데이터를 어떻게 지속적으로 관리할 것인가</strong>로.</p>
+  </div>
+</section>
+
+<!-- ===================== 5-2 ===================== -->
+<section class="block" id="p2">
+  <span class="ra-badge">Reference Architecture<br>(Conceptual)</span>
+  <span class="stage-tag part">5-2</span>
+  <h2>Cash Flow Nature as Master Data<br><span class="serif" style="font-size:20px;">마스터데이터로서의 현금흐름 성격</span></h2>
+
+  <div class="hero-statement">
+    <div class="serif">Cash Flow Nature는 보고서 속 계정이 아니라,<br>기업이 관리해야 하는 마스터데이터이다.</div>
+  </div>
+
+  <p class="lead">"Cash Flow Category"와 "Cash Flow Nature"는 비슷해 보이지만 관점이 다릅니다. Category는 보고서에 표시되는 항목명이고, Nature는 그 항목명을 결정하는 <strong>거래의 경제적 성격 그 자체</strong>입니다. 이 관점 차이가 왜 중요한지 아래에서 비교해 보세요.</p>
+
+  <div class="nature-vs">
+    <div class="nv-box wrong">
+      <strong>❌ Category로만 볼 때</strong>
+      매 결산기마다 은행거래를 다시 들여다보고 "이건 Operating, 저건 Investing"이라고 재분류한다. 반복 작업이며, 분류 로직이 사람의 머릿속에만 존재한다.
+    </div>
+    <div class="nv-box correct">
+      <strong>✅ Nature = Master Data로 볼 때</strong>
+      "삼성물산 + GL 211000 = CapEx"라는 지식 자체를 저장하고 재사용한다. 한 번 정의되면 다음 거래부터 자동으로 적용된다.
+    </div>
+  </div>
+
+  <table class="dim-table" style="max-width:640px;">
+    <thead><tr><th style="text-align:left;">구분</th><th>Cash Flow Category</th><th>Cash Flow Nature</th></tr></thead>
+    <tbody>
+      <tr><td>정체</td><td>보고서 표시 항목</td><td>기업 내부 의미 데이터</td></tr>
+      <tr><td>근거</td><td>IAS 7 기준 (Output 요건)</td><td>Enterprise Master Data (Input 자산)</td></tr>
+      <tr><td>성격</td><td>Output — 결산 시 생성</td><td>Input — 지속적으로 축적·재사용</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ===================== 5-3 ===================== -->
+<section class="block" id="p3">
+  <span class="ra-badge">Reference Architecture<br>(Conceptual)</span>
+  <span class="stage-tag part">5-3</span>
+  <h2>Cash Flow Rule Repository<br><span class="serif" style="font-size:20px;">현금흐름 규칙 저장소(Cash Flow Rule Repository)</span></h2>
+  <p class="lead">이 Repository는 단순한 매핑 테이블이 아니라, 감사추적과 버전관리를 갖춘 <strong>Enterprise Master Data</strong>로 설계되어야 합니다.</p>
+
+  <div class="md-card">
+    <div class="md-card-header">Cash Flow Rule Repository — Record Structure</div>
+    <div class="md-fields">
+      <div class="md-field"><div class="fkey">Rule ID</div><div class="fval">CFR-2027-000482</div></div>
+      <div class="md-field"><div class="fkey">Business Scope</div><div class="fval">BP: 삼성물산 / GL: 211000</div></div>
+      <div class="md-field"><div class="fkey">Cash Flow Nature</div><div class="fval">Investing – CapEx</div></div>
+      <div class="md-field"><div class="fkey">Effective Date</div><div class="fval">2027-01-01 ~</div></div>
+      <div class="md-field"><div class="fkey">Version</div><div class="fval">v3</div></div>
+      <div class="md-field"><div class="fkey">Approval Status</div><div class="fval">Approved</div></div>
+      <div class="md-field"><div class="fkey">Owner</div><div class="fval">Corporate Accounting</div></div>
+      <div class="md-field"><div class="fkey">Confidence Threshold</div><div class="fval">≥ 92%</div></div>
+      <div class="md-field" style="grid-column:1/-1;"><div class="fkey">Audit Trail</div><div class="fval" style="font-weight:400; font-size:13px;">2026-11-02 Rule Candidate 생성(AI) → 2026-11-05 회계 검토 → 2026-11-06 승인(김OO 팀장) → 2027-01-01 발효</div></div>
+    </div>
+  </div>
+
+  <div class="callout navy">
+    <div class="callout-title">💡 핵심</div>
+    <p>이 Repository가 단순 Rule Table이 아니라 Master Data인 이유는, <strong>Effective Date와 Version</strong>이 있다는 점입니다. 회계 정책처럼 시점별로 관리되고, 변경 시 이전 버전과 비교 가능하며, 누가 언제 승인했는지 감사 가능합니다.</p>
+  </div>
+
+  <p class="lead" style="margin-top:32px;">Repository와 Rule Engine은 자주 혼동되지만 역할이 다릅니다. <strong>Repository는 Rule을 저장하는 마스터데이터이고, Engine은 그 Rule을 실행하는 로직</strong>입니다.</p>
+  <div class="engine-chain">
+    <div class="ec-box hl">Repository<span>Rule 저장 (Master Data)</span></div>
+    <div class="ec-arrow">→</div>
+    <div class="ec-box">Rule Engine<span>Rule 실행 (매칭·적용)</span></div>
+    <div class="ec-arrow">→</div>
+    <div class="ec-box">Workflow<span>예외 처리·승인 라우팅</span></div>
+    <div class="ec-arrow">→</div>
+    <div class="ec-box">Posting / Reporting<span>현금흐름표 등 Consumer</span></div>
+  </div>
+</section>
+
+<!-- ===================== 5-4 ===================== -->
+<section class="block" id="p4">
+  <span class="ra-badge">Reference Architecture<br>(Conceptual)</span>
+  <span class="stage-tag part">5-4</span>
+  <h2>Governed Intelligence<br><span class="serif" style="font-size:20px;">통제된 지능화</span></h2>
+  <p class="lead">이 흐름의 중심 노드는 AI가 아니라 <strong>Approval(승인)</strong>입니다. AI는 후보를 추천할 뿐, Repository를 갱신하는 권한은 항상 사람의 승인을 거칩니다.</p>
+
+  <div class="gflow">
+    <div class="gnode">New Transaction</div>
+    <div class="garrow">↓</div>
+    <div class="gnode decision">Rule Exists?</div>
+    <div class="garrow">↓</div>
+    <div class="gbranch">
+      <div class="gcol">
+        <div class="glabel">YES</div>
+        <div class="gnode">Auto Apply</div>
+      </div>
+      <div class="gcol">
+        <div class="glabel">NO</div>
+        <div class="gnode small">AI Recommendation</div>
+        <div class="garrow">↓</div>
+        <div class="gnode small">Accounting Review</div>
+      </div>
+    </div>
+    <div class="garrow">↓</div>
+    <div class="gnode approval">✓ Approval</div>
+    <div class="garrow">↓</div>
+    <div class="gnode">Repository Update</div>
+  </div>
+
+  <div class="callout correct">
+    <div class="callout-title">✅ Chapter 4와의 연결</div>
+    <p>이 흐름은 Level 3b(Governed Cash Flow Intelligence)의 내부 구조입니다. 자동화(Auto Apply)와 거버넌스(Approval)가 하나의 프로세스 안에 공존하는 것이, Level 3a(전량 수동)와 Level 3b를 구분 짓는 핵심입니다.</p>
+  </div>
+</section>
+
+<!-- ===================== 5-5 ===================== -->
+<section class="block" id="p5">
+  <span class="stage-tag part">5-5</span>
+  <h2>Future Vision<br><span class="serif" style="font-size:20px;">현금흐름표는 소비자(Consumer) 중 하나일 뿐이다</span></h2>
+  <p class="lead">지금까지는 "현금흐름표를 만들기 위해 데이터를 모은다"는 관점이었습니다. 마지막으로 이 관점을 뒤집습니다 — 데이터 자산이 먼저 있고, 현금흐름표는 그 자산을 소비하는 여러 애플리케이션 중 하나일 뿐입니다.</p>
+
+  <div class="consumer-flow">
+    <div class="cf-source"><div class="box">Cash Flow Nature → Rule Repository → Data Asset</div></div>
+    <div class="cf-arrow-down">↓ Consumers ↓</div>
+    <div class="consumer-grid">
+      <div class="consumer-card hl">Cash Flow Statement</div>
+      <div class="consumer-card">Treasury</div>
+      <div class="consumer-card">Liquidity Forecast</div>
+      <div class="consumer-card">Working Capital Analytics</div>
+      <div class="consumer-card">AI Agent</div>
+      <div class="consumer-card">Executive Dashboard</div>
+    </div>
+  </div>
+
+  <div class="callout navy">
+    <div class="callout-title">💡 관점의 전환</div>
+    <p><strong>현금흐름표는 소비자(Consumer) 중 하나일 뿐이다.</strong> 데이터 자산이 잘 관리되면, 현금흐름표뿐 아니라 Treasury 현황판, 단기 자금예측, 운전자본 분석까지 동일한 자산에서 파생됩니다.</p>
+  </div>
+</section>
+
+<!-- ===================== Reference Architecture Principles ===================== -->
+<section class="block" id="principles">
+  <span class="stage-tag part">Principles</span>
+  <h2>참조 아키텍처 원칙<br><span class="serif" style="font-size:20px;">Reference Architecture Principles</span></h2>
+  <p class="lead">이 아키텍처가 지켜야 할 다섯 가지 원칙입니다. 개별 기능 나열이 아니라, 설계를 관통하는 철학입니다.</p>
+
+  <div class="principles-grid">
+    <div class="principle-card">
+      <div class="pnum">01</div>
+      <h5>Clean Core</h5>
+      <p>핵심 ERP는 최소한으로 변경하고, 확장은 BTP에서 수행한다.</p>
+    </div>
+    <div class="principle-card">
+      <div class="pnum">02</div>
+      <h5>Governed Master Data</h5>
+      <p>Rule Repository는 통제 대상 마스터데이터로 관리된다.</p>
+    </div>
+    <div class="principle-card">
+      <div class="pnum">03</div>
+      <h5>Human-in-the-Loop</h5>
+      <p>신규·저신뢰 건은 반드시 회계 승인을 거쳐 Rule에 반영된다.</p>
+    </div>
+    <div class="principle-card">
+      <div class="pnum">04</div>
+      <h5>AI-Assisted, Not AI-Controlled</h5>
+      <p>AI는 추천과 분류를 지원하지만 통제를 대체하지 않는다.</p>
+    </div>
+    <div class="principle-card">
+      <div class="pnum">05</div>
+      <h5>One Nature, Many Consumers</h5>
+      <p>하나의 Cash Flow Nature를 여러 애플리케이션이 공유한다.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== Established vs Conceptual ===================== -->
+<section class="block" id="fact-vs-proposal">
+  <span class="stage-tag part">Fact vs Proposal</span>
+  <h2>사실과 제안의 경계</h2>
+  <p class="lead">이번 시리즈 전체에서 어디까지가 검증된 사실이고, 어디부터가 제안하는 아키텍처인지 명확히 구분합니다.</p>
+
+  <div class="split-wrap">
+    <div class="split-col established">
+      <h4>✅ Established Practice</h4>
+      <ul>
+        <li>IAS 7.19(b) — 손익·운전자본 재구성 방식</li>
+        <li>S/4HANA Universal Journal (ACDOCA)</li>
+        <li>AR/AP Open Item</li>
+        <li>SAP Cash Management</li>
+        <li>SAP BTP Extension (Clean Core 확장 방식)</li>
+        <li>SAP Workflow (승인 프로세스)</li>
+      </ul>
+    </div>
+    <div class="split-col conceptual">
+      <h4>💡 Conceptual Reference Architecture</h4>
+      <ul>
+        <li>Cash Flow Nature as Master Data</li>
+        <li>Cash Flow Rule Repository</li>
+        <li>Governed Intelligence (승인 중심 워크플로)</li>
+        <li>AI-assisted Classification</li>
+        <li>Cash Flow Data Asset / Multi-Consumer 구조</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="closing-disclaimer">
+    This architecture is a conceptual reference model, not an SAP standard feature. Its purpose is to illustrate how S/4HANA, SAP BTP, Business Rules, Workflow, and AI-assisted governance — all available today — could evolve cash flow reporting into a governed enterprise data asset.
+  </div>
+
+  <div class="limitation-box">
+    ⚠️ 본 참조 아키텍처는 개념적 설계 모델이며, 실제 구현은 기업의 내부통제, 업무 프로세스, 데이터 품질, SAP 제품 구성 및 프로젝트 범위에 따라 달라질 수 있습니다.
+  </div>
+</section>
+
+<!-- ===================== Closing ===================== -->
+<section class="block" id="closing">
+  <span class="stage-tag part">Closing</span>
+  <h2>시리즈를 마치며</h2>
+  <div class="triptych">
+    <div class="trip-line">회계기준은 현금흐름표를 정의한다.</div>
+    <div class="trip-line">ERP는 현금흐름 데이터를 저장한다.</div>
+    <div class="trip-line">기업의 경쟁력은 그 데이터를 어떻게 자산으로 관리하느냐에서 결정된다.</div>
+  </div>
+
+  <div class="think-box">
+    <div class="think-label">Think About It</div>
+    <p class="think-q">귀사의 현금흐름 데이터는<br>아직 <strong>보고서를 만들기 위한 데이터</strong>입니까?</p>
+    <div class="think-divider">↓</div>
+    <p class="think-q">아니면 기업이 지속적으로 관리하는<br><strong>데이터 자산</strong>입니까?</p>
+  </div>
+
+  <div class="kt-box">
+    <div class="kt-title">✅ Key Takeaways</div>
+    <ul>
+      <li>Cash Flow Nature는 보고서 속 계정이 아니라 기업이 관리해야 하는 마스터데이터다.</li>
+      <li>Cash Flow Rule Repository는 Effective Date·Version·Approval Status를 갖춘 Enterprise Master Data로 설계되어야 한다.</li>
+      <li>현금흐름표는 이 데이터 자산을 소비하는 여러 애플리케이션 중 하나일 뿐이다.</li>
+    </ul>
+  </div>
+
+  <div class="ref-list">
+    <div class="lo-title" style="color:var(--gray-600);">📚 References</div>
+    <ol>
+      <li>IAS 7 <em>Statement of Cash Flows</em>, IFRS Foundation</li>
+      <li>IFRS 18 <em>Presentation and Disclosure in Financial Statements</em>, IFRS Foundation (2024)</li>
+      <li>IFRS 18 Basis for Conclusions, IFRS Foundation</li>
+      <li>SAP S/4HANA Universal Journal (ACDOCA) 관련 SAP 공식 문서 (SAP Help Portal)</li>
+      <li>SAP Cash Management / Bank Account Management 관련 SAP 공식 문서 (SAP Help Portal)</li>
+    </ol>
+  </div>
+</section>
+
+<footer class="footer-nav">
+  <a href="04_four_implementation_models.html">← Chapter 4. 네 가지 구현 모델</a>
+  <div style="display:flex; align-items:center; gap:14px;">
+    <a href="index_cash_flow_data_asset.html" style="text-decoration:none; color:var(--gray-600); font-size:12px; font-weight:700;">☰ 목차로</a>
+    <div class="progress-dots">
+    <span></span><span></span><span></span><span></span><span class="on"></span>
+  </div>
+  </div>
+</footer>
+
+</body>
+</html>

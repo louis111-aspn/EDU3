@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 3. S/4HANA가 실제로 바꾼 것 | Cash Flow Data Asset</title>
+<style>
+  :root{
+    --navy:#003366; --navy-light:#e8eef5; --bg:#f0f3f8; --white:#ffffff;
+    --gray-900:#1a1f28; --gray-600:#5a6472; --gray-300:#d7dee6;
+    --warn:#a15c00; --warn-bg:#fdf3e3;
+    --correct:#0a6e4d; --correct-bg:#e6f5ef;
+    --wrong:#a3273c; --wrong-bg:#fbe9ec;
+    --radius:10px; --pad-x:96px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0; background:var(--bg); color:var(--gray-900); font-family:'Noto Sans KR','Inter',sans-serif; font-size:15px; line-height:1.7; word-break:keep-all;}
+  h1,h2,h3,.serif{font-family:'DM Serif Display','Noto Sans KR',serif; font-weight:400;}
+  code,.mono{font-family:'JetBrains Mono','Noto Sans KR',monospace;}
+
+  .topnav{position:sticky; top:0; z-index:100; background:rgba(255,255,255,0.96); backdrop-filter:blur(6px); border-bottom:1px solid var(--gray-300); overflow-x:clip;}
+  .topnav-inner{max-width:1100px; margin:0 auto; padding:14px var(--pad-x); display:flex; align-items:center; justify-content:space-between; gap:24px;}
+  .brand{font-size:14px; font-weight:700; color:var(--navy); white-space:nowrap;}
+  .brand span{color:var(--gray-600); font-weight:400; margin-left:8px;}
+  .tabs{display:flex; gap:6px; flex-wrap:wrap;}
+  .tabs a{font-size:13px; color:var(--gray-600); text-decoration:none; padding:6px 12px; border-radius:20px; white-space:nowrap; transition:all .15s ease;}
+  .tabs a.active{background:var(--navy); color:#fff;}
+  .tabs a:not(.active):hover{background:var(--navy-light); color:var(--navy);}
+
+  .hero{max-width:1100px; margin:0 auto; padding:72px var(--pad-x) 48px;}
+  .eyebrow{display:inline-flex; align-items:center; gap:8px; font-size:13px; font-weight:700; color:var(--navy); letter-spacing:.04em; text-transform:uppercase; margin-bottom:18px;}
+  .eyebrow::before{content:"";width:24px;height:2px;background:var(--navy);display:inline-block;}
+  .hero h1{font-size:42px; color:var(--gray-900); margin:0 0 14px; line-height:1.3;}
+  .hero .subtitle{font-size:16px; color:var(--gray-600); max-width:680px; margin:0 0 28px;}
+  .action-title{background:var(--navy); color:#fff; border-radius:var(--radius); padding:24px 28px; font-size:17px; font-weight:700; line-height:1.6; max-width:820px;}
+  .action-title .label{display:block; font-size:12px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:#9fbdd9; margin-bottom:8px;}
+
+  section.block{max-width:1100px; margin:0 auto; padding:56px var(--pad-x); border-top:1px solid var(--gray-300);}
+  .stage-tag{display:inline-block; font-size:13px; font-weight:700; padding:4px 12px; border-radius:20px; margin-bottom:16px;}
+  .stage-tag.misconception{background:var(--wrong-bg); color:var(--wrong);}
+  .stage-tag.fact{background:var(--navy-light); color:var(--navy);}
+  .stage-tag.evidence{background:#eef1f5; color:var(--gray-900); border:1px solid var(--gray-300);}
+  .stage-tag.conclusion{background:var(--correct-bg); color:var(--correct);}
+  section.block h2{font-size:30px; margin:0 0 20px; color:var(--gray-900);}
+  section.block p{font-size:15px; color:var(--gray-900); max-width:760px;}
+  section.block p.lead{font-size:16px; color:var(--gray-600); max-width:760px;}
+
+  .callout{border-radius:var(--radius); padding:20px 24px; margin:20px 0; max-width:760px; border-left:4px solid; font-size:14px;}
+  .callout .callout-title{font-weight:700; font-size:14px; margin-bottom:6px; display:flex; align-items:center; gap:8px;}
+  .callout.navy{background:var(--navy-light); border-color:var(--navy); color:var(--navy);}
+  .callout.warn{background:var(--warn-bg); border-color:var(--warn); color:var(--warn);}
+  .callout.correct{background:var(--correct-bg); border-color:var(--correct); color:var(--correct);}
+  .callout.wrong{background:var(--wrong-bg); border-color:var(--wrong); color:var(--wrong);}
+  .callout p{color:inherit; margin:0; font-size:14px;}
+
+  .myth-reality{max-width:820px; margin:24px 0; border-radius:var(--radius); overflow:hidden; border:1px solid var(--gray-300);}
+  .myth-row, .reality-row{padding:20px 24px; display:flex; gap:16px; align-items:flex-start;}
+  .myth-row{background:var(--wrong-bg);}
+  .reality-row{background:var(--correct-bg);}
+  .mr-icon{font-size:18px; line-height:1.4;}
+  .mr-label{font-size:12px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; margin-bottom:4px;}
+  .myth-row .mr-label{color:var(--wrong);}
+  .reality-row .mr-label{color:var(--correct);}
+  .mr-text{font-size:14.5px; color:var(--gray-900); font-weight:600;}
+  .mr-sub{font-size:13px; color:var(--gray-600); font-weight:400; margin-top:4px;}
+
+  /* Before/After toggle diagram */
+  .ba-toggle{display:flex; gap:8px; margin:28px 0 16px;}
+  .ba-toggle button{font-family:'Noto Sans KR'; font-size:13px; font-weight:700; padding:9px 20px; border-radius:20px; border:1px solid var(--gray-300); background:var(--white); cursor:pointer; color:var(--gray-600); transition:all .15s ease;}
+  .ba-toggle button.active.before{background:var(--wrong); color:#fff; border-color:var(--wrong);}
+  .ba-toggle button.active.after{background:var(--correct); color:#fff; border-color:var(--correct);}
+
+  .ba-stage{max-width:900px; min-height:340px; position:relative;}
+  .ba-panel{display:none;}
+  .ba-panel.show{display:block;}
+
+  .ba-scatter{display:flex; flex-wrap:wrap; gap:14px; justify-content:center; margin-bottom:20px;}
+  .ba-node{
+    background:var(--white); border:2px solid var(--wrong); color:var(--wrong);
+    border-radius:8px; padding:12px 18px; font-size:13px; font-weight:700; text-align:center;
+  }
+  .ba-recon{
+    text-align:center; font-size:13px; color:var(--wrong); font-weight:700;
+    border:1px dashed var(--wrong); border-radius:8px; padding:12px; max-width:400px; margin:0 auto;
+    background:var(--wrong-bg);
+  }
+  .ba-down-arrow{text-align:center; font-size:22px; color:var(--gray-300); margin:10px 0;}
+
+  .ba-unified{
+    max-width:420px; margin:0 auto 20px; text-align:center;
+    background:var(--navy); color:#fff; border-radius:var(--radius); padding:20px 24px;
+    font-size:15px; font-weight:700;
+  }
+  .ba-unified .sub{font-size:12px; font-weight:400; color:#9fbdd9; margin-top:6px;}
+  .ba-fields{display:flex; flex-wrap:wrap; gap:10px; justify-content:center; margin-bottom:20px;}
+  .ba-field{
+    background:var(--correct-bg); border:1px solid var(--correct); color:var(--correct);
+    border-radius:20px; padding:8px 16px; font-size:12.5px; font-weight:700;
+  }
+  .ba-result{
+    text-align:center; font-size:13px; color:var(--correct); font-weight:700;
+    border:1px solid var(--correct); border-radius:8px; padding:12px; max-width:420px; margin:0 auto;
+    background:var(--correct-bg);
+  }
+
+  /* IAS7.19b mapped to data model */
+  .map-flow{display:flex; align-items:stretch; gap:0; max-width:900px; margin:28px 0; flex-wrap:wrap;}
+  .map-col{flex:1 1 260px; padding:0 16px;}
+  .map-col:first-child{padding-left:0;}
+  .map-col h5{font-size:12px; text-transform:uppercase; letter-spacing:.04em; color:var(--gray-600); margin:0 0 12px; text-align:center;}
+  .map-item{
+    background:var(--white); border:1px solid var(--gray-300); border-radius:8px;
+    padding:12px 16px; margin-bottom:10px; font-size:13.5px; text-align:center;
+  }
+  .map-item.formula{font-family:'JetBrains Mono'; font-size:13px;}
+  .map-item.data{border-color:var(--navy); color:var(--navy); font-weight:700;}
+  .map-arrow-col{flex:0 0 40px; display:flex; align-items:center; justify-content:center; font-size:20px; color:var(--gray-300);}
+
+  .ias-card{background:var(--white); border:1px solid var(--gray-300); border-radius:var(--radius); padding:24px 28px; max-width:800px; margin:24px 0;}
+  .ias-card .ias-ref{display:inline-block; font-family:'JetBrains Mono','Noto Sans KR',monospace; font-size:12px; font-weight:700; color:var(--navy); background:var(--navy-light); padding:3px 10px; border-radius:6px; margin-bottom:12px;}
+  .ias-card blockquote{margin:0 0 12px; padding-left:16px; border-left:3px solid var(--navy); font-size:14.5px; color:var(--gray-900); font-style:italic;}
+  .ias-card .interpretation{font-size:13.5px; color:var(--gray-600); margin:0;}
+
+  /* Key sentence banner */
+  .key-sentence{
+    max-width:820px; margin:32px 0; padding:32px 36px;
+    background:var(--gray-900); color:#fff; border-radius:var(--radius);
+    border-left:6px solid var(--navy);
+  }
+  .key-sentence .kicker{font-size:12px; letter-spacing:.06em; text-transform:uppercase; color:#9fbdd9; margin-bottom:12px; font-weight:700;}
+  .key-sentence .en{font-family:'JetBrains Mono'; font-size:14px; color:#cfe0f0; margin-bottom:10px; line-height:1.6;}
+  .key-sentence .kr{font-family:'DM Serif Display','Noto Sans KR',serif; font-size:19px; line-height:1.6;}
+
+  /* Insight box */
+  .insight-box{
+    max-width:800px; margin:28px 0; padding:26px 30px;
+    background:var(--white); border:2px solid var(--navy); border-radius:var(--radius);
+    position:relative;
+  }
+  .insight-box .tag{
+    position:absolute; top:-13px; left:24px; background:var(--navy); color:#fff;
+    font-size:12px; font-weight:700; letter-spacing:.04em; text-transform:uppercase;
+    padding:4px 14px; border-radius:20px;
+  }
+  .insight-box p{margin:8px 0 0; font-size:15px; color:var(--gray-900);}
+  .insight-box strong{color:var(--navy);}
+
+  .transition-line{max-width:760px; margin:32px 0 0; padding:22px 28px; background:var(--gray-900); color:#fff; border-radius:var(--radius); font-size:16px; font-weight:700; font-family:'DM Serif Display','Noto Sans KR',serif;}
+  .lo-box{max-width:820px; margin:0 0 8px; background:var(--white); border:1px solid var(--gray-300); border-left:4px solid var(--navy); border-radius:8px; padding:20px 24px;}
+  .lo-box .lo-title{font-size:12px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; color:var(--navy); margin-bottom:10px;}
+  .lo-box ul{margin:0; padding-left:18px; font-size:13.5px; color:var(--gray-900);}
+  .lo-box li{margin-bottom:6px;}
+  .kt-box{max-width:760px; margin:28px 0 0; background:var(--correct-bg); border:1px solid var(--correct); border-radius:var(--radius); padding:22px 26px;}
+  .kt-box .kt-title{font-size:12px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; color:var(--correct); margin-bottom:10px;}
+  .kt-box ul{margin:0; padding-left:18px; font-size:14px; color:var(--gray-900);}
+  .kt-box li{margin-bottom:6px; font-weight:600;}
+
+  .quiz-box{background:var(--white); border:1px solid var(--gray-300); border-radius:var(--radius); padding:28px; max-width:820px; margin-top:24px;}
+  .quiz-q{font-size:15px; font-weight:700; margin:0 0 16px;}
+  .quiz-options{display:flex; flex-direction:column; gap:10px;}
+  .quiz-opt{text-align:left; border:1px solid var(--gray-300); background:var(--white); border-radius:8px; padding:13px 16px; font-size:14px; cursor:pointer; font-family:'Noto Sans KR'; color:var(--gray-900); transition:all .15s ease;}
+  .quiz-opt:hover{border-color:var(--navy); background:var(--navy-light);}
+  .quiz-opt.correct-ans{border-color:var(--correct); background:var(--correct-bg); color:var(--correct); font-weight:700;}
+  .quiz-opt.wrong-ans{border-color:var(--wrong); background:var(--wrong-bg); color:var(--wrong);}
+  .quiz-feedback{margin-top:14px; font-size:13.5px; padding:14px; border-radius:8px; display:none;}
+  .quiz-feedback.show{display:block;}
+  .quiz-feedback.ok{background:var(--correct-bg); color:var(--correct);}
+  .quiz-feedback.bad{background:var(--wrong-bg); color:var(--wrong);}
+
+  .footer-nav{max-width:1100px; margin:0 auto; padding:48px var(--pad-x) 80px; display:flex; justify-content:space-between; align-items:center; gap:20px; border-top:1px solid var(--gray-300);}
+  .footer-nav a{text-decoration:none; color:var(--navy); font-weight:700; font-size:14px; display:flex; align-items:center; gap:8px;}
+  .footer-nav .next{margin-left:auto;}
+  .progress-dots{display:flex; gap:6px; align-items:center;}
+  .progress-dots span{width:8px; height:8px; border-radius:50%; background:var(--gray-300); display:inline-block;}
+  .progress-dots span.on{background:var(--navy); width:22px; border-radius:4px;}
+
+  @media (max-width: 760px){
+    :root{--pad-x:24px;}
+    .hero h1{font-size:30px;}
+    section.block h2{font-size:24px;}
+    .map-flow{flex-direction:column;}
+    .map-arrow-col{transform:rotate(90deg); margin:4px 0;}
+    .tabs{display:none;}
+  }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="topnav-inner">
+    <a href="index_cash_flow_data_asset.html" class="brand" style="text-decoration:none;">Cash Flow Data Asset <span>직접법 &amp; IFRS 18 &amp; S/4HANA</span></a>
+    <div class="tabs">
+      <a href="01_why_direct_method_rare.html">1. 왜 드문가</a>
+      <a href="02_ifrs18_changed_less.html">2. IFRS 18</a>
+      <a href="#" class="active">3. S/4HANA</a>
+      <a href="04_four_implementation_models.html">4. 구현 모델</a>
+      <a href="05_cash_flow_data_asset.html">5. Data Asset</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="eyebrow">Chapter 3 / 5</div>
+  <h1>S/4HANA가 실제로 바꾼 것</h1>
+  <p class="subtitle">What S/4HANA Actually Changed — 직접법을 만든 것이 아니라, IAS 7.19(b)를 구현하기 쉬운 플랫폼을 만들었다</p>
+  <div class="action-title">
+    <span class="label">Action Title</span>
+    S/4HANA Universal Journal(ACDOCA)은 직접법이라는 새 기능을 도입한 것이 아니라, IAS 7.19(b)가 이미 허용해 온 재구성 방식을 데이터 모델 수준에서 구현 가능하게 만들었다.
+  </div>
+</header>
+
+<section class="block" style="padding-top:0; padding-bottom:0; border-top:none;">
+  <div class="lo-box">
+    <div class="lo-title">📋 Learning Objectives</div>
+    <ul>
+      <li>S/4HANA가 직접법을 "도입"한 것이 아니라 "구현을 용이하게 한 것"임을 설명할 수 있다.</li>
+      <li>IAS 7.19(b)와 Universal Journal(ACDOCA)의 관계를 이해할 수 있다.</li>
+      <li>ACDOCA와 Open Item이 직접법 재구성에 어떻게 활용되는지 설명할 수 있다.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ===================== 오해 ===================== -->
+<section class="block" id="misconception">
+  <span class="stage-tag misconception">오해 · MISCONCEPTION</span>
+  <h2>"S/4HANA로 전환하면 직접법 현금흐름표<br>기능이 새로 생긴다"</h2>
+  <p class="lead">S/4HANA 마이그레이션 제안서에서 자주 등장하는 표현입니다. 그러나 S/4HANA는 IAS 7이 요구하는 회계 기준을 바꾸지 않았고, "직접법"이라는 기능을 새로 추가하지도 않았습니다. 바뀐 것은 <strong>그 기준을 구현하는 데 필요한 데이터의 위치</strong>입니다.</p>
+
+  <div class="myth-reality">
+    <div class="myth-row">
+      <div class="mr-icon">❌</div>
+      <div><div class="mr-label">Myth</div><div class="mr-text">S/4HANA는 직접법이라는 새로운 회계 기능을 도입했다.</div></div>
+    </div>
+    <div class="reality-row">
+      <div class="mr-icon">✅</div>
+      <div><div class="mr-label">Reality</div><div class="mr-text">S/4HANA는 IAS 7.19(b)가 20년 넘게 허용해 온 재구성 방식을, 데이터가 흩어져 있어 실행하기 번거로웠던 상태에서 실행하기 쉬운 상태로 바꾸었다.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 사실 ===================== -->
+<section class="block" id="fact">
+  <span class="stage-tag fact">사실 · FACT</span>
+  <h2>Before / After — 무엇이 흩어져 있었고,<br>무엇이 하나가 되었나</h2>
+  <p class="lead">버튼을 눌러 ECC/R3 시절의 데이터 구조와 S/4HANA의 데이터 구조를 비교해 보세요. 핵심은 "기능이 늘었다"가 아니라 "연결 비용이 사라졌다"는 점입니다.</p>
+
+  <div class="ba-toggle">
+    <button class="active before" onclick="showBA('before', this)">Before — ECC / R3</button>
+    <button onclick="showBA('after', this)">After — S/4HANA</button>
+  </div>
+
+  <div class="ba-stage">
+    <div class="ba-panel show" id="ba-before">
+      <div class="ba-scatter">
+        <div class="ba-node">FI (재무회계)</div>
+        <div class="ba-node">CO (관리회계)</div>
+        <div class="ba-node">PCA (손익센터)</div>
+        <div class="ba-node">AA (자산회계)</div>
+        <div class="ba-node">CO-PA (수익성분석)</div>
+      </div>
+      <div class="ba-down-arrow">↓ 분산된 데이터를 매번 연결 ↓</div>
+      <div class="ba-recon">Reconciliation 작업 — Revenue(FI)와 AR 증감(FI), Cost Center(CO), Segment(PCA)를 매 결산기마다 별도로 매칭해야 IAS 7.19(b) 재구성이 가능했음</div>
+    </div>
+    <div class="ba-panel" id="ba-after">
+      <div class="ba-unified">Universal Journal (ACDOCA)<div class="sub">Single Source of Truth</div></div>
+      <div class="ba-fields">
+        <div class="ba-field">G/L Account</div>
+        <div class="ba-field">Customer / Vendor</div>
+        <div class="ba-field">Cost Object</div>
+        <div class="ba-field">Functional Area</div>
+        <div class="ba-field">Profit Center</div>
+        <div class="ba-field">AR/AP Open Item</div>
+      </div>
+      <div class="ba-down-arrow">↓</div>
+      <div class="ba-result">IAS 7.19(b) Reconstruction — 하나의 테이블에서 매출·매출원가·운전자본 변동을 동시에 조회 가능</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 근거 ===================== -->
+<section class="block" id="evidence">
+  <span class="stage-tag evidence">근거 · EVIDENCE</span>
+  <h2>회계식이 데이터 모델 위에서<br>그대로 구현된다</h2>
+  <p class="lead">IAS 7.19(b)의 회계식(Revenue − ΔAR = Cash Received)을 S/4HANA의 데이터 필드로 옮기면, 별도의 개발 없이도 조회 쿼리 수준에서 동일한 결과에 도달할 수 있습니다.</p>
+
+  <div class="map-flow">
+    <div class="map-col">
+      <h5>IAS 7.19(b) 회계식</h5>
+      <div class="map-item formula">Revenue</div>
+      <div class="map-item formula">− Δ AR (매출채권 증감)</div>
+      <div class="map-item formula">= Cash Received from Customers</div>
+    </div>
+    <div class="map-arrow-col">→</div>
+    <div class="map-col">
+      <h5>S/4HANA 데이터 모델</h5>
+      <div class="map-item data">ACDOCA (G/L Line Item)</div>
+      <div class="map-item data">AR Open Item + Business Partner</div>
+      <div class="map-item data">단일 조회 쿼리 결과</div>
+    </div>
+  </div>
+
+  <div class="ias-card">
+    <span class="ias-ref">Source : IAS 7.19(b)</span>
+    <blockquote>과거에는 Revenue(FI), AR 잔액(FI 별도 테이블), 거래처 정보(고객 마스터)가 서로 다른 테이블·다른 서브렛저에 있어 매핑 작업이 필요했다. ACDOCA는 이 정보를 하나의 라인 아이템에 통합하여, 매핑이 아니라 필터링만으로 동일한 결과를 얻을 수 있게 한다.</blockquote>
+    <p class="interpretation">즉 "회계기준이 요구하는 계산식"과 "그 계산을 실행하는 데이터 위치"가 분리되어 있던 상태에서, 하나로 합쳐진 상태로 바뀐 것입니다.</p>
+  </div>
+
+  <div class="key-sentence">
+    <div class="kicker">이번 챕터에서 가장 중요한 문장</div>
+    <div class="en">S/4HANA did not introduce the Direct Method. It made the IAS 7.19(b) reconstruction approach significantly easier to implement.</div>
+    <div class="kr">S/4HANA는 직접법을 도입한 것이 아니다. IAS 7.19(b) 재구성 방식을 구현하기 훨씬 쉽게 만들었을 뿐이다.</div>
+  </div>
+
+  <div class="callout warn">
+    <div class="callout-title">⚠️ 일반화 주의</div>
+    <p>이것이 쉬워진 것은 <strong>"표시 형식(Level 1)"</strong>의 재구성이지, 은행거래·반제전표를 원천 수준에서 추적하는 <strong>"거래 단위 현금 추적(Level 2 이상)"</strong>은 아닙니다. ACDOCA에도 Customer Receipt, Supplier Payment 같은 현금 성격(Cash Nature) 자체는 저장되지 않으며, 여전히 별도의 매핑 로직이 필요합니다. 이 구분은 Chapter 4에서 이어집니다.</p>
+  </div>
+</section>
+
+<!-- ===================== 결론 ===================== -->
+<section class="block" id="conclusion">
+  <span class="stage-tag conclusion">결론 · CONCLUSION</span>
+  <h2>Universal Journal의 진짜 가치는<br>통합이 아니라 <span class="serif">구현 가능성</span>이다</h2>
+  <p class="lead">데이터를 한 곳에 모은 것 자체는 기술적 성취입니다. 그러나 이 챕터의 결론은 그보다 한 단계 더 나아갑니다.</p>
+
+  <div class="insight-box">
+    <span class="tag">Insight</span>
+    <p>Universal Journal의 가장 큰 가치는 데이터를 하나로 모은 것이 아니라, <strong>회계기준(IAS 7)의 요구사항을 데이터 모델 수준에서 구현 가능하게 만든 것</strong>이다.</p>
+  </div>
+
+  <p class="lead" style="margin-top:24px;">Chapter 1~3을 통해 다음 세 가지가 확인되었습니다.</p>
+  <div class="callout correct">
+    <div class="callout-title">✅ 지금까지의 논리 체계</div>
+    <p>
+      ① 직접법은 IAS 7이 요구하는 <strong>표시 형식</strong>일 뿐, 산출 알고리즘을 강제하지 않는다 (Chapter 1).<br>
+      ② IFRS 18은 간접법을 다듬었을 뿐, 직접법 구현 난이도와는 무관하다 (Chapter 2).<br>
+      ③ 직접법(19b 방식)을 실제로 쉽게 만든 것은 S/4HANA의 데이터 모델이다 (Chapter 3).
+    </p>
+  </div>
+
+  <div class="transition-line">
+    이제 구현이 가능해졌다. 그렇다면 기업은 어떤 구현 전략(Level)을 선택해야 할까?
+  </div>
+</section>
+
+<!-- ===================== Quiz ===================== -->
+<section class="block" id="quiz">
+  <h2 style="font-size:22px;">확인 퀴즈</h2>
+  <div class="quiz-box">
+    <p class="quiz-q">Q. S/4HANA Universal Journal(ACDOCA)이 직접법 구현에 기여하는 방식으로 가장 정확한 것은?</p>
+    <div class="quiz-options" id="quiz1">
+      <button class="quiz-opt" onclick="answerQuiz(this, false, 'quiz1fb')">모든 은행거래에 Cash Flow Category를 자동으로 부여하는 기능을 제공한다</button>
+      <button class="quiz-opt" onclick="answerQuiz(this, true, 'quiz1fb')">Revenue, AR/AP Open Item, Business Partner 등을 하나의 데이터 모델에 통합해 IAS 7.19(b) 재구성을 쉽게 만든다</button>
+      <button class="quiz-opt" onclick="answerQuiz(this, false, 'quiz1fb')">IAS 7의 직접법 요구사항 자체를 완화시켜 준다</button>
+    </div>
+    <div class="quiz-feedback" id="quiz1fb"></div>
+  </div>
+
+  <div class="kt-box">
+    <div class="kt-title">✅ Key Takeaways</div>
+    <ul>
+      <li>S/4HANA는 직접법이라는 회계 기능을 도입한 것이 아니다.</li>
+      <li>Universal Journal(ACDOCA)은 IAS 7.19(b) 재구성 방식을 구현하기 쉬운 데이터 모델을 제공했다.</li>
+      <li>이것은 "표시 형식 재구성"의 용이성이지, 거래 단위 현금 추적의 자동화가 아니다.</li>
+    </ul>
+  </div>
+</section>
+
+<footer class="footer-nav">
+  <a href="02_ifrs18_changed_less.html">← Chapter 2. IFRS 18이 바꾼 것은 생각보다 적다</a>
+  <div style="display:flex; align-items:center; gap:14px;">
+    <a href="index_cash_flow_data_asset.html" style="text-decoration:none; color:var(--gray-600); font-size:12px; font-weight:700;">☰ 목차로</a>
+    <div class="progress-dots">
+    <span></span><span></span><span class="on"></span><span></span><span></span>
+  </div>
+  </div>
+  <a class="next" href="04_four_implementation_models.html">Chapter 4. 네 가지 구현 모델 →</a>
+</footer>
+
+<script>
+function showBA(mode, btn){
+  document.querySelectorAll('.ba-toggle button').forEach(b=>b.classList.remove('active','before','after'));
+  btn.classList.add('active', mode);
+  document.getElementById('ba-before').classList.toggle('show', mode==='before');
+  document.getElementById('ba-after').classList.toggle('show', mode==='after');
+}
+
+function answerQuiz(btn, isCorrect, fbId){
+  const opts = btn.parentElement.querySelectorAll('.quiz-opt');
+  opts.forEach(o=>{o.onclick=null; o.style.cursor='default';});
+  if(isCorrect){
+    btn.classList.add('correct-ans');
+  } else {
+    btn.classList.add('wrong-ans');
+    opts.forEach(o=>{ if(o.textContent.includes('하나의 데이터 모델에 통합')) o.classList.add('correct-ans'); });
+  }
+  const fb = document.getElementById(fbId);
+  fb.classList.add('show');
+  if(isCorrect){
+    fb.classList.add('ok');
+    fb.textContent = '정답입니다. S/4HANA는 IAS 7의 요구사항 자체를 바꾸지 않았고, 데이터 통합을 통해 기존에 허용되던 재구성 방식을 실행하기 쉽게 만들었을 뿐입니다.';
+  } else {
+    fb.classList.add('bad');
+    fb.textContent = '다시 확인해 보세요. ACDOCA에는 Cash Flow Category(현금 성격)가 자동으로 저장되지 않으며, IAS 7의 직접법 요구사항 자체도 변경되지 않았습니다.';
+  }
+}
+</script>
+
+</body>
+</html>

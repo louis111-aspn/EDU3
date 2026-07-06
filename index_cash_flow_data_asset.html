@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cash Flow Data Asset — 직접법 & IFRS 18 & S/4HANA</title>
+<style>
+  :root{
+    --navy:#003366; --navy-light:#e8eef5; --bg:#f0f3f8; --white:#ffffff;
+    --gray-900:#1a1f28; --gray-600:#5a6472; --gray-300:#d7dee6;
+    --radius:10px; --pad-x:96px;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--bg); color:var(--gray-900); font-family:'Noto Sans KR','Inter',sans-serif; font-size:15px; line-height:1.7; word-break:keep-all;}
+  h1,.serif{font-family:'DM Serif Display','Noto Sans KR',serif; font-weight:400;}
+  .hero{max-width:1000px; margin:0 auto; padding:88px var(--pad-x) 40px;}
+  .eyebrow{display:inline-flex; align-items:center; gap:8px; font-size:13px; font-weight:700; color:var(--navy); letter-spacing:.04em; text-transform:uppercase; margin-bottom:18px;}
+  .eyebrow::before{content:"";width:24px;height:2px;background:var(--navy);display:inline-block;}
+  .hero h1{font-size:40px; margin:0 0 16px; line-height:1.35;}
+  .hero p{font-size:16px; color:var(--gray-600); max-width:640px;}
+  .chapter-list{max-width:1000px; margin:0 auto; padding:0 var(--pad-x) 40px; display:flex; flex-direction:column; gap:14px;}
+  .ch-card{
+    display:flex; align-items:center; gap:24px; background:var(--white); border:1px solid var(--gray-300);
+    border-radius:var(--radius); padding:24px 28px; text-decoration:none; color:inherit;
+    transition:all .15s ease; border-left:4px solid var(--navy);
+  }
+  .ch-card:hover{transform:translateX(4px); box-shadow:0 4px 16px rgba(0,51,102,0.08);}
+  .ch-num{font-family:'JetBrains Mono'; font-size:24px; font-weight:700; color:var(--navy); flex:0 0 50px;}
+  .ch-title{font-size:17px; font-weight:700; color:var(--gray-900); margin-bottom:4px;}
+  .ch-sub{font-size:13.5px; color:var(--gray-600);}
+
+  .takeaway{
+    max-width:1000px; margin:0 auto 56px; padding:0 var(--pad-x);
+  }
+  .takeaway-card{
+    background:var(--navy); color:#fff; border-radius:var(--radius);
+    padding:36px 40px; text-align:center;
+  }
+  .takeaway-label{font-size:11px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:#9fbdd9; margin-bottom:14px;}
+  .takeaway-card .serif{font-size:22px; line-height:1.6;}
+
+  .glossary{max-width:1000px; margin:0 auto; padding:0 var(--pad-x) 80px;}
+  .glossary h3{font-size:20px; margin:0 0 20px; color:var(--gray-900); font-family:'DM Serif Display','Noto Sans KR',serif; font-weight:400;}
+  .glossary-grid{display:grid; grid-template-columns:1fr 1fr; gap:12px 24px;}
+  .gloss-item{background:var(--white); border:1px solid var(--gray-300); border-radius:8px; padding:16px 20px;}
+  .gloss-term{font-family:'JetBrains Mono'; font-size:13px; font-weight:700; color:var(--navy); margin-bottom:6px;}
+  .gloss-term .badge{font-family:'Noto Sans KR'; font-size:10px; font-weight:700; padding:2px 8px; border-radius:10px; margin-left:8px; text-transform:uppercase;}
+  .gloss-term .badge.established{background:var(--navy-light); color:var(--navy);}
+  .gloss-term .badge.conceptual{background:#fdf3e3; color:#a15c00;}
+  .gloss-def{font-size:13px; color:var(--gray-600); line-height:1.6;}
+
+  @media (max-width:760px){ :root{--pad-x:24px;} .hero h1{font-size:28px;} .glossary-grid{grid-template-columns:1fr;} }
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="eyebrow">SAP Cash Flow Statement Series</div>
+  <h1>Cash Flow Data Asset</h1>
+  <p>직접법 현금흐름표는 왜 드물었고, IFRS 18은 무엇을 바꾸었으며, S/4HANA는 실제로 무엇을 가능하게 했는가 — 그리고 그 끝에서 만나는 Reference Architecture까지, 5개 챕터로 정리한 시리즈입니다.</p>
+</header>
+<div class="chapter-list">
+  <a class="ch-card" href="01_why_direct_method_rare.html">
+    <div class="ch-num">01</div>
+    <div><div class="ch-title">직접법이 여전히 드문 이유</div><div class="ch-sub">Why Direct Method Is Still Rare — IAS 7.18~19의 실제 요구사항</div></div>
+  </a>
+  <a class="ch-card" href="02_ifrs18_changed_less.html">
+    <div class="ch-num">02</div>
+    <div><div class="ch-title">IFRS 18이 바꾼 것은 생각보다 적다</div><div class="ch-sub">IFRS 18 Changed Less Than People Think — IASB의 의도적 미정렬</div></div>
+  </a>
+  <a class="ch-card" href="03_s4hana_actually_changed.html">
+    <div class="ch-num">03</div>
+    <div><div class="ch-title">S/4HANA가 실제로 바꾼 것</div><div class="ch-sub">What S/4HANA Actually Changed — Universal Journal과 IAS 7.19(b)</div></div>
+  </a>
+  <a class="ch-card" href="04_four_implementation_models.html">
+    <div class="ch-num">04</div>
+    <div><div class="ch-title">네 가지 구현 모델</div><div class="ch-sub">Four Implementation Models — Best Fit 프레임워크</div></div>
+  </a>
+  <a class="ch-card" href="05_cash_flow_data_asset.html">
+    <div class="ch-num">05</div>
+    <div><div class="ch-title">현금흐름표에서 현금흐름 데이터 자산으로</div><div class="ch-sub">From Cash Flow Statement to Cash Flow Data Asset — Reference Architecture</div></div>
+  </a>
+</div>
+
+<div class="takeaway">
+  <div class="takeaway-card">
+    <div class="takeaway-label">이 시리즈를 한 문장으로 압축하면</div>
+    <div class="serif">현금흐름표는 회계의 산출물이지만,<br>현금흐름 데이터는 기업의 자산이다.</div>
+  </div>
+</div>
+
+<div class="glossary">
+  <h3>용어집 (Glossary)</h3>
+  <div class="glossary-grid">
+    <div class="gloss-item">
+      <div class="gloss-term">Direct Method <span class="badge established">Established</span></div>
+      <div class="gloss-def">IAS 7.18이 인정하는 현금흐름표 표시 방식. 영업활동 현금흐름을 고객·공급업체 등 주요 항목별 총현금유입·유출로 표시.</div>
+    </div>
+    <div class="gloss-item">
+      <div class="gloss-term">Reconstruction (19b 방식) <span class="badge established">Established</span></div>
+      <div class="gloss-def">IAS 7.19(b)가 인정하는 직접법 산출 방법. 매출·매출원가를 운전자본 변동으로 조정해 현금흐름을 역산하는 방식.</div>
+    </div>
+    <div class="gloss-item">
+      <div class="gloss-term">Cash Flow Category <span class="badge established">Established</span></div>
+      <div class="gloss-def">현금흐름표에 실제로 표시되는 항목 분류(Operating/Investing/Financing). IAS 7 기준에 따른 Output.</div>
+    </div>
+    <div class="gloss-item">
+      <div class="gloss-term">Cash Flow Nature <span class="badge conceptual">Conceptual</span></div>
+      <div class="gloss-def">Category를 결정하는 거래의 경제적 성격 그 자체. 이 시리즈에서 제안하는, 기업이 관리해야 할 마스터데이터 개념.</div>
+    </div>
+    <div class="gloss-item">
+      <div class="gloss-term">Cash Flow Rule Repository <span class="badge conceptual">Conceptual</span></div>
+      <div class="gloss-def">Cash Flow Nature를 결정하는 Rule을 Effective Date·Version·Approval Status와 함께 관리하는 참조 아키텍처 상의 저장소.</div>
+    </div>
+    <div class="gloss-item">
+      <div class="gloss-term">Governed Intelligence <span class="badge conceptual">Conceptual</span></div>
+      <div class="gloss-def">AI는 추천만 하고 Repository 갱신은 반드시 사람의 승인(Approval)을 거치는 통제된 자동화 구조.</div>
+    </div>
+    <div class="gloss-item">
+      <div class="gloss-term">Reference Architecture <span class="badge conceptual">Conceptual</span></div>
+      <div class="gloss-def">SAP 표준 기능이 아니라, S/4HANA·BTP·Business Rules·AI Services·Workflow를 조합해 오늘 구축 가능한 개념적 설계 모델.</div>
+    </div>
+    <div class="gloss-item">
+      <div class="gloss-term">Universal Journal (ACDOCA) <span class="badge established">Established</span></div>
+      <div class="gloss-def">S/4HANA의 단일 회계 데이터 모델. G/L, Customer/Vendor, Cost Object 등을 하나의 라인 아이템에 통합.</div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
