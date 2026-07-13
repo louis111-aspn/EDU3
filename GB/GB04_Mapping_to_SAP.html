@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GB04. Mapping the GloBE Data Model to SAP — ASPN GB Series</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Noto+Sans+KR:wght@400;500;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#003366; --navy-light:#e8eef5;
+    --gray-dark:#333333; --gray-mid:#666666; --gray-light:#f4f6f9; --gray-border:#d0d8e4;
+    --correct:#1a6e3c; --wrong:#8b1a1a; --warn:#7a5200;
+    --bg:#f0f3f8;
+  }
+  *{box-sizing:border-box;}
+  html{overflow-x:clip;}
+  body{margin:0; background:var(--bg); color:var(--gray-dark); font-family:'Noto Sans KR', sans-serif; font-size:15px; line-height:1.7; word-break:keep-all; overflow-wrap:break-word; overflow-x:clip;}
+  h1,h2,h3,.serif{font-family:'DM Serif Display', 'Noto Sans KR', serif;}
+  .mono{font-family:'JetBrains Mono','Noto Sans KR',monospace;}
+
+  .hero{background:linear-gradient(135deg, var(--navy) 0%, #001d3d 100%); color:#fff; padding:64px 32px 56px; text-align:center;}
+  .badge{display:inline-block; background:rgba(255,255,255,0.14); border:1px solid rgba(255,255,255,0.35); color:#fff; font-family:'JetBrains Mono',monospace; font-size:13px; letter-spacing:0.06em; padding:6px 16px; border-radius:20px; margin-bottom:20px;}
+  .hero h1{font-size:38px; margin:0 0 10px; font-weight:400;}
+  .hero .kor-sub{font-size:15px; color:#9fc0e0; margin-bottom:8px; font-family:'JetBrains Mono',monospace;}
+  .hero p.sub{font-size:17px; color:#cfe0f5; max-width:720px; margin:0 auto;}
+
+  .nav-wrap{position:sticky; top:0; z-index:50; background:#fff; border-bottom:1px solid var(--gray-border); overflow-x:auto;}
+  .nav-tabs{display:flex; gap:4px; padding:0 16px; max-width:960px; margin:0 auto; white-space:nowrap;}
+  .nav-tabs a{display:inline-block; padding:14px 16px; font-size:13.5px; color:var(--gray-mid); text-decoration:none; border-bottom:3px solid transparent; font-weight:500;}
+  .nav-tabs a:hover{color:var(--navy);}
+  .nav-tabs a.active{color:var(--navy); border-bottom-color:var(--navy); font-weight:700;}
+
+  .container{max-width:820px; margin:0 auto; padding:48px 20px 24px;}
+  section{margin-bottom:56px;}
+  .section-title{font-size:28px; color:var(--navy); font-weight:400; margin:0 0 6px;}
+  .section-kicker{font-family:'JetBrains Mono',monospace; font-size:13px; color:var(--gray-mid); letter-spacing:0.05em; text-transform:uppercase; margin-bottom:6px;}
+  .action-title{font-size:19px; font-weight:700; color:var(--navy); background:var(--navy-light); border-left:4px solid var(--navy); padding:16px 20px; margin:18px 0 28px; line-height:1.6;}
+
+  .think-q{background:#fff; border:2px dashed var(--navy); border-radius:6px; padding:20px 24px; margin:0 0 28px;}
+  .think-q .label{font-family:'JetBrains Mono',monospace; font-size:12.5px; color:var(--navy); font-weight:700; letter-spacing:0.06em; margin-bottom:6px;}
+  .think-q p{font-size:16.5px; color:var(--gray-dark); margin:0; font-weight:500;}
+
+  .card{background:#fff; border:1px solid var(--gray-border); border-radius:2px; padding:20px 22px; margin:16px 0;}
+  .card h3{font-size:16px; color:var(--navy); margin:0 0 10px; font-weight:700;}
+
+  .callout{border-left:3px solid var(--navy); background:var(--navy-light); padding:14px 18px; margin:18px 0; font-size:14.5px;}
+  .callout.warn{border-color:var(--warn); background:#fbf3e3;}
+  .callout .callout-label{font-weight:700; font-size:13px; margin-bottom:4px; display:block; color:var(--navy);}
+  .callout.warn .callout-label{color:var(--warn);}
+
+  .case-banner{background:#fff; border:1px solid var(--gray-border); border-radius:4px; padding:18px 22px; margin:20px 0 28px; display:flex; gap:16px; align-items:center; flex-wrap:wrap;}
+  .case-banner .ngh-logo{font-family:'JetBrains Mono',monospace; font-weight:700; color:#fff; background:var(--navy); padding:8px 12px; border-radius:4px; font-size:13.5px; white-space:nowrap;}
+  .case-banner .body{flex:1; min-width:220px; font-size:13.5px; color:var(--gray-mid);}
+
+  /* ---- Mapping Rule declaration (Ch1) ---- */
+  .rule-grid{display:grid; grid-template-columns:1fr; gap:12px; margin:20px 0;}
+  .rule-card{background:#fff; border:1.5px solid var(--navy); border-radius:6px; padding:16px 20px; display:flex; gap:16px; align-items:center;}
+  .rule-card .rule-num{font-family:'JetBrains Mono',monospace; font-size:22px; font-weight:700; color:var(--navy); min-width:40px;}
+  .rule-card .rule-text{font-size:15px; font-weight:700; color:var(--gray-dark);}
+
+  /* ---- Mapping Table with confidence ---- */
+  table.data-table{width:100%; border-collapse:collapse; margin:16px 0; font-size:13.5px;}
+  table.data-table th{background:var(--navy); color:#fff; padding:9px 11px; text-align:left; font-weight:700;}
+  table.data-table td{padding:9px 11px; border-bottom:1px solid var(--gray-border);}
+  table.data-table tr:nth-child(even) td{background:var(--gray-light);}
+  .conf{font-family:'JetBrains Mono',monospace; font-weight:700; font-size:12.5px; padding:3px 8px; border-radius:10px; display:inline-block;}
+  .conf.high{background:#e9f5ee; color:var(--correct);}
+  .conf.medium{background:#fbf3e3; color:var(--warn);}
+  .conf.low{background:#fbeaea; color:var(--wrong);}
+
+  /* ---- ADR box ---- */
+  .adr-box{background:#0d1b2a; border-radius:6px; padding:18px 22px; margin:22px 0; color:#fff;}
+  .adr-box .adr-id{font-family:'JetBrains Mono',monospace; font-size:12px; color:#7fb3e8; letter-spacing:0.05em; margin-bottom:12px; font-weight:700;}
+  .adr-box .adr-row{display:flex; gap:14px; margin-bottom:10px;}
+  .adr-box .adr-row:last-child{margin-bottom:0;}
+  .adr-box .adr-k{font-family:'JetBrains Mono',monospace; font-size:11.5px; color:#8fa3ba; min-width:76px; padding-top:2px; font-weight:700;}
+  .adr-box .adr-v{font-size:14px; color:#e8eef5; line-height:1.6;}
+
+  /* ---- Calculation Boundary diagram (Ch4) ---- */
+  .boundary{display:flex; gap:0; margin:24px 0; border-radius:6px; overflow:hidden; border:1px solid var(--gray-border);}
+  .boundary .zone{flex:1; padding:18px 16px;}
+  .boundary .zone.sap{background:var(--navy-light);}
+  .boundary .zone.calc{background:#fff3e0;}
+  .boundary .zone-title{font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:700; margin-bottom:10px; letter-spacing:0.04em;}
+  .boundary .zone.sap .zone-title{color:var(--navy);}
+  .boundary .zone.calc .zone-title{color:var(--warn);}
+  .boundary .zone-item{background:#fff; border:1px solid var(--gray-border); border-radius:4px; padding:8px 10px; margin-bottom:6px; font-size:12.5px; text-align:center;}
+  .boundary .divider{width:2px; background:repeating-linear-gradient(to bottom, var(--gray-mid) 0 6px, transparent 6px 12px);}
+
+  .flow{display:flex; align-items:center; gap:6px; flex-wrap:wrap; justify-content:center; margin:24px 0;}
+  .flow .node{background:#fff; border:1.5px solid var(--navy); color:var(--navy); font-weight:700; padding:10px 16px; border-radius:6px; font-size:13.5px; text-align:center; min-width:110px;}
+  .flow .node.dim{border-color:var(--gray-border); color:var(--gray-mid); font-weight:500;}
+  .flow .arrow{color:var(--gray-mid); font-size:18px;}
+
+  .dm-insight{background:#fff; border:1.5px solid var(--navy); border-radius:6px; padding:14px 18px; margin:22px 0 8px; display:flex; gap:12px; align-items:flex-start;}
+  .dm-insight .dm-icon{font-family:'JetBrains Mono',monospace; font-weight:700; color:var(--navy); font-size:12px; white-space:nowrap; padding-top:2px;}
+  .dm-insight p{margin:0; font-size:14px; color:var(--gray-dark); font-weight:500; line-height:1.6;}
+
+  .quiz{background:#fff; border:1px solid var(--gray-border); border-radius:4px; padding:20px 22px; margin:20px 0;}
+  .quiz .q-label{font-family:'JetBrains Mono',monospace; font-size:12.5px; color:var(--navy); font-weight:700; margin-bottom:8px;}
+  .quiz .q-text{font-weight:700; margin-bottom:14px; font-size:15px;}
+  .quiz-opt{display:block; width:100%; text-align:left; background:var(--gray-light); border:1px solid var(--gray-border); padding:11px 14px; margin-bottom:8px; border-radius:4px; cursor:pointer; font-size:14px; color:var(--gray-dark); font-family:'Noto Sans KR'; transition:background .15s;}
+  .quiz-opt:hover{background:var(--navy-light);}
+  .quiz-opt.correct{background:#e9f5ee; border-color:var(--correct); color:var(--correct); font-weight:700;}
+  .quiz-opt.wrong{background:#fbeaea; border-color:var(--wrong); color:var(--wrong);}
+  .quiz-feedback{margin-top:10px; font-size:13.5px; padding:10px 14px; border-radius:4px; display:none;}
+  .quiz-feedback.show{display:block;}
+  .quiz-feedback.correct-fb{background:#e9f5ee; color:var(--correct);}
+  .quiz-feedback.wrong-fb{background:#fbeaea; color:var(--wrong);}
+
+  .checklist{background:#fff; border:1px solid var(--gray-border); border-radius:4px; padding:20px 22px; margin:20px 0;}
+  .progress-bar{height:8px; background:var(--gray-light); border-radius:4px; overflow:hidden; margin-bottom:16px;}
+  .progress-fill{height:100%; background:var(--navy); width:0%; transition:width .3s;}
+  .check-item{display:flex; align-items:center; gap:10px; padding:8px 0; font-size:14px; cursor:pointer;}
+  .check-item input{width:16px; height:16px; accent-color:var(--navy);}
+
+  .insight-box{background:#0d1b2a; color:#fff; border-radius:6px; padding:26px 28px; margin:24px 0;}
+  .insight-box .tag{font-family:'JetBrains Mono',monospace; font-size:12.5px; color:#7fb3e8; letter-spacing:0.06em; margin-bottom:10px; font-weight:700;}
+  .insight-box p{margin:0; font-size:15.5px; line-height:1.75; color:#e8eef5;}
+  .insight-box .num{color:#7fb3e8; font-weight:700;}
+
+  .conclusion-box{background:var(--navy); color:#fff; border-radius:6px; padding:24px 26px; margin:24px 0;}
+  .conclusion-box .label{font-family:'JetBrains Mono',monospace; font-size:12.5px; letter-spacing:0.06em; color:#9fc0e0; margin-bottom:8px;}
+  .conclusion-box p{margin:0; font-size:15.5px; line-height:1.7;}
+  .conclusion-box .bridge{font-size:14.5px; color:#cfe0f5; margin-top:14px; padding-top:14px; border-top:1px solid rgba(255,255,255,0.2);}
+
+  /* ---- Series Milestone ---- */
+  .milestone{background:#fff; border:1px solid var(--gray-border); border-radius:4px; padding:18px 22px; margin:20px 0;}
+  .milestone-title{font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:700; color:var(--navy); letter-spacing:0.05em; margin-bottom:12px;}
+  .milestone-item{display:flex; align-items:center; gap:10px; padding:5px 0; font-size:14px;}
+  .milestone-item .mark{width:20px; text-align:center; font-weight:700;}
+  .milestone-item.done .mark{color:var(--correct);}
+  .milestone-item.done{color:var(--gray-dark);}
+  .milestone-item.pending .mark{color:var(--gray-border);}
+  .milestone-item.pending{color:var(--gray-mid);}
+  .milestone-item.current{font-weight:700; color:var(--navy);}
+  .milestone-item.current .mark{color:var(--navy);}
+
+
+  .part-badge{display:inline-block; background:rgba(127,179,232,0.18); border:1px solid rgba(127,179,232,0.5); color:#cfe0f5; font-family:'JetBrains Mono',monospace; font-size:11.5px; letter-spacing:0.08em; padding:4px 12px; border-radius:14px; margin-bottom:14px; margin-left:8px;}
+  .part-divider{grid-column:1/-1; font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:700; color:var(--navy); letter-spacing:0.06em; padding:10px 0 2px; border-top:1px solid var(--gray-border); margin-top:6px;}
+  .part-divider:first-child{border-top:none; margin-top:0; padding-top:0;}
+  .roadmap-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-top:20px;}
+  .roadmap-card{background:#fff; border:1px solid var(--gray-border); border-radius:4px; padding:16px 16px;}
+  .roadmap-card.current{border-color:var(--navy); border-width:2px; background:var(--navy-light);}
+  .roadmap-card .rc-tag{font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--gray-mid); margin-bottom:4px;}
+  .roadmap-card.current .rc-tag{color:var(--navy); font-weight:700;}
+  .roadmap-card h4{margin:0 0 6px; font-size:14px; color:var(--navy);}
+  .roadmap-card p{margin:0; font-size:12.5px; color:var(--gray-mid);}
+
+  footer{text-align:center; padding:32px 20px 48px; font-size:12.5px; color:var(--gray-mid);}
+
+  @media (max-width:720px){
+    .hero h1{font-size:24px;}
+    .roadmap-grid{grid-template-columns:1fr;}
+    .container{padding:32px 14px 16px;}
+    .boundary{flex-direction:column;}
+    .divider{width:100%; height:2px;}
+  }
+
+  .prevnext-bar{background:#001d3d; padding:10px 20px; display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; font-family:'JetBrains Mono',monospace; font-size:12.5px;}
+  .prevnext-bar a{color:#cfe0f5; text-decoration:none; display:flex; align-items:center; gap:6px; opacity:0.9;}
+  .prevnext-bar a:hover{color:#fff; opacity:1;}
+  .prevnext-bar .pn-index{color:#7fb3e8; font-weight:700;}
+  .prevnext-bar .pn-side{display:flex; align-items:center; gap:16px;}
+  .prevnext-bar .pn-disabled{color:#4a5b6e; cursor:default;}
+  .prevnext-bar .pn-label{color:#8fa3ba; font-size:10.5px; display:block;}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="badge">GB SERIES · GloBE &amp; SAP Add-on Discovery</div><div class="part-badge">PART I &middot; FOUNDATION</div>
+  <h1>GB04. Mapping the GloBE Data Model to SAP</h1>
+  <div class="kor-sub">GloBE Business Object는 SAP에서 어떻게 구현되는가</div>
+  <p class="sub">좋은 데이터 모델은 하나지만, 좋은 구현은 여러 가지가 존재할 수 있다</p>
+</div>
+
+<div class="prevnext-bar">
+  <div class="pn-side"><a href="./GB03_GloBE_Data_Model.html"><span>&larr;</span><span><span class="pn-label">PREV</span>GB03 GloBE Data Model</span></a></div>
+  <a href="./GB_Series_Index.html" class="pn-index">&#9776; GB Series Index</a>
+  <div class="pn-side"><a href="./GB05_Enterprise_Capability.html"><span><span class="pn-label">NEXT</span>GB05 Enterprise GloBE Capability</span><span>&rarr;</span></a></div>
+</div>
+
+<div class="nav-wrap">
+  <div class="nav-tabs" id="navTabs">
+    <a href="#intro" class="active">인트로</a>
+    <a href="#ch1">Ch1. Mapping Rule</a>
+    <a href="#ch2">Ch2. Jurisdiction 매핑</a>
+    <a href="#ch3">Ch3. Tax/Income 매핑</a>
+    <a href="#ch4">Ch4. Calculation Boundary</a>
+    <a href="#wrapup">Wrap-up</a>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- ============ INTRO ============ -->
+  <section id="intro">
+    <div class="think-q">
+      <div class="label">THINK QUESTION</div>
+      <p>Business Object가 SAP Object와 항상 1:1로 대응하지 않는다면, 우리는 무엇을 기준으로 매핑해야 할까?</p>
+    </div>
+
+    <div class="case-banner">
+      <div class="ngh-logo">NGH</div>
+      <div class="body">GB03에서 정의한 Nova Global Holdings의 Business Object(Jurisdiction, Constituent Entity 등)가 이번 모듈에서 SAP라는 하나의 구체적 시스템 위에 놓인다.</div>
+    </div>
+
+    <p>GB03은 GloBE Business Object와 그 관계 구조(Logical Model)를 정의했다. 이번 모듈의 목적은 SAP 기능을 소개하는 것이 아니라, <b>이 Logical Model이 SAP라는 하나의 Physical Model 위에서 어떻게 구현될 수 있는지 하나의 예시를 보여주는 것</b>이다. 다른 ERP였다면 다르게 구현되었을 것이다 — 이 관점이 GB04 전체를 관통한다.</p>
+  </section>
+
+  <!-- ============ CH1 ============ -->
+  <section id="ch1">
+    <div class="section-kicker">Chapter 1</div>
+    <h2 class="section-title">Business Object에서 SAP Object로</h2>
+    <div class="action-title">Business Object가 SAP Object로 옮겨가는 과정에는 명시적인 Mapping Rule이 필요하며, 이 규칙이 없으면 SAP 기능 설명과 GloBE 개념 설명이 뒤섞인다.</div>
+
+    <div class="flow">
+      <div class="node">Business Object</div>
+      <div class="arrow">→</div>
+      <div class="node">Mapping Rule</div>
+      <div class="arrow">→</div>
+      <div class="node">SAP Object</div>
+    </div>
+
+    <p>GB02가 Calculation Rule(계산 규칙), GB03이 Data Model(데이터 모델)을 다뤘다면, GB04는 <b>Mapping Rule(매핑 규칙)</b>을 다룬다. 이 매핑 규칙은 세 가지 원칙으로 선언한다.</p>
+
+    <div class="rule-grid">
+      <div class="rule-card"><div class="rule-num">01</div><div class="rule-text">Business Object가 우선이다.</div></div>
+      <div class="rule-card"><div class="rule-num">02</div><div class="rule-text">SAP Object는 구현 예시이다.</div></div>
+      <div class="rule-card"><div class="rule-num">03</div><div class="rule-text">Mapping은 프로젝트마다 달라질 수 있다.</div></div>
+    </div>
+
+    <div class="adr-box">
+      <div class="adr-id">ADR-GB04-01</div>
+      <div class="adr-row"><div class="adr-k">DECISION</div><div class="adr-v">GloBE Business Object를 SAP 표준 객체와 1:1로 강제 매핑하지 않는다.</div></div>
+      <div class="adr-row"><div class="adr-k">REASON</div><div class="adr-v">Logical Model은 Physical Model보다 오래 유지된다. 1:1 강제 매핑은 SAP 버전·프로젝트 구성이 바뀔 때마다 Logical Model까지 흔드는 위험을 만든다.</div></div>
+    </div>
+  </section>
+
+  <!-- ============ CH2 ============ -->
+  <section id="ch2">
+    <div class="section-kicker">Chapter 2</div>
+    <h2 class="section-title">Jurisdiction &amp; Constituent Entity 매핑</h2>
+    <div class="action-title">Jurisdiction은 SAP의 단일 필드가 아니라 Country와 Consolidation Unit의 조합으로 판단되는 경우가 많으며, 이는 여러 구현 방식 중 하나의 예시다.</div>
+
+    <p>NGH Germany를 예로 들면, GB03에서 정의한 Jurisdiction(Germany)이라는 Business Object는 SAP에서 국가 코드 필드 하나로 끝나지 않는다. 여러 Consolidation Unit이 같은 국가에 속할 수 있으므로, 실제로는 <b>Country + Consolidation Unit</b>의 조합으로 "어느 Consolidation Unit들이 같은 Jurisdiction에 속하는가"를 판단하는 구조가 하나의 구현 예시가 된다.</p>
+
+    <table class="data-table">
+      <tr><th>Business Object</th><th>SAP Example</th><th>Confidence</th></tr>
+      <tr><td>Jurisdiction</td><td>Country + Consolidation Unit</td><td><span class="conf high">HIGH</span></td></tr>
+      <tr><td>Constituent Entity</td><td>Consolidation Unit</td><td><span class="conf high">HIGH</span></td></tr>
+    </table>
+
+    <div class="callout">
+      <span class="callout-label">Confidence 표기 안내</span>
+      Confidence는 "SAP 표준 문서·구축 사례로 확인된 정도"를 의미하며, GloBE 규정상의 정답 여부와는 무관하다. HIGH는 GR 시리즈에서 이미 확립된 개념(Consolidation Unit)과 직접 연결되는 경우, LOW는 프로젝트별 설계가 크게 갈릴 수 있는 경우다.
+    </div>
+
+    <div class="adr-box">
+      <div class="adr-id">ADR-GB04-02</div>
+      <div class="adr-row"><div class="adr-k">DECISION</div><div class="adr-v">Jurisdiction의 SAP 구현은 Country 필드 단독이 아니라 Consolidation Unit과의 조합으로 판단한다.</div></div>
+      <div class="adr-row"><div class="adr-k">REASON</div><div class="adr-v">하나의 국가에 여러 Consolidation Unit이 존재할 수 있으므로, Country 단독 필드로는 Jurisdictional Blending 대상 집합을 정확히 특정할 수 없다.</div></div>
+    </div>
+  </section>
+
+  <!-- ============ CH3 ============ -->
+  <section id="ch3">
+    <div class="section-kicker">Chapter 3</div>
+    <h2 class="section-title">Covered Tax &amp; GloBE Income 매핑</h2>
+    <div class="action-title">Covered Tax와 GloBE Income은 SAP의 특정 테이블 하나로 매핑되지 않으며, ACDOCU 기반 재무데이터 위에서 프로젝트별 계정 설계에 따라 다르게 구현된다.</div>
+
+    <table class="data-table">
+      <tr><th>Business Object</th><th>SAP Example</th><th>Confidence</th></tr>
+      <tr><td>GloBE Income</td><td>ACDOCU 기반 연결 재무데이터</td><td><span class="conf medium">MEDIUM</span></td></tr>
+      <tr><td>Covered Tax</td><td>Tax 관련 계정 / FS Item</td><td><span class="conf medium">MEDIUM</span></td></tr>
+    </table>
+
+    <p>GB01에서 확인했듯 ACDOCU는 GloBE Income 산출의 좋은 출발점이 되지만, 그 자체로 GloBE Income은 아니다 — GB02의 GloBE Adjustment가 별도로 적용되어야 한다. Covered Tax도 마찬가지로 어떤 G/L 계정을 "Tax 관련"으로 분류할지는 프로젝트의 계정 설계(Chart of Accounts, FS Item 매핑)에 따라 달라진다.</p>
+
+    <div class="adr-box">
+      <div class="adr-id">ADR-GB04-03</div>
+      <div class="adr-row"><div class="adr-k">DECISION</div><div class="adr-v">Covered Tax의 SAP 구현은 프로젝트별 계정 설계(FS Item 매핑)에 따라 달라질 수 있다.</div></div>
+      <div class="adr-row"><div class="adr-k">REASON</div><div class="adr-v">SAP 표준은 "어떤 계정이 Covered Tax에 해당하는가"에 대한 고정된 정답을 제공하지 않는다. 이는 GloBE 규정 해석과 기업의 Chart of Accounts 구조에 따라 프로젝트마다 확정해야 하는 설계 영역이다.</div></div>
+    </div>
+  </section>
+
+  <!-- ============ CH4 ============ -->
+  <section id="ch4">
+    <div class="section-kicker">Chapter 4</div>
+    <h2 class="section-title">Calculation Boundary — SAP Standard와 Calculation Platform의 경계</h2>
+    <div class="action-title">Top-up Tax 계산은 SAP 표준의 책임이 끝나고 별도의 계산 플랫폼(PaPM 등) 또는 Add-on이 시작되는 지점이며, 이 경계를 명확히 인식하는 것이 GB05~07의 출발점이다.</div>
+
+    <p>지금까지의 매핑(Jurisdiction, Constituent Entity, GloBE Income, Covered Tax)은 모두 SAP 표준(Group Reporting, ACDOCU) 안에서 High~Medium Confidence로 설명할 수 있었다. 그러나 Top-up Tax부터는 다르다.</p>
+
+    <div class="boundary">
+      <div class="zone sap">
+        <div class="zone-title">SAP STANDARD</div>
+        <div class="zone-item">Group Reporting</div>
+        <div class="zone-item">ACDOCU</div>
+        <div class="zone-item">Jurisdiction / Entity 매핑</div>
+        <div class="zone-item">GloBE Income / Covered Tax 원천 데이터</div>
+      </div>
+      <div class="divider"></div>
+      <div class="zone calc">
+        <div class="zone-title">CALCULATION PLATFORM / ADD-ON</div>
+        <div class="zone-item">SAP PaPM</div>
+        <div class="zone-item">Top-up Tax 계산</div>
+        <div class="zone-item">Safe Harbour 판정</div>
+        <div class="zone-item">ASPN Add-on (GB07)</div>
+      </div>
+    </div>
+
+    <table class="data-table">
+      <tr><th>Business Object</th><th>SAP Example</th><th>Confidence</th></tr>
+      <tr><td>Top-up Tax</td><td>PaPM 또는 후속 계산 결과 (SAP 표준 단독 아님)</td><td><span class="conf low">LOW</span></td></tr>
+    </table>
+
+    <div class="callout warn">
+      <span class="callout-label">경계의 의미</span>
+      이 경계는 "SAP가 부족하다"는 뜻이 아니라, "SAP 표준은 원천 데이터와 기본 계산 인프라까지 담당하고, GloBE 고유의 계산 로직(Top-up Tax, Safe Harbour)은 별도 계층에서 완결된다"는 설계상의 역할 분담이다. GR 표준 도입 초기 AGRA가 출발했던 지점과 동일한 패턴이다.
+    </div>
+
+    <div class="adr-box">
+      <div class="adr-id">ADR-GB04-04</div>
+      <div class="adr-row"><div class="adr-k">DECISION</div><div class="adr-v">Top-up Tax 계산은 SAP 표준 범위 밖이며, 별도 계산 엔진(PaPM 등) 연계가 필요하다는 점을 설계 초기에 확정한다.</div></div>
+      <div class="adr-row"><div class="adr-k">REASON</div><div class="adr-v">Top-up Tax는 Safe Harbour 판정, IIR/UTPR/QDMTT 배분 등 SAP Group Reporting의 표준 계산 범위를 넘어서는 GloBE 고유 로직을 포함한다. 이 경계를 초기에 확정해야 GB05(Business Capability)·GB06(Gap Analysis)에서 정확한 범위 산정이 가능하다.</div></div>
+    </div>
+
+    <div class="quiz">
+      <div class="q-label">CHECK YOUR UNDERSTANDING</div>
+      <div class="q-text">Confidence가 LOW로 표기된 Top-up Tax의 의미는?</div>
+      <div class="quiz-opt" onclick="checkAnswer(this, false)">GloBE 규정상 Top-up Tax의 계산 원리가 불확실하다</div>
+      <div class="quiz-opt" onclick="checkAnswer(this, true)">SAP 표준만으로는 구현 방식이 확정되지 않아 프로젝트별 설계·별도 계산 엔진 연계가 필요하다</div>
+      <div class="quiz-opt" onclick="checkAnswer(this, false)">NGH 케이스에서는 Top-up Tax가 발생하지 않는다</div>
+      <div class="quiz-feedback" id="fb1"></div>
+    </div>
+  </section>
+
+  <!-- ============ WRAP-UP ============ -->
+  <section id="wrapup">
+    <div class="section-kicker">Wrap-up</div>
+    <h2 class="section-title">Mapping Table 총정리 및 다음 모듈</h2>
+
+    <p>GB03의 Business Object Catalog와 짝을 이루는 최종 Mapping Table이다.</p>
+
+    <table class="data-table">
+      <tr><th>Business Object</th><th>SAP Example</th><th>Confidence</th><th>Remarks</th></tr>
+      <tr><td>Jurisdiction</td><td>Country + Consolidation Unit</td><td><span class="conf high">HIGH</span></td><td>예시</td></tr>
+      <tr><td>Constituent Entity</td><td>Consolidation Unit</td><td><span class="conf high">HIGH</span></td><td>예시</td></tr>
+      <tr><td>GloBE Income</td><td>ACDOCU 기반 재무데이터</td><td><span class="conf medium">MEDIUM</span></td><td>계산 대상, GloBE Adjustment 별도 필요</td></tr>
+      <tr><td>Covered Tax</td><td>Tax 관련 계정 / FS Item</td><td><span class="conf medium">MEDIUM</span></td><td>구현 방식에 따라 다름</td></tr>
+      <tr><td>Top-up Tax</td><td>PaPM 또는 후속 계산 결과</td><td><span class="conf low">LOW</span></td><td>SAP 표준 단독 아님</td></tr>
+    </table>
+
+    <div class="conclusion-box">
+      <div class="label">[이번 모듈 결론]</div>
+      <p>좋은 데이터 모델은 하나지만, 좋은 구현은 여러 가지가 존재할 수 있다. SAP는 그 여러 구현 가능성 중 하나의 예시이며, Jurisdiction·Constituent Entity는 SAP 표준 안에서 높은 확신도로 매핑되지만 Top-up Tax는 SAP 표준 밖의 계산 플랫폼을 필요로 한다.</p>
+      <div class="bridge">다음 GB05에서는 '이 경계 너머의 업무 요구사항, 즉 어떤 Business Capability가 공통으로 필요한가'를 정리한다.</div>
+    </div>
+
+    <div class="insight-box">
+      <div class="tag">CALCULATION PLATFORM INSIGHT · #04</div>
+      <p>좋은 데이터 모델은 하나지만, 좋은 구현은 여러 가지가 존재할 수 있다. <span class="num">Calculation Platform은 이 다양한 구현을 연결하는 계층</span>이다.</p>
+    </div>
+
+    <div class="milestone">
+      <div class="milestone-title">SERIES MILESTONE</div>
+      <div class="milestone-item done"><span class="mark">✓</span> GB01 — Problem (Why)</div>
+      <div class="milestone-item done"><span class="mark">✓</span> GB02 — Calculation (Flow)</div>
+      <div class="milestone-item done"><span class="mark">✓</span> GB03 — Data Model (Structure)</div>
+      <div class="milestone-item current"><span class="mark">✓</span> GB04 — Implementation (Mapping)</div>
+      <div class="milestone-item pending"><span class="mark">□</span> GB05 — Capability</div>
+      <div class="milestone-item pending"><span class="mark">□</span> GB06 — Gap</div>
+      <div class="milestone-item pending"><span class="mark">□</span> GB07 — Blueprint</div>
+    </div>
+
+    <div class="checklist">
+      <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+      <label class="check-item"><input type="checkbox" onchange="updateProgress()"> Mapping Rule 3원칙(Business Object 우선/SAP는 예시/프로젝트별 상이)을 설명할 수 있다</label>
+      <label class="check-item"><input type="checkbox" onchange="updateProgress()"> Jurisdiction이 Country 단독이 아니라 Consolidation Unit과의 조합으로 판단되는 이유를 설명할 수 있다</label>
+      <label class="check-item"><input type="checkbox" onchange="updateProgress()"> Covered Tax/GloBE Income 매핑의 Confidence가 왜 MEDIUM인지 설명할 수 있다</label>
+      <label class="check-item"><input type="checkbox" onchange="updateProgress()"> SAP Standard와 Calculation Platform의 경계를 Top-up Tax 사례로 설명할 수 있다</label>
+      <label class="check-item"><input type="checkbox" onchange="updateProgress()"> Logical Model과 Physical Model의 관계를 Mapping Rule 관점에서 설명할 수 있다</label>
+    </div>
+
+    <p style="font-size:13.5px; color:var(--gray-mid); margin-bottom:4px;">GB Series Learning Path</p>
+    <div class="roadmap-grid">
+      <div class="part-divider">PART I — FOUNDATION</div>
+      <div class="roadmap-card">
+        <div class="rc-tag">GB01 · Why</div>
+        <h4>GloBE란 무엇인가</h4>
+        <p>왜 연결재무데이터가 필요한가</p>
+      </div>
+      <div class="roadmap-card">
+        <div class="rc-tag">GB02 · Flow</div>
+        <h4>GloBE 계산 메커니즘</h4>
+        <p>데이터와 규칙이 결합된 계산 체계</p>
+      </div>
+      <div class="roadmap-card">
+        <div class="rc-tag">GB03 · Structure</div>
+        <h4>GloBE Data Model</h4>
+        <p>Business Object와 관계 구조</p>
+      </div>
+      <div class="roadmap-card current">
+        <div class="rc-tag">GB04 · NOW · Mapping</div>
+        <h4>Mapping to SAP</h4>
+        <p>Logical Model의 SAP Physical 구현 예시</p>
+      </div>
+      <div class="part-divider">PART II — STRATEGY</div>
+      <div class="roadmap-card">
+        <div class="rc-tag">GB05 · Capability</div>
+        <h4>Enterprise GloBE Capability</h4>
+        <p>어떤 업무 역량이 공통으로 필요한가</p>
+      </div>
+      <div class="roadmap-card">
+        <div class="rc-tag">GB06 · Assessment</div>
+        <h4>표준의 한계</h4>
+        <p>SAP 표준과 업무 요구사항의 격차</p>
+      </div>
+      <div class="roadmap-card">
+        <div class="rc-tag">GB07 · Architecture</div>
+        <h4>GloBE Add-on 아키텍처</h4>
+        <p>ASPN 애드인 기능 정의 및 개발 로드맵</p>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer>ASPN BAC사업부 · GB Series — GloBE &amp; SAP Add-on Discovery · Internal Training Material</footer>
+
+<script>
+  const sections = document.querySelectorAll('section');
+  const navLinks = document.querySelectorAll('.nav-tabs a');
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(sec => { if (sec.getBoundingClientRect().top <= 100) current = sec.id; });
+    navLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + current));
+  });
+  navLinks.forEach(a => a.addEventListener('click', e => {
+    e.preventDefault();
+    document.querySelector(a.getAttribute('href')).scrollIntoView({behavior:'smooth', block:'start'});
+  }));
+
+  function checkAnswer(el, isCorrect){
+    const opts = el.parentElement.querySelectorAll('.quiz-opt');
+    opts.forEach(o => o.style.pointerEvents = 'none');
+    const fb = el.parentElement.querySelector('.quiz-feedback');
+    if(isCorrect){
+      el.classList.add('correct');
+      fb.textContent = '정답입니다. Confidence는 GloBE 규정의 불확실성이 아니라 SAP 구현 방식의 확정 정도를 나타냅니다.';
+      fb.className = 'quiz-feedback show correct-fb';
+    } else {
+      el.classList.add('wrong');
+      fb.textContent = '다시 생각해보세요. Confidence는 GloBE 규정 자체가 아니라 SAP 구현의 확신도를 의미합니다.';
+      fb.className = 'quiz-feedback show wrong-fb';
+    }
+  }
+
+  function updateProgress(){
+    const boxes = document.querySelectorAll('.check-item input');
+    const checked = document.querySelectorAll('.check-item input:checked').length;
+    document.getElementById('progressFill').style.width = (checked / boxes.length * 100) + '%';
+  }
+</script>
+
+</body>
+</html>

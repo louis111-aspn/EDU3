@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GB02. GloBE 계산 메커니즘 — ASPN GB Series</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Noto+Sans+KR:wght@400;500;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#003366; --navy-light:#e8eef5;
+    --gray-dark:#333333; --gray-mid:#666666; --gray-light:#f4f6f9; --gray-border:#d0d8e4;
+    --correct:#1a6e3c; --wrong:#8b1a1a; --warn:#7a5200;
+    --bg:#f0f3f8;
+  }
+  *{box-sizing:border-box;}
+  html{overflow-x:clip;}
+  body{
+    margin:0; background:var(--bg); color:var(--gray-dark);
+    font-family:'Noto Sans KR', sans-serif; font-size:15px; line-height:1.7;
+    word-break:keep-all; overflow-wrap:break-word; overflow-x:clip;
+  }
+  h1,h2,h3,.serif{font-family:'DM Serif Display', 'Noto Sans KR', serif;}
+  .mono{font-family:'JetBrains Mono','Noto Sans KR',monospace;}
+
+  .hero{background:linear-gradient(135deg, var(--navy) 0%, #001d3d 100%); color:#fff; padding:64px 32px 56px; text-align:center;}
+  .badge{display:inline-block; background:rgba(255,255,255,0.14); border:1px solid rgba(255,255,255,0.35); color:#fff; font-family:'JetBrains Mono',monospace; font-size:13px; letter-spacing:0.06em; padding:6px 16px; border-radius:20px; margin-bottom:20px;}
+  .hero h1{font-size:42px; margin:0 0 12px; font-weight:400;}
+  .hero p.sub{font-size:17px; color:#cfe0f5; max-width:720px; margin:0 auto;}
+
+  .nav-wrap{position:sticky; top:0; z-index:50; background:#fff; border-bottom:1px solid var(--gray-border); overflow-x:auto;}
+  .nav-tabs{display:flex; gap:4px; padding:0 16px; max-width:960px; margin:0 auto; white-space:nowrap;}
+  .nav-tabs a{display:inline-block; padding:14px 16px; font-size:13.5px; color:var(--gray-mid); text-decoration:none; border-bottom:3px solid transparent; font-weight:500;}
+  .nav-tabs a:hover{color:var(--navy);}
+  .nav-tabs a.active{color:var(--navy); border-bottom-color:var(--navy); font-weight:700;}
+
+  .container{max-width:820px; margin:0 auto; padding:48px 20px 24px;}
+  section{margin-bottom:56px;}
+  .section-title{font-size:30px; color:var(--navy); font-weight:400; margin:0 0 6px;}
+  .section-kicker{font-family:'JetBrains Mono',monospace; font-size:13px; color:var(--gray-mid); letter-spacing:0.05em; text-transform:uppercase; margin-bottom:6px;}
+  .action-title{font-size:19px; font-weight:700; color:var(--navy); background:var(--navy-light); border-left:4px solid var(--navy); padding:16px 20px; margin:18px 0 28px; line-height:1.6;}
+
+  .think-q{background:#fff; border:2px dashed var(--navy); border-radius:6px; padding:20px 24px; margin:0 0 28px;}
+  .think-q .label{font-family:'JetBrains Mono',monospace; font-size:12.5px; color:var(--navy); font-weight:700; letter-spacing:0.06em; margin-bottom:6px;}
+  .think-q p{font-size:16.5px; color:var(--gray-dark); margin:0; font-weight:500;}
+
+  .card{background:#fff; border:1px solid var(--gray-border); border-radius:2px; padding:20px 22px; margin:16px 0;}
+  .card h3{font-size:16px; color:var(--navy); margin:0 0 10px; font-family:'Noto Sans KR'; font-weight:700;}
+
+  .callout{border-left:3px solid var(--navy); background:var(--navy-light); padding:14px 18px; margin:18px 0; font-size:14.5px;}
+  .callout.warn{border-color:var(--warn); background:#fbf3e3;}
+  .callout.correct{border-color:var(--correct); background:#e9f5ee;}
+  .callout .callout-label{font-weight:700; font-size:13px; margin-bottom:4px; display:block; color:var(--navy);}
+  .callout.warn .callout-label{color:var(--warn);}
+  .callout.correct .callout-label{color:var(--correct);}
+
+  .case-banner{background:#fff; border:1px solid var(--gray-border); border-radius:4px; padding:18px 22px; margin:20px 0 28px; display:flex; gap:16px; align-items:center; flex-wrap:wrap;}
+  .case-banner .ngh-logo{font-family:'JetBrains Mono',monospace; font-weight:700; color:#fff; background:var(--navy); padding:8px 12px; border-radius:4px; font-size:13.5px; white-space:nowrap;}
+  .case-banner .body{flex:1; min-width:220px; font-size:13.5px; color:var(--gray-mid);}
+
+  .flow{display:flex; align-items:center; gap:6px; flex-wrap:wrap; justify-content:center; margin:24px 0;}
+  .flow .node{background:#fff; border:1.5px solid var(--navy); color:var(--navy); font-weight:700; padding:10px 16px; border-radius:6px; font-size:13.5px; text-align:center; min-width:110px;}
+  .flow .node.dim{border-color:var(--gray-border); color:var(--gray-mid); font-weight:500;}
+  .flow .arrow{color:var(--gray-mid); font-size:18px;}
+
+  /* ---- Twin/Branch Flow ---- */
+  .branch-flow{margin:28px 0; display:flex; flex-direction:column; align-items:center;}
+  .branch-flow .single-node{background:#fff; border:1.5px solid var(--navy); color:var(--navy); font-weight:700; padding:10px 18px; border-radius:6px; font-size:13.5px; margin-bottom:2px;}
+  .branch-flow .vsep{color:var(--gray-mid); font-size:16px; line-height:1;}
+  .branch-flow .split-row{display:flex; gap:60px; margin:2px 0;}
+  .branch-flow .split-row .col{display:flex; flex-direction:column; align-items:center; gap:2px;}
+  .branch-flow .split-row .node{background:#fff; border:1.5px solid var(--gray-border); color:var(--gray-dark); font-weight:600; padding:9px 14px; border-radius:6px; font-size:13px; text-align:center; min-width:130px;}
+  .branch-flow .split-row .node.tax{border-color:#7a5200; color:#7a5200;}
+  .branch-flow .split-row .node.globe{border-color:var(--navy); color:var(--navy);}
+  .branch-flow .split-row .node.result{font-weight:700;}
+  .branch-flow .merge-label{font-size:12px; color:var(--gray-mid); margin:2px 0;}
+
+  .drill{border:1px solid var(--gray-border); border-radius:4px; margin:12px 0; overflow:hidden;}
+  .drill-head{background:var(--gray-light); padding:13px 18px; cursor:pointer; font-weight:700; color:var(--navy); display:flex; justify-content:space-between; align-items:center; font-size:14.5px;}
+  .drill-head .chev{transition:transform .2s; font-size:12px; color:var(--gray-mid);}
+  .drill.open .chev{transform:rotate(90deg);}
+  .drill-body{max-height:0; overflow:hidden; transition:max-height .25s ease; background:#fff;}
+  .drill.open .drill-body{max-height:700px;}
+  .drill-body-inner{padding:16px 18px; font-size:14.5px;}
+
+  table.data-table{width:100%; border-collapse:collapse; margin:16px 0; font-size:14px;}
+  table.data-table th{background:var(--navy); color:#fff; padding:10px 12px; text-align:left; font-weight:700;}
+  table.data-table td{padding:10px 12px; border-bottom:1px solid var(--gray-border);}
+  table.data-table tr:nth-child(even) td{background:var(--gray-light);}
+  table.data-table td.num{text-align:right; font-family:'JetBrains Mono',monospace;}
+  table.data-table th.num{text-align:right;}
+
+  /* ---- BDRSO template ---- */
+  .bdrso{background:#fbfcfe; border:1px solid var(--gray-border); border-radius:4px; padding:16px 18px; margin:18px 0;}
+  .bdrso .bdrso-title{font-size:12.5px; font-weight:700; color:var(--navy); letter-spacing:0.04em; margin-bottom:10px; font-family:'JetBrains Mono',monospace;}
+  .bdrso-row{display:flex; padding:7px 0; border-bottom:1px solid var(--gray-border); font-size:13.5px;}
+  .bdrso-row:last-child{border-bottom:none;}
+  .bdrso-row .k{width:110px; flex-shrink:0; font-weight:700; color:var(--navy);}
+  .bdrso-row .v{flex:1; color:var(--gray-dark);}
+
+  /* ---- Calculation Trace ---- */
+  .calc-trace{background:#0d1b2a; border-radius:6px; padding:16px 20px; margin:20px 0; color:#fff;}
+  .calc-trace .ct-title{font-family:'JetBrains Mono',monospace; font-size:11.5px; color:#7fb3e8; letter-spacing:0.06em; margin-bottom:10px; font-weight:700;}
+  .calc-trace .ct-chain{display:flex; align-items:center; gap:8px; flex-wrap:wrap; justify-content:center;}
+  .calc-trace .ct-node{padding:7px 12px; border-radius:4px; font-size:12.5px; font-family:'JetBrains Mono',monospace; background:rgba(255,255,255,0.08); color:#b8c9dd;}
+  .calc-trace .ct-node.here{background:#7fb3e8; color:#0d1b2a; font-weight:700;}
+  .calc-trace .ct-arrow{color:#5a7290; font-size:14px;}
+
+  .quiz{background:#fff; border:1px solid var(--gray-border); border-radius:4px; padding:20px 22px; margin:20px 0;}
+  .quiz .q-label{font-family:'JetBrains Mono',monospace; font-size:12.5px; color:var(--navy); font-weight:700; margin-bottom:8px;}
+  .quiz .q-text{font-weight:700; margin-bottom:14px; font-size:15px;}
+  .quiz-opt{display:block; width:100%; text-align:left; background:var(--gray-light); border:1px solid var(--gray-border); padding:11px 14px; margin-bottom:8px; border-radius:4px; cursor:pointer; font-size:14px; color:var(--gray-dark); font-family:'Noto Sans KR'; transition:background .15s;}
+  .quiz-opt:hover{background:var(--navy-light);}
+  .quiz-opt.correct{background:#e9f5ee; border-color:var(--correct); color:var(--correct); font-weight:700;}
+  .quiz-opt.wrong{background:#fbeaea; border-color:var(--wrong); color:var(--wrong);}
+  .quiz-feedback{margin-top:10px; font-size:13.5px; padding:10px 14px; border-radius:4px; display:none;}
+  .quiz-feedback.show{display:block;}
+  .quiz-feedback.correct-fb{background:#e9f5ee; color:var(--correct);}
+  .quiz-feedback.wrong-fb{background:#fbeaea; color:var(--wrong);}
+
+  .checklist{background:#fff; border:1px solid var(--gray-border); border-radius:4px; padding:20px 22px; margin:20px 0;}
+  .progress-bar{height:8px; background:var(--gray-light); border-radius:4px; overflow:hidden; margin-bottom:16px;}
+  .progress-fill{height:100%; background:var(--navy); width:0%; transition:width .3s;}
+  .check-item{display:flex; align-items:center; gap:10px; padding:8px 0; font-size:14px; cursor:pointer;}
+  .check-item input{width:16px; height:16px; accent-color:var(--navy);}
+
+  .insight-box{background:#0d1b2a; color:#fff; border-radius:6px; padding:26px 28px; margin:24px 0;}
+  .insight-box .tag{font-family:'JetBrains Mono',monospace; font-size:12.5px; color:#7fb3e8; letter-spacing:0.06em; margin-bottom:10px; font-weight:700;}
+  .insight-box p{margin:0; font-size:15.5px; line-height:1.75; color:#e8eef5;}
+  .insight-box .num{color:#7fb3e8; font-weight:700;}
+
+  .conclusion-box{background:var(--navy); color:#fff; border-radius:6px; padding:24px 26px; margin:24px 0;}
+  .conclusion-box .label{font-family:'JetBrains Mono',monospace; font-size:12.5px; letter-spacing:0.06em; color:#9fc0e0; margin-bottom:8px;}
+  .conclusion-box p{margin:0; font-size:15.5px; line-height:1.7;}
+  .conclusion-box .bridge{font-size:14.5px; color:#cfe0f5; margin-top:14px; padding-top:14px; border-top:1px solid rgba(255,255,255,0.2);}
+
+
+  .part-badge{display:inline-block; background:rgba(127,179,232,0.18); border:1px solid rgba(127,179,232,0.5); color:#cfe0f5; font-family:'JetBrains Mono',monospace; font-size:11.5px; letter-spacing:0.08em; padding:4px 12px; border-radius:14px; margin-bottom:14px; margin-left:8px;}
+  .part-divider{grid-column:1/-1; font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:700; color:var(--navy); letter-spacing:0.06em; padding:10px 0 2px; border-top:1px solid var(--gray-border); margin-top:6px;}
+  .part-divider:first-child{border-top:none; margin-top:0; padding-top:0;}
+  .roadmap-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-top:20px;}
+  .roadmap-card{background:#fff; border:1px solid var(--gray-border); border-radius:4px; padding:16px 16px;}
+  .roadmap-card.current{border-color:var(--navy); border-width:2px; background:var(--navy-light);}
+  .roadmap-card .rc-tag{font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--gray-mid); margin-bottom:4px;}
+  .roadmap-card.current .rc-tag{color:var(--navy); font-weight:700;}
+  .roadmap-card h4{margin:0 0 6px; font-size:14px; color:var(--navy);}
+  .roadmap-card p{margin:0; font-size:12.5px; color:var(--gray-mid);}
+
+  footer{text-align:center; padding:32px 20px 48px; font-size:12.5px; color:var(--gray-mid);}
+
+  @media (max-width:720px){
+    .hero h1{font-size:30px;}
+    .roadmap-grid{grid-template-columns:1fr;}
+    .container{padding:32px 14px 16px;}
+    .branch-flow .split-row{gap:20px;}
+  }
+
+  .prevnext-bar{background:#001d3d; padding:10px 20px; display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; font-family:'JetBrains Mono',monospace; font-size:12.5px;}
+  .prevnext-bar a{color:#cfe0f5; text-decoration:none; display:flex; align-items:center; gap:6px; opacity:0.9;}
+  .prevnext-bar a:hover{color:#fff; opacity:1;}
+  .prevnext-bar .pn-index{color:#7fb3e8; font-weight:700;}
+  .prevnext-bar .pn-side{display:flex; align-items:center; gap:16px;}
+  .prevnext-bar .pn-disabled{color:#4a5b6e; cursor:default;}
+  .prevnext-bar .pn-label{color:#8fa3ba; font-size:10.5px; display:block;}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="badge">GB SERIES · GloBE &amp; SAP Add-on Discovery</div><div class="part-badge">PART I &middot; FOUNDATION</div>
+  <h1>GB02. GloBE 계산 메커니즘</h1>
+  <p class="sub">GloBE는 하나의 계산이 아니라, 데이터와 규칙이 결합된 계산 체계이다</p>
+</div>
+
+<div class="prevnext-bar">
+  <div class="pn-side"><a href="./GB01_GloBE_Overview.html"><span>&larr;</span><span><span class="pn-label">PREV</span>GB01 GloBE란 무엇인가</span></a></div>
+  <a href="./GB_Series_Index.html" class="pn-index">&#9776; GB Series Index</a>
+  <div class="pn-side"><a href="./GB03_GloBE_Data_Model.html"><span><span class="pn-label">NEXT</span>GB03 GloBE Data Model</span><span>&rarr;</span></a></div>
+</div>
+
+<div class="nav-wrap">
+  <div class="nav-tabs" id="navTabs">
+    <a href="#intro" class="active">인트로</a>
+    <a href="#ch1">Ch1. 데이터가 먼저</a>
+    <a href="#ch2">Ch2. Covered Tax</a>
+    <a href="#ch3">Ch3. GloBE Income</a>
+    <a href="#ch4">Ch4. ETR</a>
+    <a href="#ch5">Ch5. Top-up Tax</a>
+    <a href="#wrapup">Wrap-up</a>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- ============ INTRO ============ -->
+  <section id="intro">
+    <div class="think-q">
+      <div class="label">THINK QUESTION</div>
+      <p>ETR은 왜 하나의 공식이 아니라 데이터 파이프라인으로 이해해야 할까?</p>
+    </div>
+
+    <div class="case-banner">
+      <div class="ngh-logo">NGH</div>
+      <div class="body">GB01에서 소개한 Nova Global Holdings가 이번 모듈부터 실제 숫자로 등장한다. Korea(HQ)·Germany·France·Singapore·Vietnam 5개국의 GloBE Income·Covered Tax 데이터를 사용해 ETR과 Top-up Tax를 직접 계산해본다.</div>
+    </div>
+
+    <p>GB01에서 확인한 핵심 문장은 "GloBE는 연결재무데이터에서 시작된다"였다. 이번 모듈은 그 다음 질문을 다룬다 — 연결재무데이터가 어떤 경로를 거쳐 ETR이라는 숫자로 변환되는가. 많은 자료가 "ETR = Covered Tax ÷ GloBE Income"이라는 공식에서 출발하지만, GB 시리즈는 반대로 간다. 공식은 결과일 뿐이고, 그 결과를 만들어내는 데이터의 이동 경로를 먼저 이해해야 GB03(데이터 모델) 이후가 자연스럽게 이어진다.</p>
+  </section>
+
+  <!-- ============ CH1 ============ -->
+  <section id="ch1">
+    <div class="section-kicker">Chapter 1</div>
+    <h2 class="section-title">공식보다 데이터가 먼저</h2>
+    <div class="action-title">GloBE 계산은 하나의 산식이 아니라, 동일한 연결재무데이터가 두 개의 서로 다른 조정 트랙(세무 조정 / GloBE 조정)을 거쳐 각각 Covered Tax와 GloBE Income으로 변환된 뒤 합류하는 파이프라인이다.</div>
+
+    <p>가장 흔한 오해는 Covered Tax가 먼저 계산되고 그 다음 GloBE Income이 계산된다고 생각하는 것이다. 실제로는 두 값 모두 동일한 출발점(연결재무데이터)에서 각각 독립적인 조정 과정을 거쳐 산출되는 <b>쌍둥이 트랙</b>이며, ETR 단계에서 비로소 하나로 합류한다.</p>
+
+    <div class="branch-flow">
+      <div class="single-node">Financial Data</div>
+      <div class="vsep">↙&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↘</div>
+      <div class="split-row">
+        <div class="col">
+          <div class="node tax">Tax Adjustment</div>
+          <div class="vsep">↓</div>
+          <div class="node tax result">Covered Tax</div>
+        </div>
+        <div class="col">
+          <div class="node globe">GloBE Adjustment</div>
+          <div class="vsep">↓</div>
+          <div class="node globe result">GloBE Income</div>
+        </div>
+      </div>
+      <div class="merge-label">↘&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↙</div>
+      <div class="single-node">ETR</div>
+      <div class="vsep">↓</div>
+      <div class="single-node">Top-up Tax</div>
+    </div>
+
+    <p>이 쌍둥이 구조를 이해하면 "왜 각국 법인세 신고서를 모아도 계산이 끝나지 않는가"(GB01 Ch3)라는 질문에 더 정확히 답할 수 있다 — 세무 신고서는 Covered Tax 트랙의 출발점 근처에만 관련될 뿐, GloBE Income 트랙은 애초에 세무신고서와 무관하게 회계기준에서 출발하기 때문이다.</p>
+
+    <div class="card">
+      <h3>GB 시리즈 공통 템플릿 — Business / Data / Rule / System / Output (B/D/R/S/O)</h3>
+      <p style="font-size:13px; color:var(--gray-mid); margin:0 0 12px;">GB02부터 모든 핵심 개념에 이 5개 관점을 고정으로 적용한다. 마지막 Output은 "이 계산 결과가 다음 계산 단계의 입력으로 어떻게 전달되는가"를 명시해, 데이터 파이프라인이라는 관점을 계속 드러낸다.</p>
+      <div class="bdrso">
+        <div class="bdrso-title">TEMPLATE — 예시: ETR</div>
+        <div class="bdrso-row"><div class="k">Business</div><div class="v">Jurisdiction별 실효세율</div></div>
+        <div class="bdrso-row"><div class="k">Data</div><div class="v">Covered Tax, GloBE Income</div></div>
+        <div class="bdrso-row"><div class="k">Rule</div><div class="v">OECD GloBE Rule (Jurisdictional Blending)</div></div>
+        <div class="bdrso-row"><div class="k">System</div><div class="v">ACDOCU + Tax Data + (PaPM)</div></div>
+        <div class="bdrso-row"><div class="k">Output</div><div class="v">Top-up Tax Calculation Input</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CH2 ============ -->
+  <section id="ch2">
+    <div class="section-kicker">Chapter 2</div>
+    <h2 class="section-title">Covered Tax 산출</h2>
+    <div class="action-title">Covered Tax는 각국이 실제로 부과한 법인세 그 자체가 아니라, 연결재무데이터에 반영된 세금 항목을 GloBE 고유의 규칙으로 재조정한 결과다.</div>
+
+    <div class="flow">
+      <div class="node">Financial Data</div>
+      <div class="arrow">→</div>
+      <div class="node">Tax Adjustment</div>
+      <div class="arrow">→</div>
+      <div class="node">Covered Tax</div>
+    </div>
+
+    <p>Tax Adjustment 단계에서는 당기법인세뿐 아니라 이연법인세(Deferred Tax)도 일정 조건 하에 Covered Tax에 포함된다. 즉 각국 세무신고서상의 '납부세액'과 Covered Tax는 범위 자체가 다르다 — 이 조정 로직은 GloBE 고유의 규정을 따른다.</p>
+
+    <div class="calc-trace">
+      <div class="ct-title">CALCULATION TRACE</div>
+      <div class="ct-chain">
+        <div class="ct-node">Financial Data</div>
+        <div class="ct-arrow">→</div>
+        <div class="ct-node here">Tax Adjustment</div>
+        <div class="ct-arrow">→</div>
+        <div class="ct-node">Covered Tax</div>
+      </div>
+    </div>
+
+    <div class="bdrso">
+      <div class="bdrso-title">B / D / R / S / O — Covered Tax</div>
+      <div class="bdrso-row"><div class="k">Business</div><div class="v">그룹이 각 국가에 실제로 부담한 세금(GloBE 관점 재정의)</div></div>
+      <div class="bdrso-row"><div class="k">Data</div><div class="v">당기법인세, 이연법인세, 연결조정 반영 재무데이터</div></div>
+      <div class="bdrso-row"><div class="k">Rule</div><div class="v">GloBE Covered Tax 산정 규정 (이연법인세 조정 포함)</div></div>
+      <div class="bdrso-row"><div class="k">System</div><div class="v">ACDOCU 상 Tax-relevant G/L Account Data</div></div>
+      <div class="bdrso-row"><div class="k">Output</div><div class="v">ETR Calculation Input (분자)</div></div>
+    </div>
+  </section>
+
+  <!-- ============ CH3 ============ -->
+  <section id="ch3">
+    <div class="section-kicker">Chapter 3</div>
+    <h2 class="section-title">GloBE Income 산출</h2>
+    <div class="action-title">GloBE Income은 Covered Tax와 별개로, 동일한 연결재무데이터에서 출발해 GloBE 고유의 소득 조정을 거쳐 산출되는 병행 트랙이다.</div>
+
+    <div class="flow">
+      <div class="node">Financial Data</div>
+      <div class="arrow">→</div>
+      <div class="node">GloBE Adjustment</div>
+      <div class="arrow">→</div>
+      <div class="node">GloBE Income</div>
+    </div>
+
+    <p>GloBE Adjustment는 연결재무제표상의 순이익을 출발점으로, 배당·특정 자본거래손익 등 GloBE 규정이 정한 항목을 가감하는 절차다. 이 조정은 Covered Tax의 세무 조정과 완전히 독립적으로 진행되며, 두 트랙은 각자의 산출물(Covered Tax, GloBE Income)이 나올 때까지 서로 참조하지 않는다.</p>
+
+    <div class="calc-trace">
+      <div class="ct-title">CALCULATION TRACE</div>
+      <div class="ct-chain">
+        <div class="ct-node">Financial Data</div>
+        <div class="ct-arrow">→</div>
+        <div class="ct-node here">GloBE Adjustment</div>
+        <div class="ct-arrow">→</div>
+        <div class="ct-node">GloBE Income</div>
+      </div>
+    </div>
+
+    <div class="bdrso">
+      <div class="bdrso-title">B / D / R / S / O — GloBE Income</div>
+      <div class="bdrso-row"><div class="k">Business</div><div class="v">GloBE 관점에서 재정의된 그룹의 국가별 소득</div></div>
+      <div class="bdrso-row"><div class="k">Data</div><div class="v">연결재무제표상 순이익, GloBE 조정 항목</div></div>
+      <div class="bdrso-row"><div class="k">Rule</div><div class="v">GloBE Income 산정 규정 (배당·자본거래손익 등 가감)</div></div>
+      <div class="bdrso-row"><div class="k">System</div><div class="v">ACDOCU 상 연결 순이익 데이터</div></div>
+      <div class="bdrso-row"><div class="k">Output</div><div class="v">ETR Calculation Input (분모)</div></div>
+    </div>
+  </section>
+
+  <!-- ============ CH4 ============ -->
+  <section id="ch4">
+    <div class="section-kicker">Chapter 4</div>
+    <h2 class="section-title">ETR 계산 — NGH 데이터 등장</h2>
+    <div class="action-title">ETR은 두 병행 트랙의 산출물(Covered Tax, GloBE Income)이 Jurisdiction 단위로 합류하는 지점이며, 이때 비로소 익숙한 "공식"의 형태로 나타난다.</div>
+
+    <p>Nova Global Holdings의 국가별 데이터를 이용해 실제로 계산해보자.</p>
+
+    <table class="data-table">
+      <tr><th>Country</th><th class="num">GloBE Income</th><th class="num">Covered Tax</th><th class="num">ETR</th></tr>
+      <tr><td>Korea (HQ)</td><td class="num">102,400</td><td class="num">22,528</td><td class="num">22.0%</td></tr>
+      <tr><td>Germany</td><td class="num">58,300</td><td class="num">17,490</td><td class="num">30.0%</td></tr>
+      <tr><td>France</td><td class="num">41,200</td><td class="num">11,124</td><td class="num">27.0%</td></tr>
+      <tr><td>Singapore</td><td class="num">31,800</td><td class="num">3,180</td><td class="num">10.0%</td></tr>
+      <tr><td>Vietnam</td><td class="num">19,600</td><td class="num">1,960</td><td class="num">10.0%</td></tr>
+    </table>
+
+    <p>ETR = Covered Tax ÷ GloBE Income. Singapore와 Vietnam은 10.0%로 15% 기준에 미달하며, 이 두 국가에서 Top-up Tax가 발생한다 — 이는 Ch5에서 이어간다.</p>
+
+    <div class="calc-trace">
+      <div class="ct-title">CALCULATION TRACE</div>
+      <div class="ct-chain">
+        <div class="ct-node">Covered Tax</div>
+        <div class="ct-arrow">+</div>
+        <div class="ct-node">GloBE Income</div>
+        <div class="ct-arrow">→</div>
+        <div class="ct-node here">ETR</div>
+      </div>
+    </div>
+
+    <div class="quiz">
+      <div class="q-label">CHECK YOUR UNDERSTANDING</div>
+      <div class="q-text">NGH 데이터에서 Top-up Tax가 발생하는 국가는?</div>
+      <div class="quiz-opt" onclick="checkAnswer(this, false)">Korea, Germany</div>
+      <div class="quiz-opt" onclick="checkAnswer(this, true)">Singapore, Vietnam</div>
+      <div class="quiz-opt" onclick="checkAnswer(this, false)">France, Germany</div>
+      <div class="quiz-feedback" id="fb1"></div>
+    </div>
+
+    <div class="bdrso">
+      <div class="bdrso-title">B / D / R / S / O — ETR</div>
+      <div class="bdrso-row"><div class="k">Business</div><div class="v">Jurisdiction별 실효세율</div></div>
+      <div class="bdrso-row"><div class="k">Data</div><div class="v">Covered Tax, GloBE Income</div></div>
+      <div class="bdrso-row"><div class="k">Rule</div><div class="v">OECD GloBE Rule (Jurisdictional Blending)</div></div>
+      <div class="bdrso-row"><div class="k">System</div><div class="v">ACDOCU + Tax Data + (PaPM)</div></div>
+      <div class="bdrso-row"><div class="k">Output</div><div class="v">Top-up Tax Calculation Input</div></div>
+    </div>
+  </section>
+
+  <!-- ============ CH5 ============ -->
+  <section id="ch5">
+    <div class="section-kicker">Chapter 5</div>
+    <h2 class="section-title">Top-up Tax 계산</h2>
+    <div class="action-title">ETR이 15%에 미달하는 국가에 대해, 그 차이(Top-up %)만큼 추가 세금을 부과해 그룹 전체의 실효세율을 최소 15%로 끌어올린다.</div>
+
+    <table class="data-table">
+      <tr><th>Country</th><th class="num">ETR</th><th class="num">Top-up %</th><th class="num">GloBE Income</th><th class="num">Top-up Tax (단순 계산)</th></tr>
+      <tr><td>Singapore</td><td class="num">10.0%</td><td class="num">5.0%</td><td class="num">31,800</td><td class="num">1,590</td></tr>
+      <tr><td>Vietnam</td><td class="num">10.0%</td><td class="num">5.0%</td><td class="num">19,600</td><td class="num">980</td></tr>
+    </table>
+
+    <div class="callout warn">
+      <span class="callout-label">단순화 안내</span>
+      실제 GloBE 규정에서는 Top-up Tax 계산 시 Substance-Based Income Exclusion(SBIE, 인건비·유형자산 기반 소득 공제)을 먼저 적용해 과세표준을 줄인 뒤 Top-up %를 곱한다. 본 모듈에서는 계산 원리(ETR과 15%의 차이만큼 부과)를 이해하기 위해 SBIE를 제외한 단순화된 계산을 사용했다. SBIE는 GB03(데이터 모델)에서 별도로 다룬다.
+    </div>
+
+    <div class="calc-trace">
+      <div class="ct-title">CALCULATION TRACE</div>
+      <div class="ct-chain">
+        <div class="ct-node">ETR</div>
+        <div class="ct-arrow">→</div>
+        <div class="ct-node here">Top-up Tax</div>
+      </div>
+    </div>
+
+    <div class="bdrso">
+      <div class="bdrso-title">B / D / R / S / O — Top-up Tax</div>
+      <div class="bdrso-row"><div class="k">Business</div><div class="v">그룹의 국가별 실효세율을 최소 15%로 맞추기 위한 추가 세금</div></div>
+      <div class="bdrso-row"><div class="k">Data</div><div class="v">ETR, GloBE Income, (실제로는) SBIE 관련 데이터</div></div>
+      <div class="bdrso-row"><div class="k">Rule</div><div class="v">Top-up % × (GloBE Income − SBIE), IIR/UTPR/QDMTT 배분 규칙</div></div>
+      <div class="bdrso-row"><div class="k">System</div><div class="v">계산 엔진(PaPM 등) + 신고 컴포넌트(DRC 등)</div></div>
+      <div class="bdrso-row"><div class="k">Output</div><div class="v">GIR 신고 데이터, IIR/UTPR/QDMTT 세액 배분 Input</div></div>
+    </div>
+  </section>
+
+  <!-- ============ WRAP-UP ============ -->
+  <section id="wrapup">
+    <div class="section-kicker">Wrap-up</div>
+    <h2 class="section-title">정리 및 다음 모듈</h2>
+
+    <div class="conclusion-box">
+      <div class="label">[이번 모듈 결론]</div>
+      <p>GloBE는 하나의 계산이 아니라, 데이터와 규칙이 결합된 계산 체계이다. Covered Tax와 GloBE Income은 동일한 연결재무데이터에서 출발하는 두 개의 병행 트랙이며, ETR 단계에서 합류해 Top-up Tax로 이어진다.</p>
+      <div class="bridge">다음 GB03에서는 '이 파이프라인을 실제로 채우려면 어떤 재무·세무 데이터가 필요한가'를 데이터 모델 관점에서 살펴본다.</div>
+    </div>
+
+    <div class="insight-box">
+      <div class="tag">CALCULATION PLATFORM INSIGHT · #02</div>
+      <p>계산 엔진은 공식을 실행하는 것이 아니라, <span class="num">데이터에 규칙을 적용하여 새로운 데이터를 생성</span>한다.</p>
+    </div>
+
+    <div class="checklist">
+      <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+      <label class="check-item"><input type="checkbox" onchange="updateProgress()"> Covered Tax와 GloBE Income이 하나의 재무데이터에서 시작되는 병행 트랙임을 설명할 수 있다</label>
+      <label class="check-item"><input type="checkbox" onchange="updateProgress()"> Tax Adjustment와 GloBE Adjustment가 서로 다른 조정 로직임을 구분할 수 있다</label>
+      <label class="check-item"><input type="checkbox" onchange="updateProgress()"> NGH 데이터로 국가별 ETR을 직접 계산할 수 있다</label>
+      <label class="check-item"><input type="checkbox" onchange="updateProgress()"> Top-up Tax의 기본 계산 원리(15%와의 차이)를 설명할 수 있다</label>
+      <label class="check-item"><input type="checkbox" onchange="updateProgress()"> 실제 GloBE에서는 SBIE 등 추가 조정이 있다는 점을 인지하고 있다</label>
+    </div>
+
+    <p style="font-size:13.5px; color:var(--gray-mid); margin-bottom:4px;">GB Series Learning Path</p>
+    <div class="roadmap-grid">
+      <div class="part-divider">PART I — FOUNDATION</div>
+      <div class="roadmap-card">
+        <div class="rc-tag">GB01 · Why</div>
+        <h4>GloBE란 무엇인가</h4>
+        <p>왜 연결재무데이터가 필요한가</p>
+      </div>
+      <div class="roadmap-card current">
+        <div class="rc-tag">GB02 · NOW · Flow</div>
+        <h4>GloBE 계산 메커니즘</h4>
+        <p>데이터와 규칙이 결합된 계산 체계</p>
+      </div>
+      <div class="roadmap-card">
+        <div class="rc-tag">GB03 · Structure</div>
+        <h4>GloBE 데이터 모델</h4>
+        <p>어떤 재무·세무 데이터가 필요한가</p>
+      </div>
+      <div class="roadmap-card">
+        <div class="rc-tag">GB04 · Mapping</div>
+        <h4>SAP와 GloBE</h4>
+        <p>S/4HANA, Group Reporting, PaPM의 역할 분담</p>
+      </div>
+      <div class="part-divider">PART II — STRATEGY</div>
+      <div class="roadmap-card">
+        <div class="rc-tag">GB05 · Capability</div>
+        <h4>Enterprise GloBE Capability</h4>
+        <p>어떤 업무 역량이 공통으로 필요한가</p>
+      </div>
+      <div class="roadmap-card">
+        <div class="rc-tag">GB06 · Assessment</div>
+        <h4>표준의 한계</h4>
+        <p>SAP 표준과 업무 요구사항의 격차</p>
+      </div>
+      <div class="roadmap-card">
+        <div class="rc-tag">GB07 · Architecture</div>
+        <h4>GloBE Add-on 아키텍처</h4>
+        <p>ASPN 애드인 기능 정의 및 개발 로드맵</p>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer>ASPN BAC사업부 · GB Series — GloBE &amp; SAP Add-on Discovery · Internal Training Material</footer>
+
+<script>
+  const sections = document.querySelectorAll('section');
+  const navLinks = document.querySelectorAll('.nav-tabs a');
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(sec => { if (sec.getBoundingClientRect().top <= 100) current = sec.id; });
+    navLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + current));
+  });
+  navLinks.forEach(a => a.addEventListener('click', e => {
+    e.preventDefault();
+    document.querySelector(a.getAttribute('href')).scrollIntoView({behavior:'smooth', block:'start'});
+  }));
+
+  function checkAnswer(el, isCorrect){
+    const opts = el.parentElement.querySelectorAll('.quiz-opt');
+    opts.forEach(o => o.style.pointerEvents = 'none');
+    const fb = el.parentElement.querySelector('.quiz-feedback');
+    if(isCorrect){
+      el.classList.add('correct');
+      fb.textContent = '정답입니다. Singapore와 Vietnam의 ETR은 10.0%로 15% 기준에 미달해 Top-up Tax가 발생합니다.';
+      fb.className = 'quiz-feedback show correct-fb';
+    } else {
+      el.classList.add('wrong');
+      fb.textContent = '다시 확인해보세요. 표에서 ETR이 15% 미만인 국가를 찾아보세요.';
+      fb.className = 'quiz-feedback show wrong-fb';
+    }
+  }
+
+  function updateProgress(){
+    const boxes = document.querySelectorAll('.check-item input');
+    const checked = document.querySelectorAll('.check-item input:checked').length;
+    document.getElementById('progressFill').style.width = (checked / boxes.length * 100) + '%';
+  }
+</script>
+
+</body>
+</html>

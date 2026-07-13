@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GB Series Architecture Map — ASPN BAC</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Noto+Sans+KR:wght@400;500;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#003366; --navy-light:#e8eef5;
+    --gray-dark:#333333; --gray-mid:#666666; --gray-light:#f4f6f9; --gray-border:#d0d8e4;
+    --correct:#1a6e3c; --wrong:#8b1a1a; --warn:#7a5200;
+    --bg:#f0f3f8;
+  }
+  *{box-sizing:border-box;}
+  html{overflow-x:clip;}
+  body{margin:0; background:var(--bg); color:var(--gray-dark); font-family:'Noto Sans KR', sans-serif; font-size:15px; line-height:1.7; word-break:keep-all; overflow-wrap:break-word; overflow-x:clip;}
+  h1,h2,h3{font-family:'DM Serif Display', 'Noto Sans KR', serif;}
+  .mono{font-family:'JetBrains Mono','Noto Sans KR',monospace;}
+
+  .hero{background:linear-gradient(135deg, var(--navy) 0%, #001d3d 100%); color:#fff; padding:60px 32px 50px; text-align:center;}
+  .badge{display:inline-block; background:rgba(255,255,255,0.14); border:1px solid rgba(255,255,255,0.35); color:#fff; font-family:'JetBrains Mono',monospace; font-size:13px; letter-spacing:0.06em; padding:6px 16px; border-radius:20px; margin-bottom:20px;}
+  .hero h1{font-size:34px; margin:0 0 10px; font-weight:400;}
+  .hero p.sub{font-size:16px; color:#cfe0f5; max-width:740px; margin:0 auto;}
+
+  .nav-wrap{position:sticky; top:0; z-index:50; background:#fff; border-bottom:1px solid var(--gray-border); overflow-x:auto;}
+  .nav-tabs{display:flex; gap:4px; padding:0 16px; max-width:980px; margin:0 auto; white-space:nowrap;}
+  .nav-tabs a{display:inline-block; padding:14px 16px; font-size:13.5px; color:var(--gray-mid); text-decoration:none; border-bottom:3px solid transparent; font-weight:500;}
+  .nav-tabs a:hover{color:var(--navy);}
+  .nav-tabs a.active{color:var(--navy); border-bottom-color:var(--navy); font-weight:700;}
+
+  .container{max-width:900px; margin:0 auto; padding:44px 20px 24px;}
+  section{margin-bottom:56px;}
+  .section-title{font-size:26px; color:var(--navy); font-weight:400; margin:0 0 6px;}
+  .section-kicker{font-family:'JetBrains Mono',monospace; font-size:13px; color:var(--gray-mid); letter-spacing:0.05em; text-transform:uppercase; margin-bottom:6px;}
+  .lede{font-size:15px; color:var(--gray-mid); margin:8px 0 22px;}
+
+  .callout{border-left:3px solid var(--navy); background:var(--navy-light); padding:14px 18px; margin:18px 0; font-size:14px;}
+  .callout .callout-label{font-weight:700; font-size:12.5px; margin-bottom:4px; display:block; color:var(--navy);}
+
+  /* ---- Full Chain (Part I/II) ---- */
+  .full-chain{display:flex; flex-direction:column; align-items:center; margin:24px 0;}
+  .chain-part-label{font-family:'JetBrains Mono',monospace; font-weight:700; font-size:12.5px; color:var(--navy); letter-spacing:0.06em; background:var(--navy-light); padding:5px 16px; border-radius:14px; margin:14px 0 6px;}
+  .chain-node{background:#fff; border:1.5px solid var(--navy); color:var(--navy); font-weight:700; padding:10px 22px; border-radius:6px; font-size:14px; text-align:center; min-width:220px;}
+  .chain-node .cn-sub{display:block; font-weight:400; font-size:12px; color:var(--gray-mid); margin-top:2px;}
+  .chain-arrow{color:var(--gray-mid); font-size:15px; margin:1px 0;}
+
+  /* ---- Module Card ---- */
+  .module-card{background:#fff; border:1.5px solid var(--navy); border-radius:6px; margin:18px 0; overflow:hidden;}
+  .module-card .mc-head{background:var(--navy); color:#fff; padding:12px 20px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px;}
+  .module-card .mc-head .mc-id{font-family:'JetBrains Mono',monospace; font-weight:700; font-size:15px;}
+  .module-card .mc-head .mc-label{font-family:'JetBrains Mono',monospace; font-size:12px; background:rgba(255,255,255,0.16); padding:3px 10px; border-radius:10px;}
+  .mc-row{display:flex; padding:10px 20px; border-bottom:1px solid var(--gray-border); font-size:13.5px;}
+  .mc-row:last-child{border-bottom:none;}
+  .mc-row .mc-k{width:150px; flex-shrink:0; font-weight:700; color:var(--navy); font-family:'JetBrains Mono',monospace; font-size:11.5px; padding-top:1px;}
+  .mc-row .mc-v{flex:1; color:var(--gray-dark);}
+  .mc-row.artifact{background:var(--navy-light);}
+  .mc-row.artifact .mc-v{font-weight:700; color:var(--navy);}
+
+  /* ---- Deliverable Flow table ---- */
+  table.data-table{width:100%; border-collapse:collapse; margin:16px 0; font-size:13.5px;}
+  table.data-table th{background:var(--navy); color:#fff; padding:9px 11px; text-align:left; font-weight:700;}
+  table.data-table td{padding:9px 11px; border-bottom:1px solid var(--gray-border);}
+  table.data-table tr:nth-child(even) td{background:var(--gray-light);}
+
+  /* ---- Series Evolution ---- */
+  .evolution{display:flex; flex-direction:column; align-items:center; margin:26px 0;}
+  .evolution .ev-node{background:#fff; border:1.5px solid var(--navy); color:var(--navy); font-weight:700; padding:9px 20px; border-radius:6px; font-size:14px; margin:2px 0; min-width:220px; text-align:center;}
+  .evolution .ev-node.future{border-style:dashed; color:var(--gray-mid); border-color:var(--gray-border); font-weight:500;}
+  .evolution .ev-arrow{color:var(--gray-mid); font-size:15px; line-height:1;}
+
+  footer{text-align:center; padding:32px 20px 48px; font-size:12.5px; color:var(--gray-mid);}
+
+  @media (max-width:720px){
+    .hero h1{font-size:24px;}
+    .container{padding:32px 14px 16px;}
+    .mc-row{flex-direction:column; gap:2px;}
+    .mc-row .mc-k{width:auto;}
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="badge">ASPN BAC · GB SERIES MASTER NAVIGATION</div>
+  <h1>GB Series Architecture Map</h1>
+  <p class="sub">GB01~07 전체를 5분 안에 이해하기 위한 마스터 네비게이션 문서 — 어떤 모듈이 무엇을 만들고, 그것이 다음 모듈에서 어떻게 쓰이는가</p>
+</div>
+
+<div class="nav-wrap">
+  <div class="nav-tabs" id="navTabs">
+    <a href="#chain" class="active">전체 체인</a>
+    <a href="#modules">모듈별 상세</a>
+    <a href="#flow">Deliverable Flow</a>
+    <a href="#evolution">Series Evolution</a>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- ============ FULL CHAIN ============ -->
+  <section id="chain">
+    <div class="section-kicker">Section 1</div>
+    <h2 class="section-title">Part I / Part II 전체 체인</h2>
+    <p class="lede">GB01~07은 Part I(Foundation)에서 개념·계산·데이터모델·구현 원칙을 학습하고, Part II(Strategy)에서 제품을 배제한 채 역량→평가→아키텍처를 도출한다.</p>
+
+    <div class="full-chain">
+      <div class="chain-part-label">PART I — FOUNDATION</div>
+      <div class="chain-node">GB01 <span class="cn-sub">Why</span></div>
+      <div class="chain-arrow">↓</div>
+      <div class="chain-node">GB02 <span class="cn-sub">Flow</span></div>
+      <div class="chain-arrow">↓</div>
+      <div class="chain-node">GB03 <span class="cn-sub">Structure</span></div>
+      <div class="chain-arrow">↓</div>
+      <div class="chain-node">GB04 <span class="cn-sub">Mapping</span></div>
+
+      <div class="chain-part-label">PART II — STRATEGY</div>
+      <div class="chain-node">GB05 <span class="cn-sub">Capability</span></div>
+      <div class="chain-arrow">↓</div>
+      <div class="chain-node">GB06 <span class="cn-sub">Assessment</span></div>
+      <div class="chain-arrow">↓</div>
+      <div class="chain-node">GB07 <span class="cn-sub">Architecture</span></div>
+    </div>
+
+    <div class="callout">
+      <span class="callout-label">문서 체계에서의 위치</span>
+      GB 시리즈는 G0(제품 전략) · RN-001(기술 전략)과 함께 3층 문서 체계를 이룬다. 본 Architecture Map은 GB_Series_Constitution v1.0을 기준 용어로 삼아 작성되었다.
+    </div>
+  </section>
+
+  <!-- ============ MODULE DETAIL ============ -->
+  <section id="modules">
+    <div class="section-kicker">Section 2</div>
+    <h2 class="section-title">모듈별 상세 — Creates / Output Artifact / Consumed By / New Concepts / New Components</h2>
+    <p class="lede">각 모듈이 새로 만들어내는 것, 그 산출물의 정식 이름, 다음에 어디서 소비되는지, 그리고 처음 등장하는 개념·컴포넌트를 정리한다.</p>
+
+    <div class="module-card">
+      <div class="mc-head"><span class="mc-id">GB01</span><span class="mc-label">Why</span></div>
+      <div class="mc-row"><div class="mc-k">CREATES</div><div class="mc-v">GloBE 등장 배경, Entity→Jurisdiction→Group 구조, "연결재무데이터가 출발점"이라는 문제 정의</div></div>
+      <div class="mc-row artifact"><div class="mc-k">OUTPUT<br>ARTIFACT</div><div class="mc-v">Problem Statement</div></div>
+      <div class="mc-row"><div class="mc-k">CONSUMED BY</div><div class="mc-v">GB02 — "왜 필요한가"가 "어떻게 계산되는가"로 이어짐</div></div>
+      <div class="mc-row"><div class="mc-k">NEW CONCEPTS</div><div class="mc-v">GloBE/Pillar Two, IIR·UTPR·QDMTT, Jurisdictional Blending, Nova Global Holdings(NGH)</div></div>
+      <div class="mc-row"><div class="mc-k">NEW<br>COMPONENTS</div><div class="mc-v">Think Question, Business vs System, Calculation Platform Insight, Learning Path</div></div>
+    </div>
+
+    <div class="module-card">
+      <div class="mc-head"><span class="mc-id">GB02</span><span class="mc-label">Flow</span></div>
+      <div class="mc-row"><div class="mc-k">CREATES</div><div class="mc-v">쌍둥이 계산 파이프라인(Covered Tax/GloBE Income 병행 트랙 → ETR → Top-up Tax), NGH 국가별 실제 데이터</div></div>
+      <div class="mc-row artifact"><div class="mc-k">OUTPUT<br>ARTIFACT</div><div class="mc-v">Calculation Flow (+ NGH Dataset)</div></div>
+      <div class="mc-row"><div class="mc-k">CONSUMED BY</div><div class="mc-v">GB03 — 흐름에 등장한 개체(Covered Tax, GloBE Income 등)가 Business Object로 재정의됨</div></div>
+      <div class="mc-row"><div class="mc-k">NEW CONCEPTS</div><div class="mc-v">Covered Tax, GloBE Income, ETR, Top-up Tax, SBIE(단순화 고지)</div></div>
+      <div class="mc-row"><div class="mc-k">NEW<br>COMPONENTS</div><div class="mc-v">B/D/R/S/O Template, Calculation Trace, Twin/Branch Flow Diagram</div></div>
+    </div>
+
+    <div class="module-card">
+      <div class="mc-head"><span class="mc-id">GB03</span><span class="mc-label">Structure</span></div>
+      <div class="mc-row"><div class="mc-k">CREATES</div><div class="mc-v">Business Object 개념, Jurisdiction 중심 관계 구조, Identifier 속성</div></div>
+      <div class="mc-row artifact"><div class="mc-k">OUTPUT<br>ARTIFACT</div><div class="mc-v">Business Object Catalog</div></div>
+      <div class="mc-row"><div class="mc-k">CONSUMED BY</div><div class="mc-v">GB04 — Business Object가 SAP Object로 매핑되는 대상(Logical Model)이 됨</div></div>
+      <div class="mc-row"><div class="mc-k">NEW CONCEPTS</div><div class="mc-v">Business Object, Identifier, Logical Model, Constituent Entity(Legal Entity/PE)</div></div>
+      <div class="mc-row"><div class="mc-k">NEW<br>COMPONENTS</div><div class="mc-v">ERD/Structure Diagram, Data Modeling Insight, Logical/Physical Bridge</div></div>
+    </div>
+
+    <div class="module-card">
+      <div class="mc-head"><span class="mc-id">GB04</span><span class="mc-label">Mapping</span></div>
+      <div class="mc-row"><div class="mc-k">CREATES</div><div class="mc-v">Business Object → SAP Object 매핑, Confidence 평가, Calculation Boundary(SAP Standard vs Calculation Platform)</div></div>
+      <div class="mc-row artifact"><div class="mc-k">OUTPUT<br>ARTIFACT</div><div class="mc-v">Mapping Rules + ADR (ADR-GB04-01~04)</div></div>
+      <div class="mc-row"><div class="mc-k">CONSUMED BY</div><div class="mc-v">GB05, GB06 — SAP 근거 자료로 Capability/Gap 논의에 재사용됨</div></div>
+      <div class="mc-row"><div class="mc-k">NEW CONCEPTS</div><div class="mc-v">Mapping Rule 3원칙, One Possible Implementation, Calculation Boundary</div></div>
+      <div class="mc-row"><div class="mc-k">NEW<br>COMPONENTS</div><div class="mc-v">Mapping Table + Confidence Tag, ADR Box(Decision+Reason), Boundary Diagram</div></div>
+    </div>
+
+    <div class="module-card">
+      <div class="mc-head"><span class="mc-id">GB05</span><span class="mc-label">Capability</span></div>
+      <div class="mc-row"><div class="mc-k">CREATES</div><div class="mc-v">10-Layer Capability Reference Model, Business/Technical Capability 구분, 조직 기준 Maturity</div></div>
+      <div class="mc-row artifact"><div class="mc-k">OUTPUT<br>ARTIFACT</div><div class="mc-v">Capability Model (10 Capability Catalog)</div></div>
+      <div class="mc-row"><div class="mc-k">CONSUMED BY</div><div class="mc-v">GB06 — 이 10개 Capability 자체가 평가 대상이 됨</div></div>
+      <div class="mc-row"><div class="mc-k">NEW CONCEPTS</div><div class="mc-v">Capability, Business Capability vs Technical Capability, Maturity(조직 기준), Capability Dependency</div></div>
+      <div class="mc-row"><div class="mc-k">NEW<br>COMPONENTS</div><div class="mc-v">Capability Card(+Success Criteria), Maturity Ladder, Capability Dependency Diagram</div></div>
+    </div>
+
+    <div class="module-card">
+      <div class="mc-head"><span class="mc-id">GB06</span><span class="mc-label">Assessment</span></div>
+      <div class="mc-row"><div class="mc-k">CREATES</div><div class="mc-v">Support Level 평가(구현 책임 포함), Capability Assessment Matrix, 3종 Gap(Functional/Process/Ownership) 식별</div></div>
+      <div class="mc-row artifact"><div class="mc-k">OUTPUT<br>ARTIFACT</div><div class="mc-v">Capability Assessment (Matrix + Gap Cards)</div></div>
+      <div class="mc-row"><div class="mc-k">CONSUMED BY</div><div class="mc-v">GB07 — 식별된 Gap이 Architecture Decision의 입력이 됨</div></div>
+      <div class="mc-row"><div class="mc-k">NEW CONCEPTS</div><div class="mc-v">Support Level, Functional Gap, Process Gap, Ownership Gap</div></div>
+      <div class="mc-row"><div class="mc-k">NEW<br>COMPONENTS</div><div class="mc-v">Support Level Tag, Capability Assessment Matrix, Gap Type Card, Gap Card(+Owner)</div></div>
+    </div>
+
+    <div class="module-card">
+      <div class="mc-head"><span class="mc-id">GB07</span><span class="mc-label">Architecture</span></div>
+      <div class="mc-row"><div class="mc-k">CREATES</div><div class="mc-v">5-Layer Architecture(Governance/Data/Calculation/Review/Reporting), Platform Principle 5원칙, Product Mapping, Roadmap</div></div>
+      <div class="mc-row artifact"><div class="mc-k">OUTPUT<br>ARTIFACT</div><div class="mc-v">Enterprise GloBE Reference Architecture</div></div>
+      <div class="mc-row"><div class="mc-k">CONSUMED BY</div><div class="mc-v">Product Design / G0·RN-001 피드백 / 향후 PRD·ADR 시리즈</div></div>
+      <div class="mc-row"><div class="mc-k">NEW CONCEPTS</div><div class="mc-v">Architecture Layer, Platform Principle</div></div>
+      <div class="mc-row"><div class="mc-k">NEW<br>COMPONENTS</div><div class="mc-v">Architecture Layer Stack, Platform Principle Card, ADR Summary, Series Conclusion Chain</div></div>
+    </div>
+  </section>
+
+  <!-- ============ DELIVERABLE FLOW ============ -->
+  <section id="flow">
+    <div class="section-kicker">Section 3</div>
+    <h2 class="section-title">Deliverable Flow — 빠른 참조</h2>
+    <p class="lede">각 모듈이 만들어낸 산출물이 어디로 흘러가는지 한 줄씩 요약한다. 상세 근거는 Section 2를 참조.</p>
+
+    <table class="data-table">
+      <tr><th>Module</th><th>Output Artifact</th><th>Consumed By</th></tr>
+      <tr><td>GB01</td><td>Problem Statement</td><td>GB02</td></tr>
+      <tr><td>GB02</td><td>Calculation Flow</td><td>GB03</td></tr>
+      <tr><td>GB03</td><td>Business Object Catalog</td><td>GB04</td></tr>
+      <tr><td>GB04</td><td>Mapping Rules + ADR</td><td>GB05, GB06</td></tr>
+      <tr><td>GB05</td><td>Capability Model</td><td>GB06</td></tr>
+      <tr><td>GB06</td><td>Capability Assessment</td><td>GB07</td></tr>
+      <tr><td>GB07</td><td>Enterprise Reference Architecture</td><td>Product Design</td></tr>
+    </table>
+  </section>
+
+  <!-- ============ SERIES EVOLUTION ============ -->
+  <section id="evolution">
+    <div class="section-kicker">Section 4</div>
+    <h2 class="section-title">Series Evolution</h2>
+    <p class="lede">GB01~07 전체를 한 문장이 아니라 한 줄의 진화 과정으로 요약한다. 마지막 노드(Product Design)는 GB07 밖의 다음 단계를 가리킨다.</p>
+
+    <div class="evolution">
+      <div class="ev-node">Business Problem</div>
+      <div class="ev-arrow">↓</div>
+      <div class="ev-node">Calculation</div>
+      <div class="ev-arrow">↓</div>
+      <div class="ev-node">Data</div>
+      <div class="ev-arrow">↓</div>
+      <div class="ev-node">Implementation</div>
+      <div class="ev-arrow">↓</div>
+      <div class="ev-node">Capability</div>
+      <div class="ev-arrow">↓</div>
+      <div class="ev-node">Assessment</div>
+      <div class="ev-arrow">↓</div>
+      <div class="ev-node">Architecture</div>
+      <div class="ev-arrow">↓</div>
+      <div class="ev-node future">Product Design</div>
+    </div>
+
+    <div class="callout">
+      <span class="callout-label">이 문서의 성격</span>
+      본 Architecture Map은 GB_Series_Constitution v1.0을 원본으로 하는 파생 문서이며, 스스로 새로운 원칙을 만들지 않는다. Constitution이 개정되거나 GB08 이상이 추가될 경우 이 문서도 함께 갱신한다. HTML 버전을 Authoritative Source로 하고, PDF는 배포용 스냅샷으로 별도 관리한다.
+    </div>
+  </section>
+
+</div>
+
+<footer>ASPN BAC사업부 · GB Series Master Navigation Document · v1.0</footer>
+
+<script>
+  const sections = document.querySelectorAll('section');
+  const navLinks = document.querySelectorAll('.nav-tabs a');
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(sec => { if (sec.getBoundingClientRect().top <= 100) current = sec.id; });
+    navLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + current));
+  });
+  navLinks.forEach(a => a.addEventListener('click', e => {
+    e.preventDefault();
+    document.querySelector(a.getAttribute('href')).scrollIntoView({behavior:'smooth', block:'start'});
+  }));
+</script>
+
+</body>
+</html>

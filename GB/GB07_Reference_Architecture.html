@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GB07. Enterprise GloBE Reference Architecture — ASPN GB Series</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Noto+Sans+KR:wght@400;500;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#003366; --navy-light:#e8eef5;
+    --gray-dark:#333333; --gray-mid:#666666; --gray-light:#f4f6f9; --gray-border:#d0d8e4;
+    --correct:#1a6e3c; --wrong:#8b1a1a; --warn:#7a5200;
+    --bg:#f0f3f8;
+  }
+  *{box-sizing:border-box;}
+  html{overflow-x:clip;}
+  body{margin:0; background:var(--bg); color:var(--gray-dark); font-family:'Noto Sans KR', sans-serif; font-size:15px; line-height:1.7; word-break:keep-all; overflow-wrap:break-word; overflow-x:clip;}
+  h1,h2,h3,.serif{font-family:'DM Serif Display', 'Noto Sans KR', serif;}
+  .mono{font-family:'JetBrains Mono','Noto Sans KR',monospace;}
+
+  .hero{background:linear-gradient(135deg, var(--navy) 0%, #001d3d 100%); color:#fff; padding:64px 32px 56px; text-align:center;}
+  .badge{display:inline-block; background:rgba(255,255,255,0.14); border:1px solid rgba(255,255,255,0.35); color:#fff; font-family:'JetBrains Mono',monospace; font-size:13px; letter-spacing:0.06em; padding:6px 16px; border-radius:20px; margin-bottom:20px;}
+  .part-badge{display:inline-block; background:rgba(127,179,232,0.18); border:1px solid rgba(127,179,232,0.5); color:#cfe0f5; font-family:'JetBrains Mono',monospace; font-size:11.5px; letter-spacing:0.08em; padding:4px 12px; border-radius:14px; margin-bottom:14px; margin-left:8px;}
+  .hero h1{font-size:36px; margin:0 0 10px; font-weight:400;}
+  .hero .kor-sub{font-size:15px; color:#9fc0e0; margin-bottom:8px; font-family:'JetBrains Mono',monospace;}
+  .hero p.sub{font-size:16px; color:#cfe0f5; max-width:740px; margin:0 auto;}
+
+  .nav-wrap{position:sticky; top:0; z-index:50; background:#fff; border-bottom:1px solid var(--gray-border); overflow-x:auto;}
+  .nav-tabs{display:flex; gap:4px; padding:0 16px; max-width:960px; margin:0 auto; white-space:nowrap;}
+  .nav-tabs a{display:inline-block; padding:14px 16px; font-size:13.5px; color:var(--gray-mid); text-decoration:none; border-bottom:3px solid transparent; font-weight:500;}
+  .nav-tabs a:hover{color:var(--navy);}
+  .nav-tabs a.active{color:var(--navy); border-bottom-color:var(--navy); font-weight:700;}
+
+  .container{max-width:840px; margin:0 auto; padding:48px 20px 24px;}
+  section{margin-bottom:56px;}
+  .section-title{font-size:27px; color:var(--navy); font-weight:400; margin:0 0 6px;}
+  .section-kicker{font-family:'JetBrains Mono',monospace; font-size:13px; color:var(--gray-mid); letter-spacing:0.05em; text-transform:uppercase; margin-bottom:6px;}
+  .action-title{font-size:18.5px; font-weight:700; color:var(--navy); background:var(--navy-light); border-left:4px solid var(--navy); padding:16px 20px; margin:18px 0 28px; line-height:1.6;}
+
+  .think-q{background:#fff; border:2px dashed var(--navy); border-radius:6px; padding:20px 24px; margin:0 0 28px;}
+  .think-q .label{font-family:'JetBrains Mono',monospace; font-size:12.5px; color:var(--navy); font-weight:700; letter-spacing:0.06em; margin-bottom:6px;}
+  .think-q p{font-size:16.5px; color:var(--gray-dark); margin:0; font-weight:500;}
+
+  .card{background:#fff; border:1px solid var(--gray-border); border-radius:2px; padding:20px 22px; margin:16px 0;}
+  .card h3{font-size:16px; color:var(--navy); margin:0 0 10px; font-weight:700;}
+
+  .callout{border-left:3px solid var(--navy); background:var(--navy-light); padding:14px 18px; margin:18px 0; font-size:14.5px;}
+  .callout.warn{border-color:var(--warn); background:#fbf3e3;}
+  .callout .callout-label{font-weight:700; font-size:13px; margin-bottom:4px; display:block; color:var(--navy);}
+  .callout.warn .callout-label{color:var(--warn);}
+
+  .flow{display:flex; align-items:center; gap:6px; flex-wrap:wrap; justify-content:center; margin:24px 0;}
+  .flow .node{background:#fff; border:1.5px solid var(--navy); color:var(--navy); font-weight:700; padding:10px 16px; border-radius:6px; font-size:13.5px; text-align:center; min-width:110px;}
+  .flow .node.dim{border-color:var(--gray-border); color:var(--gray-mid); font-weight:500;}
+  .flow .arrow{color:var(--gray-mid); font-size:18px;}
+
+  /* ---- Architecture Layer stack ---- */
+  .layer-stack{margin:24px 0; display:flex; flex-direction:column; gap:4px;}
+  .layer-row{display:flex; align-items:center; gap:12px; background:#fff; border:1px solid var(--gray-border); border-left:4px solid var(--navy); border-radius:4px; padding:12px 18px;}
+  .layer-row .layer-num{font-family:'JetBrains Mono',monospace; font-weight:700; color:var(--navy); font-size:13px; min-width:22px;}
+  .layer-row .layer-name{font-weight:700; color:var(--gray-dark); font-size:14.5px;}
+  .layer-row .layer-cap{font-size:12px; color:var(--gray-mid); margin-top:2px;}
+  .layer-down{text-align:center; color:var(--gray-border); font-size:13px;}
+
+  /* ---- Platform Principles ---- */
+  .principle-grid{display:flex; flex-direction:column; gap:10px; margin:20px 0;}
+  .principle-card{background:#fff; border:1.5px solid var(--navy); border-radius:6px; padding:14px 20px; display:flex; gap:16px; align-items:center;}
+  .principle-card .p-num{font-family:'JetBrains Mono',monospace; font-size:20px; font-weight:700; color:var(--navy); min-width:34px;}
+  .principle-card .p-text{font-size:14.5px; font-weight:700; color:var(--gray-dark);}
+
+  /* ---- ADR Summary ---- */
+  .adr-summary{background:#0d1b2a; border-radius:6px; padding:18px 22px; margin:22px 0; color:#fff;}
+  .adr-summary .as-title{font-family:'JetBrains Mono',monospace; font-size:12px; color:#7fb3e8; letter-spacing:0.06em; margin-bottom:12px; font-weight:700;}
+  .adr-summary .as-item{display:flex; gap:10px; padding:5px 0; font-size:13.5px;}
+  .adr-summary .as-item .chk{color:#7fb3e8; font-weight:700;}
+  .adr-summary .as-item .as-src{color:#7fb3e8; font-family:'JetBrains Mono',monospace; font-size:11px; margin-left:auto; padding-top:1px;}
+
+  /* ---- Product Mapping ---- */
+  table.data-table{width:100%; border-collapse:collapse; margin:16px 0; font-size:13.5px;}
+  table.data-table th{background:var(--navy); color:#fff; padding:9px 11px; text-align:left; font-weight:700;}
+  table.data-table td{padding:9px 11px; border-bottom:1px solid var(--gray-border);}
+  table.data-table tr:nth-child(even) td{background:var(--gray-light);}
+  table.data-table td.no-product{color:var(--gray-mid); font-style:italic;}
+
+  /* ---- Roadmap stages ---- */
+  .stage-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin:20px 0;}
+  .stage-card{background:#fff; border:1px solid var(--gray-border); border-radius:6px; padding:14px 14px;}
+  .stage-card .stage-tag{font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--navy); font-weight:700; margin-bottom:8px;}
+  .stage-card ul{margin:0; padding-left:16px; font-size:12px; color:var(--gray-mid);}
+  .stage-card ul li{margin-bottom:3px;}
+
+  .dm-insight{background:#fff; border:1.5px solid var(--navy); border-radius:6px; padding:14px 18px; margin:22px 0 8px; display:flex; gap:12px; align-items:flex-start;}
+  .dm-insight .dm-icon{font-family:'JetBrains Mono',monospace; font-weight:700; color:var(--navy); font-size:12px; white-space:nowrap; padding-top:2px;}
+  .dm-insight p{margin:0; font-size:14px; color:var(--gray-dark); font-weight:500; line-height:1.6;}
+
+  .quiz{background:#fff; border:1px solid var(--gray-border); border-radius:4px; padding:20px 22px; margin:20px 0;}
+  .quiz .q-label{font-family:'JetBrains Mono',monospace; font-size:12.5px; color:var(--navy); font-weight:700; margin-bottom:8px;}
+  .quiz .q-text{font-weight:700; margin-bottom:14px; font-size:15px;}
+  .quiz-opt{display:block; width:100%; text-align:left; background:var(--gray-light); border:1px solid var(--gray-border); padding:11px 14px; margin-bottom:8px; border-radius:4px; cursor:pointer; font-size:14px; color:var(--gray-dark); font-family:'Noto Sans KR'; transition:background .15s;}
+  .quiz-opt:hover{background:var(--navy-light);}
+  .quiz-opt.correct{background:#e9f5ee; border-color:var(--correct); color:var(--correct); font-weight:700;}
+  .quiz-opt.wrong{background:#fbeaea; border-color:var(--wrong); color:var(--wrong);}
+  .quiz-feedback{margin-top:10px; font-size:13.5px; padding:10px 14px; border-radius:4px; display:none;}
+  .quiz-feedback.show{display:block;}
+  .quiz-feedback.correct-fb{background:#e9f5ee; color:var(--correct);}
+  .quiz-feedback.wrong-fb{background:#fbeaea; color:var(--wrong);}
+
+  .checklist{background:#fff; border:1px solid var(--gray-border); border-radius:4px; padding:20px 22px; margin:20px 0;}
+  .progress-bar{height:8px; background:var(--gray-light); border-radius:4px; overflow:hidden; margin-bottom:16px;}
+  .progress-fill{height:100%; background:var(--navy); width:0%; transition:width .3s;}
+  .check-item{display:flex; align-items:center; gap:10px; padding:8px 0; font-size:14px; cursor:pointer;}
+  .check-item input{width:16px; height:16px; accent-color:var(--navy);}
+
+  .insight-box{background:#0d1b2a; color:#fff; border-radius:6px; padding:26px 28px; margin:24px 0;}
+  .insight-box .tag{font-family:'JetBrains Mono',monospace; font-size:12.5px; color:#7fb3e8; letter-spacing:0.06em; margin-bottom:10px; font-weight:700;}
+  .insight-box p{margin:0; font-size:15.5px; line-height:1.75; color:#e8eef5;}
+  .insight-box .num{color:#7fb3e8; font-weight:700;}
+
+  .conclusion-box{background:var(--navy); color:#fff; border-radius:6px; padding:24px 26px; margin:24px 0;}
+  .conclusion-box .label{font-family:'JetBrains Mono',monospace; font-size:12.5px; letter-spacing:0.06em; color:#9fc0e0; margin-bottom:8px;}
+  .conclusion-box p{margin:0; font-size:15.5px; line-height:1.7;}
+
+  /* ---- Series Conclusion ---- */
+  .series-chain{display:flex; flex-direction:column; align-items:center; margin:26px 0;}
+  .series-chain .sc-node{background:#fff; border:1.5px solid var(--navy); color:var(--navy); font-weight:700; padding:9px 20px; border-radius:6px; font-size:14px; margin:2px 0; min-width:200px; text-align:center;}
+  .series-chain .sc-arrow{color:var(--gray-mid); font-size:15px; line-height:1;}
+  .final-sentence{background:#0d1b2a; border-radius:6px; padding:28px 30px; margin:24px 0; text-align:center;}
+  .final-sentence p{margin:0; color:#fff; font-size:18px; font-weight:700; line-height:1.6;}
+
+  .milestone{background:#fff; border:1px solid var(--gray-border); border-radius:4px; padding:18px 22px; margin:20px 0;}
+  .milestone-title{font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:700; color:var(--navy); letter-spacing:0.05em; margin-bottom:12px;}
+  .milestone-item{display:flex; align-items:center; gap:10px; padding:5px 0; font-size:14px;}
+  .milestone-item .mark{width:20px; text-align:center; font-weight:700;}
+  .milestone-item.done .mark{color:var(--correct);}
+  .milestone-item.done{color:var(--gray-dark);}
+  .milestone-item.current{font-weight:700; color:var(--navy);}
+  .milestone-item.current .mark{color:var(--navy);}
+
+  .roadmap-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-top:20px;}
+  .part-divider{grid-column:1/-1; font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:700; color:var(--navy); letter-spacing:0.06em; padding:10px 0 2px; border-top:1px solid var(--gray-border); margin-top:6px;}
+  .part-divider:first-child{border-top:none; margin-top:0; padding-top:0;}
+  .roadmap-card{background:#fff; border:1px solid var(--gray-border); border-radius:4px; padding:16px 16px;}
+  .roadmap-card.current{border-color:var(--navy); border-width:2px; background:var(--navy-light);}
+  .roadmap-card .rc-tag{font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--gray-mid); margin-bottom:4px;}
+  .roadmap-card.current .rc-tag{color:var(--navy); font-weight:700;}
+  .roadmap-card h4{margin:0 0 6px; font-size:14px; color:var(--navy);}
+  .roadmap-card p{margin:0; font-size:12.5px; color:var(--gray-mid);}
+
+  footer{text-align:center; padding:32px 20px 48px; font-size:12.5px; color:var(--gray-mid);}
+
+  @media (max-width:720px){
+    .hero h1{font-size:22px;}
+    .roadmap-grid{grid-template-columns:1fr;}
+    .stage-grid{grid-template-columns:1fr 1fr;}
+    .container{padding:32px 14px 16px;}
+  }
+
+  .prevnext-bar{background:#001d3d; padding:10px 20px; display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; font-family:'JetBrains Mono',monospace; font-size:12.5px;}
+  .prevnext-bar a{color:#cfe0f5; text-decoration:none; display:flex; align-items:center; gap:6px; opacity:0.9;}
+  .prevnext-bar a:hover{color:#fff; opacity:1;}
+  .prevnext-bar .pn-index{color:#7fb3e8; font-weight:700;}
+  .prevnext-bar .pn-side{display:flex; align-items:center; gap:16px;}
+  .prevnext-bar .pn-disabled{color:#4a5b6e; cursor:default;}
+  .prevnext-bar .pn-label{color:#8fa3ba; font-size:10.5px; display:block;}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="badge">GB SERIES · GloBE &amp; SAP Add-on Discovery</div><div class="part-badge">PART II &middot; STRATEGY</div>
+  <h1>GB07. Enterprise GloBE Reference Architecture</h1>
+  <div class="kor-sub">Capability에서 Architecture, Architecture에서 Product로</div>
+  <p class="sub">좋은 제품은 기능을 연결한다. 좋은 플랫폼은 Capability를 연결한다.</p>
+</div>
+
+<div class="prevnext-bar">
+  <div class="pn-side"><a href="./GB06_Gap_Analysis.html"><span>&larr;</span><span><span class="pn-label">PREV</span>GB06 Capability Assessment</span></a></div>
+  <a href="./GB_Series_Index.html" class="pn-index">&#9776; GB Series Index</a>
+  <div class="pn-side"><a href="./GB_Series_Architecture_Map.html"><span><span class="pn-label">NEXT</span>Architecture Map</span><span>&rarr;</span></a></div>
+</div>
+
+<div class="nav-wrap">
+  <div class="nav-tabs" id="navTabs">
+    <a href="#intro" class="active">인트로</a>
+    <a href="#ch1">Ch1. Architecture Layer</a>
+    <a href="#ch2">Ch2. Platform Principle</a>
+    <a href="#ch3">Ch3. Product Mapping</a>
+    <a href="#ch4">Ch4. Roadmap</a>
+    <a href="#wrapup">Series Conclusion</a>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- ============ INTRO ============ -->
+  <section id="intro">
+    <div class="think-q">
+      <div class="label">THINK QUESTION</div>
+      <p>좋은 아키텍처가 먼저 있다면, 제품은 무엇을 위해 존재하는가?</p>
+    </div>
+
+    <p>GB06은 10개 Capability를 기준으로 SAP·경쟁 솔루션의 Gap을 식별했다. 이번 모듈은 그 Gap을 "무엇을 만들 것인가"로 바로 연결하지 않는다. 먼저 <b>Architecture</b>를 정의하고, 그 다음에 Architecture의 구현 예시로서 제품을 배치한다. Business Capability → Architecture Layer → Platform Services → (예시로서) Product, 이 순서를 GB07 끝까지 지킨다.</p>
+  </section>
+
+  <!-- ============ CH1 ============ -->
+  <section id="ch1">
+    <div class="section-kicker">Chapter 1</div>
+    <h2 class="section-title">Architecture Layer</h2>
+    <div class="action-title">GB05의 10개 Capability는 5개의 제품 독립적인 Architecture Layer로 재구성되며, 이 계층 구조는 어떤 제품을 채택하든 변하지 않는 기준선이 된다.</div>
+
+    <div class="flow">
+      <div class="node">Business Capability</div>
+      <div class="arrow">→</div>
+      <div class="node">Architecture Layer</div>
+      <div class="arrow">→</div>
+      <div class="node dim">Platform Services</div>
+    </div>
+
+    <div class="layer-stack">
+      <div class="layer-row">
+        <span class="layer-num">01</span>
+        <div><div class="layer-name">Governance Layer</div><div class="layer-cap">Capability: Governance</div></div>
+      </div>
+      <div class="layer-down">↓</div>
+      <div class="layer-row">
+        <span class="layer-num">02</span>
+        <div><div class="layer-name">Data Layer</div><div class="layer-cap">Capability: Master Data, Data Collection, Validation</div></div>
+      </div>
+      <div class="layer-down">↓</div>
+      <div class="layer-row">
+        <span class="layer-num">03</span>
+        <div><div class="layer-name">Calculation Layer</div><div class="layer-cap">Capability: Calculation</div></div>
+      </div>
+      <div class="layer-down">↓</div>
+      <div class="layer-row">
+        <span class="layer-num">04</span>
+        <div><div class="layer-name">Review Layer</div><div class="layer-cap">Capability: Review, Approval</div></div>
+      </div>
+      <div class="layer-down">↓</div>
+      <div class="layer-row">
+        <span class="layer-num">05</span>
+        <div><div class="layer-name">Reporting Layer</div><div class="layer-cap">Capability: Reporting, Filing, Audit</div></div>
+      </div>
+    </div>
+
+    <p>여기까지는 제품명이 전혀 등장하지 않는다. 5개 Layer는 GB05~06에서 정의한 Capability와 Gap을 재구성한 것일 뿐이며, SAP를 쓰든 다른 ERP를 쓰든 이 구조는 그대로 성립한다.</p>
+  </section>
+
+  <!-- ============ CH2 ============ -->
+  <section id="ch2">
+    <div class="section-kicker">Chapter 2</div>
+    <h2 class="section-title">Platform Principle</h2>
+    <div class="action-title">Architecture Layer 위에 어떤 플랫폼을 설계하든, 다섯 가지 원칙은 지켜져야 한다 — 이 원칙은 향후 AGRA 제품군 전체의 설계 기준이 된다.</div>
+
+    <div class="principle-grid">
+      <div class="principle-card"><div class="p-num">01</div><div class="p-text">Capability First — Capability가 먼저이고, 제품은 나중이다.</div></div>
+      <div class="principle-card"><div class="p-num">02</div><div class="p-text">Architecture Before Product — 아키텍처가 확정된 뒤에 제품을 배치한다.</div></div>
+      <div class="principle-card"><div class="p-num">03</div><div class="p-text">Native SAP First — SAP 표준으로 가능한 것은 SAP 표준을 우선한다.</div></div>
+      <div class="principle-card"><div class="p-num">04</div><div class="p-text">Extensible by Design — 프로젝트별 확장을 처음부터 설계에 반영한다.</div></div>
+      <div class="principle-card"><div class="p-num">05</div><div class="p-text">Customer Owns the Rules — 계산 규칙과 데이터의 소유권은 고객사에 있다.</div></div>
+    </div>
+
+    <p>이 다섯 원칙 중 상당수는 앞선 모듈에서 이미 개별 결정(ADR)으로 등장했다. 여기서 그 결정들을 한 곳에 모은다.</p>
+
+    <div class="adr-summary">
+      <div class="as-title">ARCHITECTURE DECISION SUMMARY</div>
+      <div class="as-item"><span class="chk">✓</span> Logical Model이 Physical Model보다 우선한다 <span class="as-src">GB03→04</span></div>
+      <div class="as-item"><span class="chk">✓</span> Business Object가 SAP Object에 1:1로 강제되지 않는다 <span class="as-src">ADR-GB04-01</span></div>
+      <div class="as-item"><span class="chk">✓</span> Capability가 제품의 기능 목록이 아니라 조직의 능력이다 <span class="as-src">GB05</span></div>
+      <div class="as-item"><span class="chk">✓</span> Top-up Tax는 SAP 표준 범위 밖의 계산 플랫폼을 필요로 한다 <span class="as-src">ADR-GB04-04</span></div>
+      <div class="as-item"><span class="chk">✓</span> 모든 Gap이 제품으로 해결되지는 않는다 (예: Governance) <span class="as-src">GB06</span></div>
+    </div>
+  </section>
+
+  <!-- ============ CH3 ============ -->
+  <section id="ch3">
+    <div class="section-kicker">Chapter 3</div>
+    <h2 class="section-title">Product Mapping</h2>
+    <div class="action-title">Architecture Layer는 각각 하나의 예시 제품으로 구현될 수 있으며, Governance Layer처럼 제품이 아니라 조직 설계(Operating Model)로 남는 계층도 있다.</div>
+
+    <table class="data-table">
+      <tr><th>Architecture Layer</th><th>Example Product</th></tr>
+      <tr><td>Governance Layer</td><td class="no-product">— (Operating Model, GB06 참조)</td></tr>
+      <tr><td>Data Layer</td><td>GloBE Data Hub</td></tr>
+      <tr><td>Calculation Layer</td><td>Calculation Accelerator</td></tr>
+      <tr><td>Review Layer</td><td>Review &amp; Audit Workspace</td></tr>
+      <tr><td>Reporting Layer</td><td>GIR Package</td></tr>
+    </table>
+
+    <div class="callout">
+      <span class="callout-label">Mapping Rule 재확인 (GB04)</span>
+      위 제품명은 "정답"이 아니라 "하나의 구현 예시"다. Governance Layer에 제품이 없는 것은 누락이 아니라, GB06에서 확인한 것처럼 이 계층의 Gap이 소프트웨어가 아니라 조직 설계로 메워지기 때문이다.
+    </div>
+
+    <div class="quiz">
+      <div class="q-label">CHECK YOUR UNDERSTANDING</div>
+      <div class="q-text">Governance Layer에 Example Product가 없는 이유는?</div>
+      <div class="quiz-opt" onclick="checkAnswer(this, false)">아직 제품 이름이 정해지지 않아서</div>
+      <div class="quiz-opt" onclick="checkAnswer(this, true)">Governance의 Gap은 Ownership Gap이며 조직 설계(Operating Model)로 해결되는 영역이기 때문</div>
+      <div class="quiz-opt" onclick="checkAnswer(this, false)">Governance Layer는 Architecture에 포함되지 않기 때문</div>
+      <div class="quiz-feedback" id="fb1"></div>
+    </div>
+  </section>
+
+  <!-- ============ CH4 ============ -->
+  <section id="ch4">
+    <div class="section-kicker">Chapter 4</div>
+    <h2 class="section-title">Roadmap</h2>
+    <div class="action-title">제품은 한 번에 완성되지 않으며, MVP에서 Platform까지 단계적으로 Architecture Layer를 채워나간다.</div>
+
+    <div class="stage-grid">
+      <div class="stage-card">
+        <div class="stage-tag">MVP</div>
+        <ul>
+          <li>SAP GR Integration</li>
+          <li>Jurisdiction Management</li>
+          <li>Covered Tax Mapping</li>
+          <li>Manual Adjustment</li>
+          <li>ETR Calculation</li>
+          <li>Audit Log</li>
+        </ul>
+      </div>
+      <div class="stage-card">
+        <div class="stage-tag">RELEASE 2</div>
+        <ul>
+          <li>PaPM Integration</li>
+          <li>Safe Harbour</li>
+          <li>Workflow</li>
+        </ul>
+      </div>
+      <div class="stage-card">
+        <div class="stage-tag">RELEASE 3</div>
+        <ul>
+          <li>GIR Generation</li>
+          <li>Electronic Filing</li>
+          <li>Dashboard</li>
+          <li>AI Review</li>
+        </ul>
+      </div>
+      <div class="stage-card">
+        <div class="stage-tag">PLATFORM</div>
+        <ul>
+          <li>Global Tax Data Hub</li>
+          <li>Simulation</li>
+          <li>Scenario Planning</li>
+        </ul>
+      </div>
+    </div>
+
+    <p>MVP는 Data Layer와 Calculation Layer의 기초를 세우는 데 집중한다. Release 2~3에서 Calculation Layer와 Reporting Layer가 완성되고, Platform 단계에서는 Governance Layer를 제외한 전 계층이 시뮬레이션·시나리오 분석까지 확장된다.</p>
+
+    <div class="dm-insight">
+      <div class="dm-icon">DATA MODELING<br>INSIGHT · #07 예고</div>
+      <p>다음 페이지에서 시리즈 전체를 관통하는 마지막 통찰을 정리한다.</p>
+    </div>
+  </section>
+
+  <!-- ============ WRAP-UP / SERIES CONCLUSION ============ -->
+  <section id="wrapup">
+    <div class="section-kicker">Wrap-up</div>
+    <h2 class="section-title">Series Conclusion</h2>
+
+    <div class="conclusion-box">
+      <div class="label">[이번 모듈 결론]</div>
+      <p>Architecture Layer가 먼저 정의되고, Platform Principle이 그 위에서 지켜야 할 규칙을 선언하며, Product는 그 결과로 배치되는 예시일 뿐이다. Governance Layer처럼 제품으로 채워지지 않는 계층이 있다는 것 자체가, 이 시리즈가 처음부터 "제품을 팔기 위한 자료"가 아니었음을 보여준다.</p>
+    </div>
+
+    <div class="insight-box">
+      <div class="tag">CALCULATION PLATFORM INSIGHT · #07</div>
+      <p>좋은 제품은 기능을 연결한다. <span class="num">좋은 플랫폼은 Capability를 연결한다.</span></p>
+    </div>
+
+    <h3 style="color:var(--navy); font-size:16px; margin:32px 0 6px;">GB 시리즈 전체 여정</h3>
+    <div class="series-chain">
+      <div class="sc-node">Problem (GB01)</div>
+      <div class="sc-arrow">↓</div>
+      <div class="sc-node">Calculation (GB02)</div>
+      <div class="sc-arrow">↓</div>
+      <div class="sc-node">Data Model (GB03)</div>
+      <div class="sc-arrow">↓</div>
+      <div class="sc-node">Implementation (GB04)</div>
+      <div class="sc-arrow">↓</div>
+      <div class="sc-node">Capability (GB05)</div>
+      <div class="sc-arrow">↓</div>
+      <div class="sc-node">Assessment (GB06)</div>
+      <div class="sc-arrow">↓</div>
+      <div class="sc-node">Architecture (GB07)</div>
+    </div>
+
+    <div class="final-sentence">
+      <p>GloBE는 세무 규정이지만, 이를 구현하는 과정은 Enterprise Architecture의 문제이다.</p>
+    </div>
+
+    <div class="milestone">
+      <div class="milestone-title">SERIES MILESTONE — COMPLETE</div>
+      <div class="milestone-item done"><span class="mark">✓</span> GB01 — Problem (Why)</div>
+      <div class="milestone-item done"><span class="mark">✓</span> GB02 — Calculation (Flow)</div>
+      <div class="milestone-item done"><span class="mark">✓</span> GB03 — Data Model (Structure)</div>
+      <div class="milestone-item done"><span class="mark">✓</span> GB04 — Implementation (Mapping)</div>
+      <div class="milestone-item done"><span class="mark">✓</span> GB05 — Capability</div>
+      <div class="milestone-item done"><span class="mark">✓</span> GB06 — Assessment (Gap)</div>
+      <div class="milestone-item current"><span class="mark">✓</span> GB07 — Architecture</div>
+    </div>
+
+    <div class="checklist">
+      <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+      <label class="check-item"><input type="checkbox" onchange="updateProgress()"> Capability가 5개 Architecture Layer로 재구성되는 과정을 설명할 수 있다</label>
+      <label class="check-item"><input type="checkbox" onchange="updateProgress()"> Platform Principle 5가지를 설명할 수 있다</label>
+      <label class="check-item"><input type="checkbox" onchange="updateProgress()"> Product Mapping이 "정답"이 아니라 "예시"인 이유를 설명할 수 있다</label>
+      <label class="check-item"><input type="checkbox" onchange="updateProgress()"> Governance Layer에 제품이 없는 이유를 GB06 Gap 유형과 연결해 설명할 수 있다</label>
+      <label class="check-item"><input type="checkbox" onchange="updateProgress()"> GB01~07 전체 여정을 한 문장씩으로 요약할 수 있다</label>
+    </div>
+
+    <p style="font-size:13.5px; color:var(--gray-mid); margin-bottom:4px;">GB Series Learning Path — Complete</p>
+    <div class="roadmap-grid">
+      <div class="part-divider">PART I — FOUNDATION</div>
+      <div class="roadmap-card">
+        <div class="rc-tag">GB01 · Why</div>
+        <h4>GloBE란 무엇인가</h4>
+        <p>왜 연결재무데이터가 필요한가</p>
+      </div>
+      <div class="roadmap-card">
+        <div class="rc-tag">GB02 · Flow</div>
+        <h4>GloBE 계산 메커니즘</h4>
+        <p>데이터와 규칙이 결합된 계산 체계</p>
+      </div>
+      <div class="roadmap-card">
+        <div class="rc-tag">GB03 · Structure</div>
+        <h4>GloBE Data Model</h4>
+        <p>Business Object와 관계 구조</p>
+      </div>
+      <div class="roadmap-card">
+        <div class="rc-tag">GB04 · Mapping</div>
+        <h4>Mapping to SAP</h4>
+        <p>Logical Model의 SAP Physical 구현 예시</p>
+      </div>
+      <div class="part-divider">PART II — STRATEGY</div>
+      <div class="roadmap-card">
+        <div class="rc-tag">GB05 · Capability</div>
+        <h4>Enterprise GloBE Capability</h4>
+        <p>조직이 갖추어야 하는 업무 능력</p>
+      </div>
+      <div class="roadmap-card">
+        <div class="rc-tag">GB06 · Assessment</div>
+        <h4>Gap Analysis</h4>
+        <p>Support Level 평가와 3종 Gap 식별</p>
+      </div>
+      <div class="roadmap-card current">
+        <div class="rc-tag">GB07 · NOW · Architecture</div>
+        <h4>Reference Architecture</h4>
+        <p>Capability → Architecture → Product</p>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer>ASPN BAC사업부 · GB Series — GloBE &amp; SAP Add-on Discovery · Internal Training Material</footer>
+
+<script>
+  const sections = document.querySelectorAll('section');
+  const navLinks = document.querySelectorAll('.nav-tabs a');
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(sec => { if (sec.getBoundingClientRect().top <= 100) current = sec.id; });
+    navLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + current));
+  });
+  navLinks.forEach(a => a.addEventListener('click', e => {
+    e.preventDefault();
+    document.querySelector(a.getAttribute('href')).scrollIntoView({behavior:'smooth', block:'start'});
+  }));
+
+  function checkAnswer(el, isCorrect){
+    const opts = el.parentElement.querySelectorAll('.quiz-opt');
+    opts.forEach(o => o.style.pointerEvents = 'none');
+    const fb = el.parentElement.querySelector('.quiz-feedback');
+    if(isCorrect){
+      el.classList.add('correct');
+      fb.textContent = '정답입니다. GB06에서 확인했듯 Ownership Gap은 소프트웨어가 아니라 조직 설계로 해결하는 영역입니다.';
+      fb.className = 'quiz-feedback show correct-fb';
+    } else {
+      el.classList.add('wrong');
+      fb.textContent = '다시 생각해보세요. GB06의 Gap 유형 중 하나를 떠올려보세요.';
+      fb.className = 'quiz-feedback show wrong-fb';
+    }
+  }
+
+  function updateProgress(){
+    const boxes = document.querySelectorAll('.check-item input');
+    const checked = document.querySelectorAll('.check-item input:checked').length;
+    document.getElementById('progressFill').style.width = (checked / boxes.length * 100) + '%';
+  }
+</script>
+
+</body>
+</html>

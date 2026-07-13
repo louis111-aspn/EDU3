@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GB06. Capability Assessment — Gap Analysis — ASPN GB Series</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Noto+Sans+KR:wght@400;500;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#003366; --navy-light:#e8eef5;
+    --gray-dark:#333333; --gray-mid:#666666; --gray-light:#f4f6f9; --gray-border:#d0d8e4;
+    --correct:#1a6e3c; --wrong:#8b1a1a; --warn:#7a5200;
+    --bg:#f0f3f8;
+  }
+  *{box-sizing:border-box;}
+  html{overflow-x:clip;}
+  body{margin:0; background:var(--bg); color:var(--gray-dark); font-family:'Noto Sans KR', sans-serif; font-size:15px; line-height:1.7; word-break:keep-all; overflow-wrap:break-word; overflow-x:clip;}
+  h1,h2,h3,.serif{font-family:'DM Serif Display', 'Noto Sans KR', serif;}
+  .mono{font-family:'JetBrains Mono','Noto Sans KR',monospace;}
+
+  .hero{background:linear-gradient(135deg, var(--navy) 0%, #001d3d 100%); color:#fff; padding:64px 32px 56px; text-align:center;}
+  .badge{display:inline-block; background:rgba(255,255,255,0.14); border:1px solid rgba(255,255,255,0.35); color:#fff; font-family:'JetBrains Mono',monospace; font-size:13px; letter-spacing:0.06em; padding:6px 16px; border-radius:20px; margin-bottom:20px;}
+  .part-badge{display:inline-block; background:rgba(127,179,232,0.18); border:1px solid rgba(127,179,232,0.5); color:#cfe0f5; font-family:'JetBrains Mono',monospace; font-size:11.5px; letter-spacing:0.08em; padding:4px 12px; border-radius:14px; margin-bottom:14px; margin-left:8px;}
+  .hero h1{font-size:38px; margin:0 0 12px; font-weight:400;}
+  .hero p.sub{font-size:16px; color:#cfe0f5; max-width:740px; margin:0 auto;}
+
+  .nav-wrap{position:sticky; top:0; z-index:50; background:#fff; border-bottom:1px solid var(--gray-border); overflow-x:auto;}
+  .nav-tabs{display:flex; gap:4px; padding:0 16px; max-width:960px; margin:0 auto; white-space:nowrap;}
+  .nav-tabs a{display:inline-block; padding:14px 16px; font-size:13.5px; color:var(--gray-mid); text-decoration:none; border-bottom:3px solid transparent; font-weight:500;}
+  .nav-tabs a:hover{color:var(--navy);}
+  .nav-tabs a.active{color:var(--navy); border-bottom-color:var(--navy); font-weight:700;}
+
+  .container{max-width:840px; margin:0 auto; padding:48px 20px 24px;}
+  section{margin-bottom:56px;}
+  .section-title{font-size:27px; color:var(--navy); font-weight:400; margin:0 0 6px;}
+  .section-kicker{font-family:'JetBrains Mono',monospace; font-size:13px; color:var(--gray-mid); letter-spacing:0.05em; text-transform:uppercase; margin-bottom:6px;}
+  .action-title{font-size:18.5px; font-weight:700; color:var(--navy); background:var(--navy-light); border-left:4px solid var(--navy); padding:16px 20px; margin:18px 0 28px; line-height:1.6;}
+
+  .think-q{background:#fff; border:2px dashed var(--navy); border-radius:6px; padding:20px 24px; margin:0 0 28px;}
+  .think-q .label{font-family:'JetBrains Mono',monospace; font-size:12.5px; color:var(--navy); font-weight:700; letter-spacing:0.06em; margin-bottom:6px;}
+  .think-q p{font-size:16.5px; color:var(--gray-dark); margin:0; font-weight:500;}
+
+  .card{background:#fff; border:1px solid var(--gray-border); border-radius:2px; padding:20px 22px; margin:16px 0;}
+  .card h3{font-size:16px; color:var(--navy); margin:0 0 10px; font-weight:700;}
+
+  .callout{border-left:3px solid var(--navy); background:var(--navy-light); padding:14px 18px; margin:18px 0; font-size:14.5px;}
+  .callout.warn{border-color:var(--warn); background:#fbf3e3;}
+  .callout .callout-label{font-weight:700; font-size:13px; margin-bottom:4px; display:block; color:var(--navy);}
+  .callout.warn .callout-label{color:var(--warn);}
+
+  .case-banner{background:#fff; border:1px solid var(--gray-border); border-radius:4px; padding:18px 22px; margin:20px 0 28px; display:flex; gap:16px; align-items:center; flex-wrap:wrap;}
+
+  /* ---- Support Level tags ---- */
+  .sl{font-family:'JetBrains Mono',monospace; font-weight:700; font-size:11.5px; padding:3px 9px; border-radius:10px; display:inline-block; white-space:nowrap;}
+  .sl.native{background:#e9f5ee; color:var(--correct);}
+  .sl.extended{background:#e8eef5; color:var(--navy);}
+  .sl.partner{background:#fbf3e3; color:var(--warn);}
+  .sl.custom{background:#eee7fb; color:#5a2a9e;}
+  .sl.na{background:#fbeaea; color:var(--wrong);}
+
+  table.data-table{width:100%; border-collapse:collapse; margin:16px 0; font-size:13px;}
+  table.data-table th{background:var(--navy); color:#fff; padding:8px 10px; text-align:left; font-weight:700; font-size:12.5px;}
+  table.data-table td{padding:8px 10px; border-bottom:1px solid var(--gray-border);}
+  table.data-table tr:nth-child(even) td{background:var(--gray-light);}
+
+  /* ---- Gap Type cards ---- */
+  .gaptype-grid{display:flex; flex-direction:column; gap:12px; margin:20px 0;}
+  .gaptype-card{background:#fff; border:1.5px solid var(--gray-border); border-radius:6px; padding:16px 20px; display:flex; gap:16px; align-items:flex-start;}
+  .gaptype-card .gt-icon{font-family:'JetBrains Mono',monospace; font-weight:700; font-size:12px; padding:4px 10px; border-radius:12px; white-space:nowrap; flex-shrink:0; margin-top:2px;}
+  .gaptype-card.functional .gt-icon{background:#fbeaea; color:var(--wrong);}
+  .gaptype-card.process .gt-icon{background:#fbf3e3; color:var(--warn);}
+  .gaptype-card.ownership .gt-icon{background:#e8eef5; color:var(--navy);}
+  .gaptype-card .gt-body h4{margin:0 0 4px; font-size:14.5px; color:var(--gray-dark);}
+  .gaptype-card .gt-body p{margin:0; font-size:13.5px; color:var(--gray-mid);}
+
+  /* ---- Gap Card ---- */
+  .gap-card{background:#fff; border:1.5px solid var(--warn); border-radius:6px; margin:16px 0; overflow:hidden;}
+  .gap-card.no-product{border-color:var(--navy);}
+  .gap-card .gap-head{background:var(--warn); color:#fff; padding:10px 18px; font-weight:700; font-size:15px;}
+  .gap-card.no-product .gap-head{background:var(--navy);}
+  .gap-row{display:flex; padding:9px 18px; border-bottom:1px solid var(--gray-border); font-size:13.5px;}
+  .gap-row:last-child{border-bottom:none;}
+  .gap-row .gap-k{width:130px; flex-shrink:0; font-weight:700; color:var(--navy); font-family:'JetBrains Mono',monospace; font-size:11.5px;}
+  .gap-row .gap-v{flex:1; color:var(--gray-dark);}
+  .gap-row.solution .gap-v{font-weight:600;}
+  .impact-tag{font-family:'JetBrains Mono',monospace; font-weight:700; font-size:11.5px; padding:2px 9px; border-radius:9px;}
+  .impact-tag.high{background:#fbeaea; color:var(--wrong);}
+  .impact-tag.medium{background:#fbf3e3; color:var(--warn);}
+
+  .dm-insight{background:#fff; border:1.5px solid var(--navy); border-radius:6px; padding:14px 18px; margin:22px 0 8px; display:flex; gap:12px; align-items:flex-start;}
+  .dm-insight .dm-icon{font-family:'JetBrains Mono',monospace; font-weight:700; color:var(--navy); font-size:12px; white-space:nowrap; padding-top:2px;}
+  .dm-insight p{margin:0; font-size:14px; color:var(--gray-dark); font-weight:500; line-height:1.6;}
+
+  .quiz{background:#fff; border:1px solid var(--gray-border); border-radius:4px; padding:20px 22px; margin:20px 0;}
+  .quiz .q-label{font-family:'JetBrains Mono',monospace; font-size:12.5px; color:var(--navy); font-weight:700; margin-bottom:8px;}
+  .quiz .q-text{font-weight:700; margin-bottom:14px; font-size:15px;}
+  .quiz-opt{display:block; width:100%; text-align:left; background:var(--gray-light); border:1px solid var(--gray-border); padding:11px 14px; margin-bottom:8px; border-radius:4px; cursor:pointer; font-size:14px; color:var(--gray-dark); font-family:'Noto Sans KR'; transition:background .15s;}
+  .quiz-opt:hover{background:var(--navy-light);}
+  .quiz-opt.correct{background:#e9f5ee; border-color:var(--correct); color:var(--correct); font-weight:700;}
+  .quiz-opt.wrong{background:#fbeaea; border-color:var(--wrong); color:var(--wrong);}
+  .quiz-feedback{margin-top:10px; font-size:13.5px; padding:10px 14px; border-radius:4px; display:none;}
+  .quiz-feedback.show{display:block;}
+  .quiz-feedback.correct-fb{background:#e9f5ee; color:var(--correct);}
+  .quiz-feedback.wrong-fb{background:#fbeaea; color:var(--wrong);}
+
+  .checklist{background:#fff; border:1px solid var(--gray-border); border-radius:4px; padding:20px 22px; margin:20px 0;}
+  .progress-bar{height:8px; background:var(--gray-light); border-radius:4px; overflow:hidden; margin-bottom:16px;}
+  .progress-fill{height:100%; background:var(--navy); width:0%; transition:width .3s;}
+  .check-item{display:flex; align-items:center; gap:10px; padding:8px 0; font-size:14px; cursor:pointer;}
+  .check-item input{width:16px; height:16px; accent-color:var(--navy);}
+
+  .insight-box{background:#0d1b2a; color:#fff; border-radius:6px; padding:26px 28px; margin:24px 0;}
+  .insight-box .tag{font-family:'JetBrains Mono',monospace; font-size:12.5px; color:#7fb3e8; letter-spacing:0.06em; margin-bottom:10px; font-weight:700;}
+  .insight-box p{margin:0; font-size:15px; line-height:1.75; color:#e8eef5;}
+  .insight-box .num{color:#7fb3e8; font-weight:700;}
+
+  .conclusion-box{background:var(--navy); color:#fff; border-radius:6px; padding:24px 26px; margin:24px 0;}
+  .conclusion-box .label{font-family:'JetBrains Mono',monospace; font-size:12.5px; letter-spacing:0.06em; color:#9fc0e0; margin-bottom:8px;}
+  .conclusion-box p{margin:0; font-size:15.5px; line-height:1.7;}
+  .conclusion-box .bridge{font-size:14.5px; color:#cfe0f5; margin-top:14px; padding-top:14px; border-top:1px solid rgba(255,255,255,0.2);}
+
+  .final-bridge{display:flex; align-items:center; justify-content:center; gap:12px; margin:22px 0; flex-wrap:wrap;}
+  .final-bridge .fb-node{background:#fff; border:1.5px solid var(--navy); color:var(--navy); font-weight:700; padding:12px 18px; border-radius:6px; font-size:13.5px; text-align:center;}
+  .final-bridge .fb-arrow{color:var(--gray-mid); font-size:18px;}
+
+  .milestone{background:#fff; border:1px solid var(--gray-border); border-radius:4px; padding:18px 22px; margin:20px 0;}
+  .milestone-title{font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:700; color:var(--navy); letter-spacing:0.05em; margin-bottom:12px;}
+  .milestone-item{display:flex; align-items:center; gap:10px; padding:5px 0; font-size:14px;}
+  .milestone-item .mark{width:20px; text-align:center; font-weight:700;}
+  .milestone-item.done .mark{color:var(--correct);}
+  .milestone-item.done{color:var(--gray-dark);}
+  .milestone-item.pending .mark{color:var(--gray-border);}
+  .milestone-item.pending{color:var(--gray-mid);}
+  .milestone-item.current{font-weight:700; color:var(--navy);}
+  .milestone-item.current .mark{color:var(--navy);}
+
+  .roadmap-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-top:20px;}
+  .part-divider{grid-column:1/-1; font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:700; color:var(--navy); letter-spacing:0.06em; padding:10px 0 2px; border-top:1px solid var(--gray-border); margin-top:6px;}
+  .part-divider:first-child{border-top:none; margin-top:0; padding-top:0;}
+  .roadmap-card{background:#fff; border:1px solid var(--gray-border); border-radius:4px; padding:16px 16px;}
+  .roadmap-card.current{border-color:var(--navy); border-width:2px; background:var(--navy-light);}
+  .roadmap-card .rc-tag{font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--gray-mid); margin-bottom:4px;}
+  .roadmap-card.current .rc-tag{color:var(--navy); font-weight:700;}
+  .roadmap-card h4{margin:0 0 6px; font-size:14px; color:var(--navy);}
+  .roadmap-card p{margin:0; font-size:12.5px; color:var(--gray-mid);}
+
+  footer{text-align:center; padding:32px 20px 48px; font-size:12.5px; color:var(--gray-mid);}
+
+  @media (max-width:720px){
+    .hero h1{font-size:24px;}
+    .roadmap-grid{grid-template-columns:1fr;}
+    .container{padding:32px 14px 16px;}
+    table.data-table{font-size:11.5px;}
+  }
+
+  .prevnext-bar{background:#001d3d; padding:10px 20px; display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; font-family:'JetBrains Mono',monospace; font-size:12.5px;}
+  .prevnext-bar a{color:#cfe0f5; text-decoration:none; display:flex; align-items:center; gap:6px; opacity:0.9;}
+  .prevnext-bar a:hover{color:#fff; opacity:1;}
+  .prevnext-bar .pn-index{color:#7fb3e8; font-weight:700;}
+  .prevnext-bar .pn-side{display:flex; align-items:center; gap:16px;}
+  .prevnext-bar .pn-disabled{color:#4a5b6e; cursor:default;}
+  .prevnext-bar .pn-label{color:#8fa3ba; font-size:10.5px; display:block;}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="badge">GB SERIES · GloBE &amp; SAP Add-on Discovery</div><div class="part-badge">PART II &middot; STRATEGY</div>
+  <h1>GB06. Capability Assessment — Gap Analysis</h1>
+  <p class="sub">모든 Gap이 제품으로 해결되는 것은 아니다 — Capability Gap은 문제를 정의하고, Architecture Decision은 해결 방향을 결정한다</p>
+</div>
+
+<div class="prevnext-bar">
+  <div class="pn-side"><a href="./GB05_Enterprise_Capability.html"><span>&larr;</span><span><span class="pn-label">PREV</span>GB05 Enterprise GloBE Capability</span></a></div>
+  <a href="./GB_Series_Index.html" class="pn-index">&#9776; GB Series Index</a>
+  <div class="pn-side"><a href="./GB07_Reference_Architecture.html"><span><span class="pn-label">NEXT</span>GB07 Reference Architecture</span><span>&rarr;</span></a></div>
+</div>
+
+<div class="nav-wrap">
+  <div class="nav-tabs" id="navTabs">
+    <a href="#intro" class="active">인트로</a>
+    <a href="#ch1">Ch1. Evaluation으로</a>
+    <a href="#ch2">Ch2. Assessment Matrix</a>
+    <a href="#ch3">Ch3. 3가지 Gap 유형</a>
+    <a href="#ch4">Ch4. Gap Card</a>
+    <a href="#wrapup">Wrap-up</a>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- ============ INTRO ============ -->
+  <section id="intro">
+    <div class="think-q">
+      <div class="label">THINK QUESTION</div>
+      <p>SAP가 어떤 Capability를 '지원한다'고 할 때, 그 '지원한다'는 정확히 무엇을 의미하는가?</p>
+    </div>
+
+    <p>GB05는 GloBE 대응을 위해 조직이 갖추어야 하는 10개 Capability를 정의했다. 이번 모듈은 그 Capability를 기준으로 SAP·경쟁 솔루션·ASPN 목표 수준을 <b>평가(Evaluation)</b>한다. 여기서 분명히 할 것이 있다 — GB06은 "SAP vs Tagetik" 같은 제품 비교표가 아니다. Capability → Requirement → Support Level의 순서로 평가하는 <b>Capability Assessment</b>다.</p>
+  </section>
+
+  <!-- ============ CH1 ============ -->
+  <section id="ch1">
+    <div class="section-kicker">Chapter 1</div>
+    <h2 class="section-title">Comparison에서 Evaluation으로</h2>
+    <div class="action-title">○/△/◎ 같은 주관적 척도 대신, "누가 이 기능의 구현을 책임지는가"를 기준으로 한 Support Level 분류를 사용한다.</div>
+
+    <p>제품 비교표는 보통 벤더 A가 벤더 B보다 "더 좋다/나쁘다"는 인상을 남긴다. Capability Assessment의 목적은 다르다 — 각 Capability에 대해 <b>구현 책임이 누구에게 있는지</b>를 명확히 하는 것이다. 이를 위해 5단계 Support Level을 정의한다.</p>
+
+    <table class="data-table">
+      <tr><th>Support Level</th><th>의미</th><th>구현 책임</th></tr>
+      <tr><td><span class="sl native">NATIVE</span></td><td>벤더 표준 기능으로 즉시 사용 가능</td><td>제품 표준</td></tr>
+      <tr><td><span class="sl extended">EXTENDED</span></td><td>표준 기능을 설정·구성해야 사용 가능</td><td>고객 설정</td></tr>
+      <tr><td><span class="sl partner">PARTNER</span></td><td>제3자 파트너 솔루션 연계가 필요</td><td>파트너 구현</td></tr>
+      <tr><td><span class="sl custom">CUSTOM</span></td><td>표준·파트너 솔루션 모두 없어 자체 개발 필요</td><td>고객/개발</td></tr>
+      <tr><td><span class="sl na">NOT AVAILABLE</span></td><td>현재 대응 방법이 확인되지 않음</td><td>별도 대안 필요</td></tr>
+    </table>
+
+    <div class="callout">
+      <span class="callout-label">평가 원칙</span>
+      이 프레임워크는 "제품 능력"만이 아니라 "Delivery Model"까지 평가한다. NATIVE와 CUSTOM은 기능 유무의 차이이기 이전에, 프로젝트 예산·일정·리스크가 완전히 달라지는 책임 소재의 차이다.
+    </div>
+  </section>
+
+  <!-- ============ CH2 ============ -->
+  <section id="ch2">
+    <div class="section-kicker">Chapter 2</div>
+    <h2 class="section-title">Capability Assessment Matrix</h2>
+    <div class="action-title">GB05의 10개 Capability 각각에 대해 SAP·경쟁 솔루션·ASPN 목표 수준을 Support Level로 평가하면, 어느 영역에서 구현 책임이 고객에게 넘어가는지가 한눈에 드러난다.</div>
+
+    <table class="data-table">
+      <tr><th>Capability</th><th>SAP</th><th>Tagetik</th><th>TR</th><th>Big4</th><th>ASPN 목표</th></tr>
+      <tr><td>Governance</td><td><span class="sl extended">EXT</span></td><td><span class="sl native">NAT</span></td><td><span class="sl native">NAT</span></td><td><span class="sl partner">PTR</span></td><td><span class="sl extended">EXT</span></td></tr>
+      <tr><td>Master Data</td><td><span class="sl native">NAT</span></td><td><span class="sl native">NAT</span></td><td><span class="sl native">NAT</span></td><td><span class="sl partner">PTR</span></td><td><span class="sl native">NAT</span></td></tr>
+      <tr><td>Data Collection</td><td><span class="sl extended">EXT</span></td><td><span class="sl native">NAT</span></td><td><span class="sl native">NAT</span></td><td><span class="sl native">NAT</span></td><td><span class="sl native">NAT</span></td></tr>
+      <tr><td>Validation</td><td><span class="sl extended">EXT</span></td><td><span class="sl native">NAT</span></td><td><span class="sl native">NAT</span></td><td><span class="sl native">NAT</span></td><td><span class="sl native">NAT</span></td></tr>
+      <tr><td>Calculation</td><td><span class="sl native">NAT</span> (PaPM)</td><td><span class="sl native">NAT</span></td><td><span class="sl native">NAT</span></td><td><span class="sl partner">PTR</span></td><td><span class="sl native">NAT</span></td></tr>
+      <tr><td>Review</td><td><span class="sl custom">CUS</span></td><td><span class="sl native">NAT</span></td><td><span class="sl extended">EXT</span></td><td><span class="sl native">NAT</span></td><td><span class="sl native">NAT</span></td></tr>
+      <tr><td>Approval</td><td><span class="sl custom">CUS</span></td><td><span class="sl native">NAT</span></td><td><span class="sl extended">EXT</span></td><td><span class="sl native">NAT</span></td><td><span class="sl native">NAT</span></td></tr>
+      <tr><td>Reporting</td><td><span class="sl extended">EXT</span></td><td><span class="sl native">NAT</span></td><td><span class="sl native">NAT</span></td><td><span class="sl native">NAT</span></td><td><span class="sl native">NAT</span></td></tr>
+      <tr><td>Filing</td><td><span class="sl custom">CUS</span></td><td><span class="sl native">NAT</span></td><td><span class="sl native">NAT</span></td><td><span class="sl native">NAT</span></td><td><span class="sl native">NAT</span></td></tr>
+      <tr><td>Audit</td><td><span class="sl extended">EXT</span></td><td><span class="sl native">NAT</span></td><td><span class="sl extended">EXT</span></td><td><span class="sl native">NAT</span></td><td><span class="sl native">NAT</span></td></tr>
+    </table>
+
+    <div class="callout warn">
+      <span class="callout-label">절제된 서술 원칙</span>
+      위 SAP 열의 평가는 GB03~04에서 확인된 공개 자료(PaPM/DRC 범위)에 기반한 추정이며, SAP PaPM/DRC의 GloBE 관련 상세 기능은 여전히 "프로젝트별 확인 필요" 영역을 포함한다(GB04 Appendix 참조). Tagetik/Thomson Reuters/Big4 평가도 공개 자료 기준이며, 실제 계약·구축 범위에 따라 달라질 수 있다.
+    </div>
+  </section>
+
+  <!-- ============ CH3 ============ -->
+  <section id="ch3">
+    <div class="section-kicker">Chapter 3</div>
+    <h2 class="section-title">Gap의 세 가지 유형</h2>
+    <div class="action-title">Gap은 하나의 종류가 아니다 — 기능이 없는 것(Functional), 기능은 있으나 업무 절차가 없는 것(Process), 누가 유지·운영하는지가 불분명한 것(Ownership)은 서로 다른 문제이며 서로 다른 해법을 요구한다.</div>
+
+    <div class="gaptype-grid">
+      <div class="gaptype-card functional">
+        <div class="gt-icon">FUNCTIONAL</div>
+        <div class="gt-body"><h4>Functional Gap</h4><p>해당 Capability를 지원하는 기능 자체가 없다. 예: SAP 표준에는 GIR XML 생성 기능이 없다.</p></div>
+      </div>
+      <div class="gaptype-card process">
+        <div class="gt-icon">PROCESS</div>
+        <div class="gt-body"><h4>Process Gap</h4><p>기능은 존재하지만, 그 기능을 실제 업무 절차(Workflow, 승인 경로 등)로 연결하는 구조가 없다. 예: 계산 기능은 있지만 Exception 검토·승인 절차가 없다.</p></div>
+      </div>
+      <div class="gaptype-card ownership">
+        <div class="gt-icon">OWNERSHIP</div>
+        <div class="gt-body"><h4>Ownership Gap</h4><p>기능이나 절차의 문제가 아니라, 누가 이 업무를 책임지고 유지하는지가 조직 내에서 정의되지 않은 상태다. 예: 규정 변경 모니터링을 누가 담당하는지 불분명하다.</p></div>
+      </div>
+    </div>
+
+    <div class="dm-insight">
+      <div class="dm-icon">DATA MODELING<br>INSIGHT · #06</div>
+      <p>Gap의 종류를 먼저 구분하지 않으면, 조직 설계로 풀어야 할 문제까지 소프트웨어로 해결하려는 오류가 생긴다.</p>
+    </div>
+  </section>
+
+  <!-- ============ CH4 ============ -->
+  <section id="ch4">
+    <div class="section-kicker">Chapter 4</div>
+    <h2 class="section-title">Gap Card Deep Dive</h2>
+    <div class="action-title">Gap Card는 Capability·Gap Type·Impact·Owner·Possible Solution 5개 필드로 구성되며, 일부러 제품명이 등장하지 않는 사례를 포함해 "모든 Gap이 제품 문제는 아니다"를 실제로 보여준다.</div>
+
+    <div class="gap-card no-product">
+      <div class="gap-head">Governance</div>
+      <div class="gap-row"><div class="gap-k">GAP TYPE</div><div class="gap-v">Ownership Gap</div></div>
+      <div class="gap-row"><div class="gap-k">IMPACT</div><div class="gap-v"><span class="impact-tag medium">MEDIUM</span></div></div>
+      <div class="gap-row"><div class="gap-k">OWNER</div><div class="gap-v">Tax Governance Team</div></div>
+      <div class="gap-row solution"><div class="gap-k">POSSIBLE<br>SOLUTION</div><div class="gap-v">조직 정책·RACI·운영 프로세스</div></div>
+    </div>
+
+    <div class="callout">
+      <span class="callout-label">의도적 설계</span>
+      위 Governance 사례에는 제품명이 등장하지 않는다. 규정 변경 모니터링·역할 정의는 소프트웨어가 대신할 수 없는 Operating Model의 문제이기 때문이다. 이 사례는 GB07에서 특정 제품으로 "해결"되지 않는다 — 모든 Gap이 제품으로 이어지지는 않는다는 것을 보여주는 것이 이 사례의 목적이다.
+    </div>
+
+    <div class="gap-card">
+      <div class="gap-head">Centralized Data Collection Capability</div>
+      <div class="gap-row"><div class="gap-k">GAP TYPE</div><div class="gap-v">Functional Gap</div></div>
+      <div class="gap-row"><div class="gap-k">IMPACT</div><div class="gap-v"><span class="impact-tag high">HIGH</span></div></div>
+      <div class="gap-row"><div class="gap-k">OWNER</div><div class="gap-v">Finance IT</div></div>
+      <div class="gap-row solution"><div class="gap-k">POSSIBLE<br>SOLUTION</div><div class="gap-v">Non-SAP 소스 통합 수집·표준화 기능 (GB07에서 구체화)</div></div>
+    </div>
+
+    <div class="gap-card">
+      <div class="gap-head">Review</div>
+      <div class="gap-row"><div class="gap-k">GAP TYPE</div><div class="gap-v">Process Gap</div></div>
+      <div class="gap-row"><div class="gap-k">IMPACT</div><div class="gap-v"><span class="impact-tag high">HIGH</span></div></div>
+      <div class="gap-row"><div class="gap-k">OWNER</div><div class="gap-v">Tax Manager</div></div>
+      <div class="gap-row solution"><div class="gap-k">POSSIBLE<br>SOLUTION</div><div class="gap-v">Exception 검토·승인 Workflow (GB07에서 구체화)</div></div>
+    </div>
+
+    <div class="gap-card">
+      <div class="gap-head">Filing</div>
+      <div class="gap-row"><div class="gap-k">GAP TYPE</div><div class="gap-v">Functional Gap</div></div>
+      <div class="gap-row"><div class="gap-k">IMPACT</div><div class="gap-v"><span class="impact-tag high">HIGH</span></div></div>
+      <div class="gap-row"><div class="gap-k">OWNER</div><div class="gap-v">Tax Compliance Team</div></div>
+      <div class="gap-row solution"><div class="gap-k">POSSIBLE<br>SOLUTION</div><div class="gap-v">GIR/QDMTT 신고서 패키징·전자신고 연계 (GB07에서 구체화)</div></div>
+    </div>
+
+    <div class="quiz">
+      <div class="q-label">CHECK YOUR UNDERSTANDING</div>
+      <div class="q-text">Governance Gap Card에 제품명이 등장하지 않는 이유는?</div>
+      <div class="quiz-opt" onclick="checkAnswer(this, false)">아직 어떤 제품을 쓸지 결정하지 못했기 때문</div>
+      <div class="quiz-opt" onclick="checkAnswer(this, true)">역할·책임 정의는 소프트웨어가 아니라 조직 설계(Operating Model)로 해결해야 하는 문제이기 때문</div>
+      <div class="quiz-opt" onclick="checkAnswer(this, false)">Governance는 GloBE Capability에 포함되지 않기 때문</div>
+      <div class="quiz-feedback" id="fb1"></div>
+    </div>
+  </section>
+
+  <!-- ============ WRAP-UP ============ -->
+  <section id="wrapup">
+    <div class="section-kicker">Wrap-up</div>
+    <h2 class="section-title">정리 및 다음 모듈</h2>
+
+    <div class="conclusion-box">
+      <div class="label">[이번 모듈 결론]</div>
+      <p>모든 Gap이 제품으로 해결되는 것은 아니다. Gap은 Functional·Process·Ownership 세 가지로 나뉘며, 이 중 소프트웨어가 실제로 해결할 수 있는 것은 일부에 불과하다.</p>
+      <div class="bridge">다음 GB07에서는 '소프트웨어로 해결 가능한 Gap을 어떤 Architecture와 Product로 구현할 것인가'를 다룬다.</div>
+    </div>
+
+    <div class="final-bridge">
+      <div class="fb-node">Gap</div>
+      <div class="fb-arrow">→</div>
+      <div class="fb-node">Architecture Decision</div>
+      <div class="fb-arrow">→</div>
+      <div class="fb-node">Product Strategy</div>
+    </div>
+
+    <div class="insight-box">
+      <div class="tag">CALCULATION PLATFORM INSIGHT · #06</div>
+      <p>Capability Gap은 문제를 정의한다. <span class="num">Architecture Decision은 해결 방향을 결정한다.</span> Product는 그 결과일 뿐이다.</p>
+    </div>
+
+    <div class="milestone">
+      <div class="milestone-title">SERIES MILESTONE</div>
+      <div class="milestone-item done"><span class="mark">✓</span> GB01 — Problem (Why)</div>
+      <div class="milestone-item done"><span class="mark">✓</span> GB02 — Calculation (Flow)</div>
+      <div class="milestone-item done"><span class="mark">✓</span> GB03 — Data Model (Structure)</div>
+      <div class="milestone-item done"><span class="mark">✓</span> GB04 — Implementation (Mapping)</div>
+      <div class="milestone-item done"><span class="mark">✓</span> GB05 — Capability</div>
+      <div class="milestone-item current"><span class="mark">✓</span> GB06 — Gap</div>
+      <div class="milestone-item pending"><span class="mark">□</span> GB07 — Blueprint</div>
+    </div>
+
+    <div class="checklist">
+      <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+      <label class="check-item"><input type="checkbox" onchange="updateProgress()"> Support Level 5단계(Native/Extended/Partner/Custom/Not Available)와 구현 책임을 설명할 수 있다</label>
+      <label class="check-item"><input type="checkbox" onchange="updateProgress()"> Capability Assessment Matrix가 제품 비교표가 아닌 이유를 설명할 수 있다</label>
+      <label class="check-item"><input type="checkbox" onchange="updateProgress()"> Functional/Process/Ownership Gap의 차이를 예시로 설명할 수 있다</label>
+      <label class="check-item"><input type="checkbox" onchange="updateProgress()"> Governance Gap이 왜 제품으로 연결되지 않는지 설명할 수 있다</label>
+      <label class="check-item"><input type="checkbox" onchange="updateProgress()"> Gap → Architecture Decision → Product Strategy의 순서를 설명할 수 있다</label>
+    </div>
+
+    <p style="font-size:13.5px; color:var(--gray-mid); margin-bottom:4px;">GB Series Learning Path</p>
+    <div class="roadmap-grid">
+      <div class="part-divider">PART I — FOUNDATION</div>
+      <div class="roadmap-card">
+        <div class="rc-tag">GB01 · Why</div>
+        <h4>GloBE란 무엇인가</h4>
+        <p>왜 연결재무데이터가 필요한가</p>
+      </div>
+      <div class="roadmap-card">
+        <div class="rc-tag">GB02 · Flow</div>
+        <h4>GloBE 계산 메커니즘</h4>
+        <p>데이터와 규칙이 결합된 계산 체계</p>
+      </div>
+      <div class="roadmap-card">
+        <div class="rc-tag">GB03 · Structure</div>
+        <h4>GloBE Data Model</h4>
+        <p>Business Object와 관계 구조</p>
+      </div>
+      <div class="roadmap-card">
+        <div class="rc-tag">GB04 · Mapping</div>
+        <h4>Mapping to SAP</h4>
+        <p>Logical Model의 SAP Physical 구현 예시</p>
+      </div>
+      <div class="part-divider">PART II — STRATEGY</div>
+      <div class="roadmap-card">
+        <div class="rc-tag">GB05 · Capability</div>
+        <h4>Enterprise GloBE Capability</h4>
+        <p>조직이 갖추어야 하는 업무 능력</p>
+      </div>
+      <div class="roadmap-card current">
+        <div class="rc-tag">GB06 · NOW · Assessment</div>
+        <h4>Capability Assessment</h4>
+        <p>Support Level 평가와 3종 Gap 식별</p>
+      </div>
+      <div class="roadmap-card">
+        <div class="rc-tag">GB07 · Architecture</div>
+        <h4>Solution Blueprint</h4>
+        <p>ASPN 애드인 기능 정의 및 개발 로드맵</p>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer>ASPN BAC사업부 · GB Series — GloBE &amp; SAP Add-on Discovery · Internal Training Material</footer>
+
+<script>
+  const sections = document.querySelectorAll('section');
+  const navLinks = document.querySelectorAll('.nav-tabs a');
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(sec => { if (sec.getBoundingClientRect().top <= 100) current = sec.id; });
+    navLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + current));
+  });
+  navLinks.forEach(a => a.addEventListener('click', e => {
+    e.preventDefault();
+    document.querySelector(a.getAttribute('href')).scrollIntoView({behavior:'smooth', block:'start'});
+  }));
+
+  function checkAnswer(el, isCorrect){
+    const opts = el.parentElement.querySelectorAll('.quiz-opt');
+    opts.forEach(o => o.style.pointerEvents = 'none');
+    const fb = el.parentElement.querySelector('.quiz-feedback');
+    if(isCorrect){
+      el.classList.add('correct');
+      fb.textContent = '정답입니다. Ownership Gap은 소프트웨어가 아니라 조직의 역할·정책 설계로 해결하는 영역입니다.';
+      fb.className = 'quiz-feedback show correct-fb';
+    } else {
+      el.classList.add('wrong');
+      fb.textContent = '다시 생각해보세요. 이 사례는 의도적으로 제품명을 배제한 Gap Card입니다.';
+      fb.className = 'quiz-feedback show wrong-fb';
+    }
+  }
+
+  function updateProgress(){
+    const boxes = document.querySelectorAll('.check-item input');
+    const checked = document.querySelectorAll('.check-item input:checked').length;
+    document.getElementById('progressFill').style.width = (checked / boxes.length * 100) + '%';
+  }
+</script>
+
+</body>
+</html>

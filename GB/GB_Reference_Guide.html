@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GB Reference Guide — ASPN BAC</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Noto+Sans+KR:wght@400;500;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#003366; --navy-light:#e8eef5;
+    --gray-dark:#333333; --gray-mid:#666666; --gray-light:#f4f6f9; --gray-border:#d0d8e4;
+    --correct:#1a6e3c; --wrong:#8b1a1a; --warn:#7a5200;
+    --bg:#f0f3f8;
+  }
+  *{box-sizing:border-box;}
+  html{overflow-x:clip;}
+  body{margin:0; background:var(--bg); color:var(--gray-dark); font-family:'Noto Sans KR', sans-serif; font-size:14.5px; line-height:1.7; word-break:keep-all; overflow-wrap:break-word; overflow-x:clip;}
+  h1,h2,h3{font-family:'DM Serif Display', 'Noto Sans KR', serif;}
+  .mono{font-family:'JetBrains Mono','Noto Sans KR',monospace;}
+
+  .hero{background:linear-gradient(135deg, var(--navy) 0%, #001d3d 100%); color:#fff; padding:56px 32px 46px; text-align:center;}
+  .badge{display:inline-block; background:rgba(255,255,255,0.14); border:1px solid rgba(255,255,255,0.35); color:#fff; font-family:'JetBrains Mono',monospace; font-size:13px; letter-spacing:0.06em; padding:6px 16px; border-radius:20px; margin-bottom:20px;}
+  .hero h1{font-size:32px; margin:0 0 10px; font-weight:400;}
+  .hero p.sub{font-size:15.5px; color:#cfe0f5; max-width:740px; margin:0 auto;}
+
+  .nav-wrap{position:sticky; top:0; z-index:50; background:#fff; border-bottom:1px solid var(--gray-border); overflow-x:auto;}
+  .nav-tabs{display:flex; gap:2px; padding:0 16px; max-width:1000px; margin:0 auto; white-space:nowrap;}
+  .nav-tabs a{display:inline-block; padding:12px 12px; font-size:12.5px; color:var(--gray-mid); text-decoration:none; border-bottom:3px solid transparent; font-weight:500;}
+  .nav-tabs a:hover{color:var(--navy);}
+  .nav-tabs a.active{color:var(--navy); border-bottom-color:var(--navy); font-weight:700;}
+
+  .container{max-width:920px; margin:0 auto; padding:44px 20px 24px;}
+  section{margin-bottom:52px;}
+  .part-title{font-size:24px; color:var(--navy); font-weight:400; margin:0 0 4px;}
+  .part-kicker{font-family:'JetBrains Mono',monospace; font-size:12.5px; color:var(--gray-mid); letter-spacing:0.05em; text-transform:uppercase; margin-bottom:6px;}
+  .lede{font-size:14px; color:var(--gray-mid); margin:6px 0 20px;}
+
+  h3.sub-h{font-size:15.5px; color:var(--navy); margin:24px 0 8px; font-weight:700;}
+
+  table.ref-table{width:100%; border-collapse:collapse; margin:12px 0 20px; font-size:13px;}
+  table.ref-table th{background:var(--navy); color:#fff; padding:8px 10px; text-align:left; font-weight:700; font-size:12px;}
+  table.ref-table td{padding:8px 10px; border-bottom:1px solid var(--gray-border); vertical-align:top;}
+  table.ref-table tr:nth-child(even) td{background:var(--gray-light);}
+  table.ref-table td.term{font-weight:700; color:var(--navy); white-space:nowrap;}
+  table.ref-table td.mono{font-family:'JetBrains Mono',monospace;}
+
+  .sl{font-family:'JetBrains Mono',monospace; font-weight:700; font-size:11px; padding:2px 8px; border-radius:9px; display:inline-block; white-space:nowrap;}
+  .sl.native{background:#e9f5ee; color:var(--correct);}
+  .sl.extended{background:#e8eef5; color:var(--navy);}
+  .sl.partner{background:#fbf3e3; color:var(--warn);}
+  .sl.custom{background:#eee7fb; color:#5a2a9e;}
+  .sl.na{background:#fbeaea; color:var(--wrong);}
+  .conf{font-family:'JetBrains Mono',monospace; font-weight:700; font-size:11px; padding:2px 8px; border-radius:9px; display:inline-block;}
+  .conf.high{background:#e9f5ee; color:var(--correct);}
+  .conf.medium{background:#fbf3e3; color:var(--warn);}
+  .conf.low{background:#fbeaea; color:var(--wrong);}
+  .gaptype{font-family:'JetBrains Mono',monospace; font-weight:700; font-size:11px; padding:2px 8px; border-radius:9px; display:inline-block;}
+  .gaptype.functional{background:#fbeaea; color:var(--wrong);}
+  .gaptype.process{background:#fbf3e3; color:var(--warn);}
+  .gaptype.ownership{background:#e8eef5; color:var(--navy);}
+
+  .callout{border-left:3px solid var(--navy); background:var(--navy-light); padding:12px 16px; margin:14px 0; font-size:13.5px;}
+  .callout .callout-label{font-weight:700; font-size:12px; margin-bottom:4px; display:block; color:var(--navy);}
+
+  .adr-mini{background:#0d1b2a; border-radius:6px; padding:14px 18px; margin:10px 0; color:#fff;}
+  .adr-mini .am-id{font-family:'JetBrains Mono',monospace; font-size:11px; color:#7fb3e8; font-weight:700; margin-bottom:8px;}
+  .adr-mini .am-row{display:flex; gap:10px; font-size:12.5px; margin-bottom:4px;}
+  .adr-mini .am-row:last-child{margin-bottom:0;}
+  .adr-mini .am-k{font-family:'JetBrains Mono',monospace; font-size:10.5px; color:#8fa3ba; min-width:64px; font-weight:700; padding-top:1px;}
+  .adr-mini .am-v{color:#e8eef5; line-height:1.5;}
+
+  .insight-mini{background:#0d1b2a; border-radius:6px; padding:14px 18px; margin:10px 0; color:#fff; display:flex; gap:14px; align-items:flex-start; flex-wrap:wrap;}
+  .insight-mini .im-num{font-family:'JetBrains Mono',monospace; font-size:12px; color:#7fb3e8; font-weight:700; min-width:44px;}
+  .insight-mini .im-body{flex:1; min-width:200px;}
+  .insight-mini .im-text{font-size:13.5px; color:#e8eef5; margin-bottom:4px;}
+  .insight-mini .im-meta{font-size:11px; color:#8fa3ba; font-family:'JetBrains Mono',monospace;}
+
+  .comp-card{background:#fff; border:1px solid var(--gray-border); border-radius:4px; padding:12px 16px; margin:8px 0;}
+  .comp-card .cc-name{font-weight:700; color:var(--navy); font-size:13.5px;}
+  .comp-card .cc-meta{font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--gray-mid); margin:2px 0 6px;}
+  .comp-card .cc-desc{font-size:13px; color:var(--gray-dark);}
+
+  footer{text-align:center; padding:32px 20px 48px; font-size:12px; color:var(--gray-mid);}
+
+  @media (max-width:720px){
+    .hero h1{font-size:22px;}
+    .container{padding:32px 14px 16px;}
+    table.ref-table{font-size:11.5px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="badge">ASPN BAC · GB SERIES REFERENCE</div>
+  <h1>GB Reference Guide</h1>
+  <p class="sub">GB01~07을 처음부터 읽지 않고도 필요한 용어·객체·역량·아키텍처 결정을 바로 찾아볼 수 있는 사전(Dictionary)</p>
+</div>
+
+<div class="nav-wrap">
+  <div class="nav-tabs" id="navTabs">
+    <a href="#p1" class="active">A. Vocabulary</a>
+    <a href="#p2">B. Acronym</a>
+    <a href="#p3">C. Business Object</a>
+    <a href="#p4">D. Capability</a>
+    <a href="#p5">E. Architecture</a>
+    <a href="#p6">F. Insight</a>
+    <a href="#p7">G. Component</a>
+    <a href="#p8">H. Output Artifact</a>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- ============ PART A: VOCABULARY ============ -->
+  <section id="p1">
+    <div class="part-kicker">Part A</div>
+    <h2 class="part-title">Vocabulary</h2>
+    <p class="lede">GB 시리즈에서 반복 등장하는 핵심 용어. Business Term(개념)과 Technical Term(SAP 구현)을 구분한다.</p>
+
+    <h3 class="sub-h">A.1 Business Terms</h3>
+    <table class="ref-table">
+      <tr><th>용어</th><th>정의</th><th>최초 등장</th></tr>
+      <tr><td class="term">GloBE</td><td>OECD Pillar Two, 글로벌 최저한세. 관할지역별 실효세율이 15%에 미달하면 Top-up Tax를 부과하는 규칙</td><td>GB01</td></tr>
+      <tr><td class="term">Jurisdictional Blending</td><td>동일 관할지역에 속한 여러 Constituent Entity의 소득·세금을 합산해 ETR을 계산하는 방식</td><td>GB01, GB02</td></tr>
+      <tr><td class="term">ETR</td><td>Effective Tax Rate. Covered Tax ÷ GloBE Income</td><td>GB02</td></tr>
+      <tr><td class="term">Top-up Tax</td><td>ETR이 15%에 미달할 때 그 차이만큼 부과되는 추가 세액</td><td>GB02</td></tr>
+      <tr><td class="term">SBIE</td><td>Substance-Based Income Exclusion. Top-up Tax 계산 시 인건비·유형자산 기반으로 과세표준을 줄이는 공제(GB02에서는 단순화를 위해 제외)</td><td>GB02</td></tr>
+      <tr><td class="term">Business Object</td><td>계산 흐름 이면에 존재하는, 고유 속성·관계·Identifier를 가진 개념적 단위(Jurisdiction, Constituent Entity 등)</td><td>GB03</td></tr>
+      <tr><td class="term">Constituent Entity</td><td>그룹에 속한 개별 법인·PE 단위. Legal Entity 외에 Permanent Establishment도 포함</td><td>GB03</td></tr>
+      <tr><td class="term">Permanent Establishment(PE)</td><td>법인격은 없지만 GloBE상 별도의 Constituent Entity로 취급되는 고정사업장(판단 기준은 GB 시리즈 범위 밖)</td><td>GB03</td></tr>
+      <tr><td class="term">Logical Model / Physical Model</td><td>Logical Model은 시스템 독립적인 Business Object 구조, Physical Model은 특정 시스템(SAP 등)에서의 구현</td><td>GB03, GB04</td></tr>
+      <tr><td class="term">Capability</td><td>조직이 업무를 수행하기 위해 갖추어야 하는 능력. 제품의 기능 목록이 아니다</td><td>GB05</td></tr>
+      <tr><td class="term">Maturity</td><td>Capability의 성숙도(Level 1~4). 개인 숙련도가 아니라 조직이 의존하는 방식 기준</td><td>GB05</td></tr>
+      <tr><td class="term">Gap</td><td>Capability와 실제 지원 수준의 차이. Functional/Process/Ownership 3종으로 구분</td><td>GB06</td></tr>
+      <tr><td class="term">Architecture Layer</td><td>Capability를 제품 독립적으로 재구성한 5개 계층(Governance/Data/Calculation/Review/Reporting)</td><td>GB07</td></tr>
+      <tr><td class="term">Platform Principle</td><td>Architecture 위에 어떤 플랫폼을 설계하든 지켜야 하는 5가지 원칙</td><td>GB07</td></tr>
+    </table>
+
+    <h3 class="sub-h">A.2 Technical Terms (SAP)</h3>
+    <table class="ref-table">
+      <tr><th>용어</th><th>정의</th><th>최초 등장</th></tr>
+      <tr><td class="term mono">ACDOCA</td><td>Universal Journal. 개별 법인의 Reported Financial Data가 기록되는 테이블 (GR 시리즈 개념, GB01에서 인용)</td><td>GB01</td></tr>
+      <tr><td class="term mono">ACDOCU</td><td>Release Universal Journal을 통해 이관된 연결 재무데이터. GloBE 계산의 출발점(예시)</td><td>GB01</td></tr>
+      <tr><td class="term mono">Consolidation Unit</td><td>SAP Group Reporting의 조직 단위. Jurisdiction·Constituent Entity 매핑의 SAP 구현 예시로 사용</td><td>GB04</td></tr>
+      <tr><td class="term mono">SAP PaPM</td><td>Profitability and Performance Management. 배분·이전가격·세금·ESG 등을 아우르는 범용 계산 엔진</td><td>GB01, GB03, GB04</td></tr>
+      <tr><td class="term mono">SAP DRC</td><td>Document and Reporting Compliance. 전자문서·법정보고 처리 컴포넌트</td><td>GB03</td></tr>
+      <tr><td class="term mono">SAP FCM</td><td>Financial Compliance Management. 통제·컴플라이언스 레이어</td><td>GB03</td></tr>
+      <tr><td class="term">Confidence</td><td>GB04의 Mapping Table에서 SAP 구현 방식이 얼마나 확정적인지 나타내는 척도(HIGH/MEDIUM/LOW). Support Level과는 다른 개념(D.5 참조)</td><td>GB04</td></tr>
+      <tr><td class="term">Support Level</td><td>GB06의 Capability Assessment Matrix에서 벤더가 Capability를 어느 방식으로 지원하는지 나타내는 척도(NATIVE/EXTENDED/PARTNER/CUSTOM/NOT AVAILABLE)</td><td>GB06</td></tr>
+    </table>
+
+    <div class="callout">
+      <span class="callout-label">Confidence vs Support Level 구분 (QA Report에서 확인된 사항)</span>
+      두 용어 모두 "정도"를 나타내지만 대상이 다르다. Confidence는 <b>하나의 매핑(Business Object → SAP Object)이 얼마나 확정적인가</b>를, Support Level은 <b>하나의 벤더가 하나의 Capability를 어떤 방식으로 지원하는가</b>를 나타낸다. 혼용하지 않는다.
+    </div>
+  </section>
+
+  <!-- ============ PART B: ACRONYM INDEX ============ -->
+  <section id="p2">
+    <div class="part-kicker">Part B</div>
+    <h2 class="part-title">Acronym Index</h2>
+    <p class="lede">GB 시리즈에 등장하는 약어를 알파벳순으로 정리한다.</p>
+
+    <table class="ref-table">
+      <tr><th>약어</th><th>전체 명칭</th><th>설명</th></tr>
+      <tr><td class="term mono">ADR</td><td>Architecture Decision Record</td><td>GB04에서 도입된 아키텍처 결정 기록 포맷(Decision + Reason)</td></tr>
+      <tr><td class="term mono">BEPS</td><td>Base Erosion and Profit Shifting</td><td>OECD/G20의 국제조세 회피 방지 프로젝트, GloBE(Pillar Two)의 상위 개념</td></tr>
+      <tr><td class="term mono">CbCR</td><td>Country-by-Country Reporting</td><td>국가별 보고서. Safe Harbour 판정의 근거 자료 중 하나</td></tr>
+      <tr><td class="term mono">ETR</td><td>Effective Tax Rate</td><td>실효세율</td></tr>
+      <tr><td class="term mono">GIR</td><td>GloBE Information Return</td><td>GloBE 신고서. Filing Capability의 핵심 산출물</td></tr>
+      <tr><td class="term mono">GloBE</td><td>Global Anti-Base Erosion Rules</td><td>OECD Pillar Two의 공식 명칭</td></tr>
+      <tr><td class="term mono">IIR</td><td>Income Inclusion Rule</td><td>최종 모회사(UPE) 소재국이 부과하는 주된 규칙</td></tr>
+      <tr><td class="term mono">MNE</td><td>Multinational Enterprise</td><td>다국적기업 그룹</td></tr>
+      <tr><td class="term mono">MVP</td><td>Minimum Viable Product</td><td>GB07 Roadmap의 1단계</td></tr>
+      <tr><td class="term mono">NGH</td><td>Nova Global Holdings</td><td>GB 시리즈 전용 Running Case(가상 다국적 그룹)</td></tr>
+      <tr><td class="term mono">PE</td><td>Permanent Establishment</td><td>고정사업장, Constituent Entity의 한 유형</td></tr>
+      <tr><td class="term mono">QDMTT</td><td>Qualified Domestic Minimum Top-up Tax</td><td>저율과세국이 스스로 부과하는 국내 최저한세</td></tr>
+      <tr><td class="term mono">SBIE</td><td>Substance-Based Income Exclusion</td><td>실질기반 소득 공제, Top-up Tax 계산 시 과세표준 축소 요소</td></tr>
+      <tr><td class="term mono">UPE</td><td>Ultimate Parent Entity</td><td>최종 모회사</td></tr>
+      <tr><td class="term mono">UTPR</td><td>Undertaxed Profits Rule</td><td>IIR이 적용되지 않을 경우의 백스톱 규칙</td></tr>
+    </table>
+  </section>
+
+  <!-- ============ PART C: BUSINESS OBJECT CATALOG ============ -->
+  <section id="p3">
+    <div class="part-kicker">Part C</div>
+    <h2 class="part-title">Business Object Catalog</h2>
+    <p class="lede">GB03에서 정의되고 GB04에서 SAP로 매핑된 5개 핵심 Business Object. Logical(Purpose/Identifier)과 Physical(SAP Example/Confidence)을 함께 정리한다.</p>
+
+    <table class="ref-table">
+      <tr><th>Object</th><th>Purpose</th><th>Identifier</th><th>SAP Example</th><th>Confidence</th></tr>
+      <tr><td class="term">Jurisdiction</td><td>과세 판단의 단위(국가와 유사하나 동일하지 않음)</td><td class="mono">ISO Country Code</td><td>Country + Consolidation Unit</td><td><span class="conf high">HIGH</span></td></tr>
+      <tr><td class="term">Constituent Entity</td><td>그룹에 속한 개별 법인/PE 단위</td><td class="mono">Entity ID</td><td>Consolidation Unit</td><td><span class="conf high">HIGH</span></td></tr>
+      <tr><td class="term">GloBE Income</td><td>Jurisdiction 단위로 산출된 GloBE 관점 소득</td><td class="mono">Fiscal Year + Jurisdiction</td><td>ACDOCU 기반 재무데이터</td><td><span class="conf medium">MEDIUM</span></td></tr>
+      <tr><td class="term">Covered Tax</td><td>Jurisdiction 단위로 산출된 GloBE 관점 세액</td><td class="mono">Fiscal Year + Jurisdiction</td><td>Tax 관련 계정 / FS Item</td><td><span class="conf medium">MEDIUM</span></td></tr>
+      <tr><td class="term">Top-up Tax</td><td>ETR이 15% 미달 시 부과되는 추가 세액</td><td class="mono">Fiscal Year + Jurisdiction</td><td>PaPM 또는 후속 계산 결과</td><td><span class="conf low">LOW</span></td></tr>
+    </table>
+
+    <h3 class="sub-h">Relationship</h3>
+    <p style="font-size:13.5px; color:var(--gray-mid);">Jurisdiction이 루트이며, Constituent Entity·GloBE Income·Covered Tax·Top-up Tax가 모두 Jurisdiction을 기준으로 연결된다(GB03 Ch2 ERD 참조). Constituent Entity는 Legal Entity와 Permanent Establishment를 포함한다(GB03 Ch3).</p>
+  </section>
+
+  <!-- ============ PART D: CAPABILITY REFERENCE ============ -->
+  <section id="p4">
+    <div class="part-kicker">Part D</div>
+    <h2 class="part-title">Capability Reference</h2>
+    <p class="lede">GB05에서 정의된 10-Layer Capability Reference Model. 5개는 GB05 Ch4에서 Capability Card로 상세화되었고, 나머지 5개는 Catalog 수준으로만 정의되어 있다.</p>
+
+    <table class="ref-table">
+      <tr><th>#</th><th>Capability</th><th>Purpose</th><th>Deep Dive 여부</th></tr>
+      <tr><td>01</td><td class="term">Governance</td><td>GloBE 대응 조직·역할·규정 변경 모니터링</td><td>✓ Capability Card(GB05)</td></tr>
+      <tr><td>02</td><td class="term">Master Data</td><td>Entity, Jurisdiction, Ownership 등 기준 데이터 관리</td><td>Catalog만</td></tr>
+      <tr><td>03</td><td class="term">Data Collection</td><td>재무·세무 데이터 수집·표준화</td><td>✓ Capability Card(GB05)</td></tr>
+      <tr><td>04</td><td class="term">Validation</td><td>수집 데이터의 정합성 검증</td><td>Catalog만</td></tr>
+      <tr><td>05</td><td class="term">Calculation</td><td>GloBE Income, Covered Tax, ETR, Top-up Tax 계산</td><td>✓ Capability Card(GB05)</td></tr>
+      <tr><td>06</td><td class="term">Review</td><td>계산 결과 검토 및 수정</td><td>✓ Capability Card(GB05), Gap Card(GB06)</td></tr>
+      <tr><td>07</td><td class="term">Approval</td><td>Jurisdiction/Entity 단위 승인 Workflow</td><td>Catalog만</td></tr>
+      <tr><td>08</td><td class="term">Reporting</td><td>내부 보고, 경영진 대시보드</td><td>Catalog만</td></tr>
+      <tr><td>09</td><td class="term">Filing</td><td>GIR/QDMTT 신고서 생성 및 전자신고</td><td>✓ Capability Card(GB05), Gap Card(GB06)</td></tr>
+      <tr><td>10</td><td class="term">Audit</td><td>증빙 관리, 감사 대응</td><td>Catalog만</td></tr>
+    </table>
+
+    <h3 class="sub-h">Capability Dependency (GB05)</h3>
+    <p style="font-size:13.5px; color:var(--gray-mid);">Review ← Calculation ← Validation ← Data Collection. 하위 Capability가 부실하면 상위 Capability 전체가 흔들린다.</p>
+
+    <h3 class="sub-h">Maturity Level (조직 기준, GB05)</h3>
+    <table class="ref-table">
+      <tr><th>Level</th><th>명칭</th><th>정의</th></tr>
+      <tr><td>1</td><td class="term">Manual</td><td>조직이 수작업 프로세스(Excel 등)에 의존</td></tr>
+      <tr><td>2</td><td class="term">Semi-Automated</td><td>일부 시스템의 도움을 받으나 수작업 개입·검증에 의존</td></tr>
+      <tr><td>3</td><td class="term">Integrated</td><td>시스템 간 연계로 데이터가 수작업 없이 전달</td></tr>
+      <tr><td>4</td><td class="term">Optimized</td><td>지속적 모니터링·개선, 예외 상황까지 표준화</td></tr>
+    </table>
+  </section>
+
+  <!-- ============ PART E: ARCHITECTURE REFERENCE ============ -->
+  <section id="p5">
+    <div class="part-kicker">Part E</div>
+    <h2 class="part-title">Architecture Reference</h2>
+    <p class="lede">Mapping Rule, ADR Index, Support Level, Gap Type, Confidence — GB04~07에서 도출된 아키텍처 판단 기준 전체.</p>
+
+    <h3 class="sub-h">E.1 Mapping Rule (GB04 Ch1)</h3>
+    <table class="ref-table">
+      <tr><th>#</th><th>원칙</th></tr>
+      <tr><td>1</td><td>Business Object가 우선이다</td></tr>
+      <tr><td>2</td><td>SAP Object는 구현 예시이다</td></tr>
+      <tr><td>3</td><td>Mapping은 프로젝트마다 달라질 수 있다</td></tr>
+    </table>
+
+    <h3 class="sub-h">E.2 ADR Index (GB04에서 생성, GB07에서 일부 인용)</h3>
+    <div class="adr-mini">
+      <div class="am-id">ADR-GB04-01</div>
+      <div class="am-row"><div class="am-k">DECISION</div><div class="am-v">GloBE Business Object를 SAP 표준 객체와 1:1로 강제 매핑하지 않는다.</div></div>
+      <div class="am-row"><div class="am-k">REASON</div><div class="am-v">Logical Model은 Physical Model보다 오래 유지된다.</div></div>
+    </div>
+    <div class="adr-mini">
+      <div class="am-id">ADR-GB04-02</div>
+      <div class="am-row"><div class="am-k">DECISION</div><div class="am-v">Jurisdiction의 SAP 구현은 Country 단독이 아니라 Consolidation Unit과의 조합으로 판단한다.</div></div>
+      <div class="am-row"><div class="am-k">REASON</div><div class="am-v">하나의 국가에 여러 Consolidation Unit이 존재할 수 있어 Country 단독으로는 Blending 대상을 특정할 수 없다.</div></div>
+    </div>
+    <div class="adr-mini">
+      <div class="am-id">ADR-GB04-03</div>
+      <div class="am-row"><div class="am-k">DECISION</div><div class="am-v">Covered Tax의 SAP 구현은 프로젝트별 계정 설계(FS Item 매핑)에 따라 달라질 수 있다.</div></div>
+      <div class="am-row"><div class="am-k">REASON</div><div class="am-v">SAP 표준은 어떤 계정이 Covered Tax에 해당하는지에 대한 고정된 정답을 제공하지 않는다.</div></div>
+    </div>
+    <div class="adr-mini">
+      <div class="am-id">ADR-GB04-04</div>
+      <div class="am-row"><div class="am-k">DECISION</div><div class="am-v">Top-up Tax 계산은 SAP 표준 범위 밖이며, 별도 계산 엔진 연계가 필요하다는 점을 설계 초기에 확정한다.</div></div>
+      <div class="am-row"><div class="am-k">REASON</div><div class="am-v">Safe Harbour 판정, IIR/UTPR/QDMTT 배분 등은 SAP GR의 표준 계산 범위를 넘어선다.</div></div>
+    </div>
+
+    <h3 class="sub-h">E.3 Support Level (GB06)</h3>
+    <table class="ref-table">
+      <tr><th>Level</th><th>의미</th><th>구현 책임</th></tr>
+      <tr><td><span class="sl native">NATIVE</span></td><td>벤더 표준 기능으로 즉시 사용 가능</td><td>제품 표준</td></tr>
+      <tr><td><span class="sl extended">EXTENDED</span></td><td>표준 기능을 설정·구성해야 사용 가능</td><td>고객 설정</td></tr>
+      <tr><td><span class="sl partner">PARTNER</span></td><td>제3자 파트너 솔루션 연계 필요</td><td>파트너 구현</td></tr>
+      <tr><td><span class="sl custom">CUSTOM</span></td><td>표준·파트너 솔루션 모두 없어 자체 개발 필요</td><td>고객/개발</td></tr>
+      <tr><td><span class="sl na">NOT AVAILABLE</span></td><td>현재 대응 방법이 확인되지 않음</td><td>별도 대안 필요</td></tr>
+    </table>
+
+    <h3 class="sub-h">E.4 Gap Type (GB06)</h3>
+    <table class="ref-table">
+      <tr><th>유형</th><th>정의</th><th>예시</th></tr>
+      <tr><td><span class="gaptype functional">FUNCTIONAL</span></td><td>기능 자체가 없다</td><td>SAP 표준에 GIR XML 생성 기능 없음</td></tr>
+      <tr><td><span class="gaptype process">PROCESS</span></td><td>기능은 있으나 업무 절차로 연결되지 않는다</td><td>계산 기능은 있으나 Exception 검토·승인 절차 없음</td></tr>
+      <tr><td><span class="gaptype ownership">OWNERSHIP</span></td><td>누가 담당·유지하는지 불분명하다</td><td>규정 변경 모니터링 담당 불분명(Governance)</td></tr>
+    </table>
+
+    <h3 class="sub-h">E.5 Confidence (GB04) — Support Level과의 구분은 A.2 참조</h3>
+    <table class="ref-table">
+      <tr><th>등급</th><th>의미</th></tr>
+      <tr><td><span class="conf high">HIGH</span></td><td>GR 시리즈에서 이미 확립된 개념과 직접 연결되는 매핑</td></tr>
+      <tr><td><span class="conf medium">MEDIUM</span></td><td>프로젝트별 설계에 따라 달라질 수 있는 매핑</td></tr>
+      <tr><td><span class="conf low">LOW</span></td><td>SAP 표준 단독으로는 구현되지 않는 매핑</td></tr>
+    </table>
+
+    <h3 class="sub-h">E.6 Architecture Layer (GB07)</h3>
+    <table class="ref-table">
+      <tr><th>Layer</th><th>대응 Capability</th></tr>
+      <tr><td>Governance Layer</td><td>Governance</td></tr>
+      <tr><td>Data Layer</td><td>Master Data, Data Collection, Validation</td></tr>
+      <tr><td>Calculation Layer</td><td>Calculation</td></tr>
+      <tr><td>Review Layer</td><td>Review, Approval</td></tr>
+      <tr><td>Reporting Layer</td><td>Reporting, Filing, Audit</td></tr>
+    </table>
+
+    <h3 class="sub-h">E.7 Platform Principle (GB07)</h3>
+    <table class="ref-table">
+      <tr><th>#</th><th>원칙</th></tr>
+      <tr><td>1</td><td>Capability First</td></tr>
+      <tr><td>2</td><td>Architecture Before Product</td></tr>
+      <tr><td>3</td><td>Native SAP First</td></tr>
+      <tr><td>4</td><td>Extensible by Design</td></tr>
+      <tr><td>5</td><td>Customer Owns the Rules</td></tr>
+    </table>
+  </section>
+
+  <!-- ============ PART F: INSIGHT LIBRARY ============ -->
+  <section id="p6">
+    <div class="part-kicker">Part F</div>
+    <h2 class="part-title">Insight Library</h2>
+    <p class="lede">Calculation Platform Insight #01~#07 전체. 각 모듈 Wrap-up에서 처음 등장하며, 시리즈 전체를 관통하는 철학을 순차적으로 축적한다.</p>
+
+    <div class="insight-mini"><div class="im-num">#01</div><div class="im-body"><div class="im-text">GloBE는 세무 계산처럼 보이지만, 본질적으로는 연결재무데이터를 기반으로 한 Enterprise Calculation Problem이다.</div><div class="im-meta">GB01 · Why 단계의 결론</div></div></div>
+    <div class="insight-mini"><div class="im-num">#02</div><div class="im-body"><div class="im-text">계산 엔진은 공식을 실행하는 것이 아니라, 데이터에 규칙을 적용하여 새로운 데이터를 생성한다.</div><div class="im-meta">GB02 · Flow 단계의 결론</div></div></div>
+    <div class="insight-mini"><div class="im-num">#03</div><div class="im-body"><div class="im-text">계산 규칙과 시스템은 Logical Model 위에서 각각 다르게 구현될 뿐이며, Logical Model 자체가 흔들리면 어떤 시스템을 쓰든 계산 결과의 일관성이 흔들린다.</div><div class="im-meta">GB03 · Structure 단계의 결론</div></div></div>
+    <div class="insight-mini"><div class="im-num">#04</div><div class="im-body"><div class="im-text">좋은 데이터 모델은 하나지만, 좋은 구현은 여러 가지가 존재할 수 있다. Calculation Platform은 이 다양한 구현을 연결하는 계층이다.</div><div class="im-meta">GB04 · Mapping 단계의 결론</div></div></div>
+    <div class="insight-mini"><div class="im-num">#05</div><div class="im-body"><div class="im-text">소프트웨어는 기능을 제공하지만, Capability는 업무를 완성한다. Capability는 특정 제품이 아니라, 조직이 지속적으로 수행할 수 있는 업무 능력이다.</div><div class="im-meta">GB05 · Capability 단계의 결론</div></div></div>
+    <div class="insight-mini"><div class="im-num">#06</div><div class="im-body"><div class="im-text">Capability Gap은 문제를 정의한다. Architecture Decision은 해결 방향을 결정한다. Product는 그 결과일 뿐이다.</div><div class="im-meta">GB06 · Assessment 단계의 결론</div></div></div>
+    <div class="insight-mini"><div class="im-num">#07</div><div class="im-body"><div class="im-text">좋은 제품은 기능을 연결한다. 좋은 플랫폼은 Capability를 연결한다.</div><div class="im-meta">GB07 · Architecture 단계의 결론, 시리즈 최종 Insight</div></div></div>
+  </section>
+
+  <!-- ============ PART G: COMPONENT LIBRARY ============ -->
+  <section id="p7">
+    <div class="part-kicker">Part G</div>
+    <h2 class="part-title">Component Library</h2>
+    <p class="lede">GB_Series_Constitution v1.0 Section 3의 컴포넌트 인벤토리를 사전 형태로 재수록한다. 상세 재사용 규칙은 Constitution 원문을 기준으로 한다.</p>
+
+    <div class="comp-card"><div class="cc-name">Hero + Part Badge</div><div class="cc-meta">GB01 도입 · 전 모듈 상시</div><div class="cc-desc">GB SERIES 배지 + PART I/II 배지 + 제목 + 핵심 문장</div></div>
+    <div class="comp-card"><div class="cc-name">Think Question</div><div class="cc-meta">GB01 도입 · 전 모듈 상시</div><div class="cc-desc">인트로 상단의 개방형 질문</div></div>
+    <div class="comp-card"><div class="cc-name">Business vs System</div><div class="cc-meta">GB01</div><div class="cc-desc">Business 언어 ↔ SAP 언어 짝짓기</div></div>
+    <div class="comp-card"><div class="cc-name">B/D/R/S/O Template</div><div class="cc-meta">GB02 도입</div><div class="cc-desc">Business/Data/Rule/System/Output 5관점 정리</div></div>
+    <div class="comp-card"><div class="cc-name">Calculation Trace</div><div class="cc-meta">GB02</div><div class="cc-desc">계산 파이프라인상 현재 위치 표시(다크 톤 소형 박스)</div></div>
+    <div class="comp-card"><div class="cc-name">Data Modeling Insight</div><div class="cc-meta">GB03 도입 (GB04·05는 ADR Box/Capability Card로 대체 — QA Report 참조)</div><div class="cc-desc">챕터 단위 소형 통찰(navy 테두리)</div></div>
+    <div class="comp-card"><div class="cc-name">ERD / Structure Diagram</div><div class="cc-meta">GB03</div><div class="cc-desc">관계 중심 세로형 트리</div></div>
+    <div class="comp-card"><div class="cc-name">Logical/Physical Bridge</div><div class="cc-meta">GB03 Wrap-up, GB04</div><div class="cc-desc">Logical Model → Physical Model → SAP 3단 전환</div></div>
+    <div class="comp-card"><div class="cc-name">Mapping Table + Confidence</div><div class="cc-meta">GB04 도입</div><div class="cc-desc">Business Object → SAP Example, HIGH/MEDIUM/LOW 태그</div></div>
+    <div class="comp-card"><div class="cc-name">ADR Box (Decision + Reason)</div><div class="cc-meta">GB04 도입</div><div class="cc-desc">챕터별 아키텍처 결정 기록, ID `ADR-GB0X-0Y`</div></div>
+    <div class="comp-card"><div class="cc-name">Calculation Boundary Diagram</div><div class="cc-meta">GB04</div><div class="cc-desc">SAP Standard 영역과 Calculation Platform/Add-on 영역 경계</div></div>
+    <div class="comp-card"><div class="cc-name">Capability Card (+Success Criteria)</div><div class="cc-meta">GB05 도입</div><div class="cc-desc">Capability/Purpose/Input/Output/Owner/Success Criteria 6필드</div></div>
+    <div class="comp-card"><div class="cc-name">Maturity Ladder</div><div class="cc-meta">GB05</div><div class="cc-desc">Level 1~4, 조직 기준</div></div>
+    <div class="comp-card"><div class="cc-name">Capability Dependency</div><div class="cc-meta">GB05</div><div class="cc-desc">Capability 간 의존 관계 시각화</div></div>
+    <div class="comp-card"><div class="cc-name">Series Milestone</div><div class="cc-meta">GB04 도입 · 전 모듈 누적 갱신</div><div class="cc-desc">GB01~07 진행 상황(✓/□)</div></div>
+    <div class="comp-card"><div class="cc-name">Support Level Tag</div><div class="cc-meta">GB06 도입</div><div class="cc-desc">NATIVE/EXTENDED/PARTNER/CUSTOM/NOT AVAILABLE</div></div>
+    <div class="comp-card"><div class="cc-name">Capability Assessment Matrix</div><div class="cc-meta">GB06</div><div class="cc-desc">Capability × 벤더 Support Level 평가표</div></div>
+    <div class="comp-card"><div class="cc-name">Gap Type Card / Gap Card (+Owner)</div><div class="cc-meta">GB06 도입</div><div class="cc-desc">Functional/Process/Ownership 3분류, 5필드 Gap Card</div></div>
+    <div class="comp-card"><div class="cc-name">Architecture Layer Stack</div><div class="cc-meta">GB07 도입</div><div class="cc-desc">Capability를 제품 독립적 Layer로 재구성, 제품명 없이 먼저 제시</div></div>
+    <div class="comp-card"><div class="cc-name">Platform Principle Card</div><div class="cc-meta">GB07 도입</div><div class="cc-desc">시리즈 전체를 관통하는 설계 원칙 선언</div></div>
+    <div class="comp-card"><div class="cc-name">ADR Summary</div><div class="cc-meta">GB07</div><div class="cc-desc">GB03~06의 개별 결정을 출처와 함께 집약</div></div>
+    <div class="comp-card"><div class="cc-name">Series Conclusion Chain</div><div class="cc-meta">GB07 전용</div><div class="cc-desc">Problem→...→Architecture 여정 + 최종 선언 문장, 반복하지 않음</div></div>
+    <div class="comp-card"><div class="cc-name">Calculation Platform Insight</div><div class="cc-meta">GB01 도입(#01) · 전 모듈 Wrap-up 상시</div><div class="cc-desc">모듈 전체 결론 수준의 통찰, 다크 톤 대형 박스, 번호 순차 부여. 내부 문서명(RN-001 등)은 직접 언급하지 않음</div></div>
+  </section>
+
+  <!-- ============ PART H: OUTPUT ARTIFACT CATALOG ============ -->
+  <section id="p8">
+    <div class="part-kicker">Part H</div>
+    <h2 class="part-title">Output Artifact Catalog</h2>
+    <p class="lede">각 모듈이 만들어낸 정식 산출물과 그것이 소비되는 곳. GB 시리즈가 교육이 아니라 방법론(Methodology)이라는 것을 가장 압축적으로 보여주는 표. 상세 근거는 GB_Series_Architecture_Map을 참조.</p>
+
+    <table class="ref-table">
+      <tr><th>Module</th><th>Output Artifact</th><th>Used By</th></tr>
+      <tr><td>GB01</td><td class="term">Problem Statement</td><td>GB02</td></tr>
+      <tr><td>GB02</td><td class="term">Calculation Flow</td><td>GB03</td></tr>
+      <tr><td>GB03</td><td class="term">Business Object Catalog</td><td>GB04</td></tr>
+      <tr><td>GB04</td><td class="term">Mapping Rules + ADR</td><td>GB05, GB06</td></tr>
+      <tr><td>GB05</td><td class="term">Capability Model</td><td>GB06</td></tr>
+      <tr><td>GB06</td><td class="term">Capability Assessment</td><td>GB07</td></tr>
+      <tr><td>GB07</td><td class="term">Enterprise Reference Architecture</td><td>Product Design</td></tr>
+    </table>
+  </section>
+
+</div>
+
+<footer>ASPN BAC사업부 · GB Reference Guide v1.0 — Constitution v1.0 기준 파생 문서, Complete (Part A~H)</footer>
+
+<script>
+  const sections = document.querySelectorAll('section');
+  const navLinks = document.querySelectorAll('.nav-tabs a');
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(sec => { if (sec.getBoundingClientRect().top <= 100) current = sec.id; });
+    navLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + current));
+  });
+  navLinks.forEach(a => a.addEventListener('click', e => {
+    e.preventDefault();
+    document.querySelector(a.getAttribute('href')).scrollIntoView({behavior:'smooth', block:'start'});
+  }));
+</script>
+
+</body>
+</html>

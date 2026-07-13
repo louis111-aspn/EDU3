@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GB Series Index — ASPN BAC</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Noto+Sans+KR:wght@400;500;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#003366; --navy-light:#e8eef5;
+    --gray-dark:#333333; --gray-mid:#666666; --gray-light:#f4f6f9; --gray-border:#d0d8e4;
+    --bg:#f0f3f8;
+  }
+  *{box-sizing:border-box;}
+  html{overflow-x:clip;}
+  body{margin:0; background:var(--bg); color:var(--gray-dark); font-family:'Noto Sans KR', sans-serif; font-size:14.5px; line-height:1.7; word-break:keep-all; overflow-wrap:break-word; overflow-x:clip;}
+  h1,h2{font-family:'DM Serif Display', 'Noto Sans KR', serif;}
+  .mono{font-family:'JetBrains Mono','Noto Sans KR',monospace;}
+
+  .hero{background:linear-gradient(135deg, var(--navy) 0%, #001d3d 100%); color:#fff; padding:60px 32px 50px; text-align:center;}
+  .badge{display:inline-block; background:rgba(255,255,255,0.14); border:1px solid rgba(255,255,255,0.35); color:#fff; font-family:'JetBrains Mono',monospace; font-size:13px; letter-spacing:0.06em; padding:6px 16px; border-radius:20px; margin-bottom:20px;}
+  .hero h1{font-size:34px; margin:0 0 10px; font-weight:400;}
+  .hero p.sub{font-size:16px; color:#cfe0f5; max-width:740px; margin:0 auto;}
+
+  .container{max-width:960px; margin:0 auto; padding:44px 20px 24px;}
+  section{margin-bottom:48px;}
+  .section-title{font-size:22px; color:var(--navy); font-weight:400; margin:0 0 4px;}
+  .section-kicker{font-family:'JetBrains Mono',monospace; font-size:12.5px; color:var(--gray-mid); letter-spacing:0.05em; text-transform:uppercase; margin-bottom:6px;}
+  .lede{font-size:14px; color:var(--gray-mid); margin:6px 0 18px;}
+
+  .doc-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:14px;}
+  .doc-card{background:#fff; border:1px solid var(--gray-border); border-radius:6px; padding:16px 18px; text-decoration:none; color:inherit; display:block; transition:border-color .15s, box-shadow .15s;}
+  .doc-card:hover{border-color:var(--navy); box-shadow:0 2px 10px rgba(0,51,102,0.08);}
+  .doc-card .dc-tag{font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--navy); font-weight:700; letter-spacing:0.04em; margin-bottom:6px;}
+  .doc-card h3{margin:0 0 6px; font-size:15px; color:var(--gray-dark);}
+  .doc-card p{margin:0; font-size:12.5px; color:var(--gray-mid);}
+  .doc-card .dc-format{display:inline-block; font-family:'JetBrains Mono',monospace; font-size:10px; color:#fff; background:var(--gray-mid); padding:2px 7px; border-radius:8px; margin-top:8px;}
+  .doc-card.module{border-left:4px solid var(--navy);}
+
+  .part-label{font-family:'JetBrains Mono',monospace; font-weight:700; font-size:12px; color:var(--navy); letter-spacing:0.06em; background:var(--navy-light); display:inline-block; padding:5px 14px; border-radius:14px; margin:18px 0 12px;}
+
+  .strategy-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:14px;}
+  .gov-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:14px;}
+
+  .callout{border-left:3px solid var(--navy); background:var(--navy-light); padding:12px 16px; margin:14px 0; font-size:13.5px;}
+
+  footer{text-align:center; padding:32px 20px 48px; font-size:12px; color:var(--gray-mid);}
+
+  @media (max-width:720px){
+    .hero h1{font-size:24px;}
+    .doc-grid, .strategy-grid, .gov-grid{grid-template-columns:1fr;}
+    .container{padding:32px 14px 16px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="badge">ASPN BAC · GB SERIES</div>
+  <h1>GB Series Index</h1>
+  <p class="sub">GloBE &amp; SAP Add-on Discovery — 전략 문서, 교육 시리즈, 거버넌스 문서 전체로 가는 시작점</p>
+</div>
+
+<div class="container">
+
+  <!-- ============ STRATEGY LAYER ============ -->
+  <section>
+    <div class="section-kicker">Strategy Layer</div>
+    <h2 class="section-title">전략 문서</h2>
+    <p class="lede">GB 시리즈가 도출된 배경 — 무엇을 만들 것인가(G0), 왜 이 아키텍처인가(RN-001)</p>
+    <div class="strategy-grid">
+      <a class="doc-card" href="./G0_GloBE_Solution_Landscape_and_Product_Strategy.docx">
+        <div class="dc-tag">G0 · PRODUCT STRATEGY</div>
+        <h3>GloBE Solution Landscape &amp; Product Strategy</h3>
+        <p>시장·경쟁 솔루션 조사, Capability Matrix, Build vs Buy vs Partner, Product Roadmap</p>
+        <span class="dc-format">.docx</span>
+      </a>
+      <a class="doc-card" href="./RN-001_SAP_Enterprise_Calculation_Platform_Strategy.docx">
+        <div class="dc-tag">RN-001 · TECHNOLOGY STRATEGY</div>
+        <h3>SAP Enterprise Calculation Platform Strategy</h3>
+        <p>Universal Journal 이후의 SAP Finance — 왜 계산 플랫폼이 새로운 허브가 되는가</p>
+        <span class="dc-format">.docx</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- ============ EDUCATION LAYER ============ -->
+  <section>
+    <div class="section-kicker">Education &amp; Methodology Layer</div>
+    <h2 class="section-title">GB01~07 교육 시리즈</h2>
+    <p class="lede">Part I(Foundation)에서 개념·계산·데이터모델·구현 원칙을, Part II(Strategy)에서 역량·평가·아키텍처를 다룬다.</p>
+
+    <div class="part-label">PART I — FOUNDATION</div>
+    <div class="doc-grid">
+      <a class="doc-card module" href="./GB01_GloBE_Overview.html">
+        <div class="dc-tag">GB01 · WHY</div>
+        <h3>GloBE란 무엇인가</h3>
+        <p>왜 연결재무데이터가 필요한가</p>
+      </a>
+      <a class="doc-card module" href="./GB02_GloBE_Calculation_Mechanism.html">
+        <div class="dc-tag">GB02 · FLOW</div>
+        <h3>GloBE 계산 메커니즘</h3>
+        <p>데이터와 규칙이 결합된 계산 체계</p>
+      </a>
+      <a class="doc-card module" href="./GB03_GloBE_Data_Model.html">
+        <div class="dc-tag">GB03 · STRUCTURE</div>
+        <h3>GloBE Data Model</h3>
+        <p>Business Object와 관계 구조</p>
+      </a>
+      <a class="doc-card module" href="./GB04_Mapping_to_SAP.html">
+        <div class="dc-tag">GB04 · MAPPING</div>
+        <h3>Mapping the GloBE Data Model to SAP</h3>
+        <p>Logical Model의 SAP Physical 구현 예시</p>
+      </a>
+    </div>
+
+    <div class="part-label">PART II — STRATEGY</div>
+    <div class="doc-grid">
+      <a class="doc-card module" href="./GB05_Enterprise_Capability.html">
+        <div class="dc-tag">GB05 · CAPABILITY</div>
+        <h3>Enterprise GloBE Capability</h3>
+        <p>조직이 갖추어야 하는 업무 능력</p>
+      </a>
+      <a class="doc-card module" href="./GB06_Gap_Analysis.html">
+        <div class="dc-tag">GB06 · ASSESSMENT</div>
+        <h3>Capability Assessment — Gap Analysis</h3>
+        <p>Support Level 평가와 3종 Gap 식별</p>
+      </a>
+      <a class="doc-card module" href="./GB07_Reference_Architecture.html">
+        <div class="dc-tag">GB07 · ARCHITECTURE</div>
+        <h3>Enterprise GloBE Reference Architecture</h3>
+        <p>Capability → Architecture → Product</p>
+      </a>
+    </div>
+  </section>
+
+  <!-- ============ GOVERNANCE LAYER ============ -->
+  <section>
+    <div class="section-kicker">Governance Layer</div>
+    <h2 class="section-title">거버넌스 문서</h2>
+    <p class="lede">GB08 이상이 추가되더라도 흔들리지 않는 기준. Constitution이 원본이며, 나머지는 그 파생 문서다.</p>
+    <div class="gov-grid">
+      <a class="doc-card" href="./GB_Series_Constitution_v1.0.md">
+        <div class="dc-tag">CONSTITUTION</div>
+        <h3>GB Series Constitution v1.0</h3>
+        <p>설계 원칙, 컴포넌트 인벤토리, Writing Principle — 시리즈의 기준 문서</p>
+        <span class="dc-format">.md</span>
+      </a>
+      <a class="doc-card" href="./GB_Series_QA_Report_v1.0.md">
+        <div class="dc-tag">QA REPORT</div>
+        <h3>GB Series QA Report v1.0 (Updated)</h3>
+        <p>Vocabulary·Story Flow·Component·Learning Path 등 전 영역 점검 결과</p>
+        <span class="dc-format">.md</span>
+      </a>
+      <a class="doc-card" href="./GB_Series_Architecture_Map.html">
+        <div class="dc-tag">ARCHITECTURE MAP</div>
+        <h3>GB Series Architecture Map</h3>
+        <p>모듈 간 Deliverable Flow와 Series Evolution — 5분 안에 파악하는 전체 구조</p>
+      </a>
+      <a class="doc-card" href="./GB_Reference_Guide.html">
+        <div class="dc-tag">REFERENCE GUIDE</div>
+        <h3>GB Reference Guide v1.0</h3>
+        <p>Vocabulary, Acronym, Business Object, Capability, Architecture, Insight, Component, Output Artifact 8-Part 사전</p>
+      </a>
+    </div>
+  </section>
+
+  <div class="callout">
+    <b>상태: Frozen (v1.0)</b> — G0 · RN-001 · GB01~07 · Constitution · QA Report · Architecture Map · Reference Guide 모두 v1.0 기준선으로 동결되었다. 다음 단계는 신규 모듈 추가가 아니라 Pilot(내부 교육/고객 세미나)을 통한 실제 검증이다.
+  </div>
+
+</div>
+
+<footer>ASPN BAC사업부 · GB Series — GloBE &amp; SAP Add-on Discovery · Master Index v1.0</footer>
+
+</body>
+</html>
