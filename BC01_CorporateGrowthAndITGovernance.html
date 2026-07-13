@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BC01. 기업 성장, 자본시장 그리고 IT 거버넌스 | ASPN BAC</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Noto+Sans+KR:wght@400;500;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#003366;
+    --navy-deep:#001f3f;
+    --bg:#f0f3f8;
+    --panel:#ffffff;
+    --ink:#1a2433;
+    --ink-soft:#4a5568;
+    --line:#d7dfec;
+    --warn:#9a3b12;
+    --warn-bg:#fdf1e9;
+    --correct:#0f5c3c;
+    --correct-bg:#e9f7f0;
+    --wrong:#9a1c2e;
+    --wrong-bg:#fbeaec;
+    --mono:'JetBrains Mono','Noto Sans KR',monospace;
+  }
+  *{box-sizing:border-box;}
+  html,body{overflow-x:clip;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Noto Sans KR',sans-serif;
+    font-size:15px;
+    line-height:1.75;
+    word-break:keep-all;
+  }
+  h1,h2,h3,.serif{font-family:'DM Serif Display',serif; font-weight:400;}
+  h1{font-size:42px; line-height:1.3; margin:0 0 12px;}
+  h2.section-title{font-size:30px; margin:0 0 6px; color:var(--navy-deep);}
+  .subtitle{font-size:16px; color:var(--ink-soft); margin:0 0 28px;}
+  .action-title{
+    font-size:19px; font-weight:700; color:var(--navy-deep); margin:0 0 22px; line-height:1.55;
+    padding-bottom:18px; border-bottom:1px solid var(--line);
+  }
+  .think-box{
+    display:flex; gap:16px; align-items:flex-start; background:#eaf0f8; border:1px dashed #7fa4c9;
+    border-radius:4px; padding:14px 18px; margin:0 0 28px;
+  }
+  .think-box .think-label{
+    font-family:var(--mono); font-size:11.5px; font-weight:700; color:var(--navy); letter-spacing:.08em;
+    text-transform:uppercase; flex:0 0 auto; padding-top:1px;
+  }
+  .think-box p{margin:0; font-size:14.5px; color:var(--navy-deep); font-weight:500; line-height:1.6;}
+  .eyebrow{
+    font-family:var(--mono); font-size:13px; letter-spacing:.08em; color:var(--navy);
+    text-transform:uppercase; margin-bottom:10px; display:flex; align-items:center; gap:10px;
+  }
+  .eyebrow::before{content:""; width:22px; height:2px; background:var(--navy); display:inline-block;}
+  a{color:var(--navy);}
+
+  /* ---------- Hero ---------- */
+  .hero{
+    background:linear-gradient(180deg,var(--navy-deep) 0%, var(--navy) 100%);
+    color:#eef3fa; padding:64px 24px 88px; position:relative;
+  }
+  .hero-inner{max-width:920px; margin:0 auto;}
+  .hero .eyebrow{color:#9fc0e0;}
+  .hero .eyebrow::before{background:#9fc0e0;}
+  .tagline{font-family:'DM Serif Display',serif; font-style:italic; font-size:16px; color:#7fa4c9; margin:0 0 18px;}
+  .hero h1{color:#ffffff;}
+  .hero p.lead{font-size:17px; color:#c9d9ec; max-width:680px; margin:0 0 28px;}
+  .hero-tags{display:flex; gap:10px; flex-wrap:wrap;}
+  .hero-tag{
+    font-family:var(--mono); font-size:12px; padding:6px 12px; border:1px solid #3a5a80;
+    border-radius:3px; color:#bcd2e8;
+  }
+  .series-strip{
+    max-width:920px; margin:36px auto 0; padding-top:28px; border-top:1px solid #2b4a6e;
+    display:flex; gap:0; flex-wrap:wrap; font-family:var(--mono); font-size:12.5px;
+  }
+  .series-strip .node{padding:8px 16px 8px 0; color:#8fa9c4; white-space:nowrap;}
+  .series-strip .node.active{color:#ffffff; font-weight:700;}
+  .series-strip .arrow{padding:8px 12px 8px 0; color:#4a678a;}
+
+  /* ---------- Sticky nav ---------- */
+  .nav-wrap{
+    position:sticky; top:0; z-index:50; background:rgba(240,243,248,.92);
+    backdrop-filter:blur(6px); border-bottom:1px solid var(--line);
+  }
+  .nav-tabs{
+    max-width:920px; margin:0 auto; display:flex; overflow-x:auto; scrollbar-width:none;
+  }
+  .nav-tabs::-webkit-scrollbar{display:none;}
+  .nav-tabs a{
+    flex:0 0 auto; padding:14px 16px; font-size:13px; font-weight:500; color:var(--ink-soft);
+    text-decoration:none; border-bottom:3px solid transparent; white-space:nowrap;
+    font-family:var(--mono);
+  }
+  .nav-tabs a.active{color:var(--navy); border-bottom-color:var(--navy); font-weight:700;}
+
+  /* ---------- Layout ---------- */
+  main{max-width:920px; margin:0 auto; padding:0 24px;}
+  section.chapter{padding:64px 0; border-bottom:1px solid var(--line);}
+  section.chapter:last-of-type{border-bottom:none;}
+
+  .conclusion-box{
+    background:var(--panel); border-left:4px solid var(--navy); border-radius:2px;
+    padding:20px 24px; margin:0 0 32px; box-shadow:0 1px 2px rgba(0,20,50,.05);
+  }
+  .conclusion-box .label{font-family:var(--mono); font-size:12px; color:var(--navy); letter-spacing:.06em; margin-bottom:6px;}
+  .conclusion-box p{margin:0; font-size:17px; font-weight:500; color:var(--navy-deep); line-height:1.6;}
+
+  .card{
+    background:var(--panel); border:1px solid var(--line); border-radius:4px;
+    padding:22px 24px; margin:16px 0;
+  }
+  .card h3{font-family:'Noto Sans KR',sans-serif; font-weight:700; font-size:16px; margin:0 0 10px; color:var(--navy-deep);}
+  .card-grid{display:grid; grid-template-columns:1fr 1fr; gap:16px;}
+  @media (max-width:640px){.card-grid{grid-template-columns:1fr;}}
+
+  .callout{border-radius:4px; padding:16px 20px; margin:20px 0; font-size:14.5px;}
+  .callout .tag{font-family:var(--mono); font-size:11.5px; font-weight:700; letter-spacing:.05em; margin-bottom:6px; display:block;}
+  .callout.navy{background:#eaf0f8; border:1px solid #c3d5e8;}
+  .callout.navy .tag{color:var(--navy);}
+  .callout.warn{background:var(--warn-bg); border:1px solid #f0d3ba;}
+  .callout.warn .tag{color:var(--warn);}
+  .callout.correct{background:var(--correct-bg); border:1px solid #b9e2cb;}
+  .callout.correct .tag{color:var(--correct);}
+  .callout.wrong{background:var(--wrong-bg); border:1px solid #f0c1ca;}
+  .callout.wrong .tag{color:var(--wrong);}
+
+  /* ---------- Flow diagram ---------- */
+  .flow{display:flex; align-items:center; flex-wrap:wrap; gap:0; margin:24px 0; font-size:13.5px;}
+  .flow .step{
+    background:var(--panel); border:1px solid var(--line); border-radius:4px;
+    padding:12px 14px; min-width:112px; text-align:center; font-weight:500;
+  }
+  .flow .step.emphasis{border-color:var(--navy); background:#eaf0f8; color:var(--navy-deep); font-weight:700;}
+  .flow .sep{padding:0 8px; color:var(--ink-soft); font-family:var(--mono);}
+  .flow-vert{display:flex; flex-direction:column; gap:0; margin:24px 0;}
+  .flow-vert .step{
+    background:var(--panel); border:1px solid var(--line); border-radius:4px;
+    padding:14px 18px; font-weight:500; font-size:14px;
+  }
+  .flow-vert .step .sub{display:block; font-size:12.5px; color:var(--ink-soft); font-weight:400; margin-top:3px;}
+  .flow-vert .sep-vert{text-align:center; color:var(--ink-soft); padding:2px 0; font-family:var(--mono);}
+
+  /* ---------- Layer stack (Ch.4) ---------- */
+  .stack{margin:28px 0; border-radius:4px; overflow:hidden; border:1px solid var(--line);}
+  .stack-row{display:grid; grid-template-columns:180px 1fr; border-top:1px solid var(--line);}
+  .stack-row:first-child{border-top:none;}
+  .stack-label{
+    background:var(--navy); color:#fff; padding:16px 18px; font-weight:700; font-size:14px;
+    display:flex; align-items:center;
+  }
+  .stack-detail{background:var(--panel); padding:16px 18px; font-size:13.5px; color:var(--ink-soft); display:flex; align-items:center;}
+  .stack-detail b{color:var(--ink); font-weight:500;}
+  @media (max-width:640px){.stack-row{grid-template-columns:1fr;} .stack-label{padding:10px 18px;}}
+
+  /* ---------- Checklist ---------- */
+  .checklist{list-style:none; margin:20px 0; padding:0;}
+  .checklist li{
+    display:flex; gap:12px; padding:12px 0; border-bottom:1px solid var(--line); font-size:14.5px;
+  }
+  .checklist li:last-child{border-bottom:none;}
+  .checklist .box{
+    flex:0 0 18px; height:18px; border:2px solid var(--navy); border-radius:3px; margin-top:2px;
+  }
+
+  /* ---------- Drill toggle ---------- */
+  .drill{border:1px solid var(--line); border-radius:4px; margin:14px 0; background:var(--panel); overflow:hidden;}
+  .drill summary{
+    cursor:pointer; padding:14px 18px; font-weight:500; font-size:14.5px; list-style:none;
+    display:flex; justify-content:space-between; align-items:center; color:var(--navy-deep);
+  }
+  .drill summary::-webkit-details-marker{display:none;}
+  .drill summary::after{content:"+"; font-family:var(--mono); font-size:18px; color:var(--navy);}
+  .drill[open] summary::after{content:"−";}
+  .drill .drill-body{padding:0 18px 18px; font-size:14px; color:var(--ink-soft); border-top:1px solid var(--line); padding-top:14px;}
+
+  /* ---------- ASPN case box ---------- */
+  .case-box{
+    background:var(--navy-deep); color:#e8eef7; border-radius:6px; padding:28px; margin:28px 0;
+  }
+  .case-box .case-eyebrow{font-family:var(--mono); font-size:12px; color:#9fc0e0; margin-bottom:12px; letter-spacing:.06em;}
+  .case-box h3{color:#fff; font-family:'Noto Sans KR',sans-serif; font-weight:700; font-size:17px; margin:0 0 14px;}
+  .case-entities{display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin:18px 0;}
+  @media (max-width:640px){.case-entities{grid-template-columns:1fr;}}
+  .entity{background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.15); border-radius:4px; padding:14px;}
+  .entity .role{font-family:var(--mono); font-size:10.5px; color:#7fa4c9; text-transform:uppercase; letter-spacing:.05em; margin-bottom:6px;}
+  .entity .code{font-family:var(--mono); font-size:12px; color:#9fc0e0;}
+  .entity .name{font-weight:700; margin:4px 0 2px; font-size:14px;}
+  .entity .desc{font-size:12.5px; color:#b9c9dc;}
+
+  /* ---------- Takeaway ---------- */
+  .takeaway{
+    background:var(--panel); border:2px solid var(--navy); border-radius:6px;
+    padding:32px; margin:32px 0; text-align:left;
+  }
+  .takeaway .label{font-family:var(--mono); font-size:12px; color:var(--navy); letter-spacing:.08em; margin-bottom:12px;}
+  .takeaway p{font-size:19px; line-height:1.75; margin:0; color:var(--navy-deep); font-weight:500;}
+
+  table.mece{width:100%; border-collapse:collapse; margin:20px 0; font-size:13.5px;}
+  table.mece th, table.mece td{border:1px solid var(--line); padding:10px 12px; text-align:left; vertical-align:top;}
+  table.mece th{background:var(--navy); color:#fff; font-weight:700; font-size:12.5px;}
+  table.mece tr:nth-child(even){background:#fafbfd;}
+
+  footer{padding:40px 24px 60px; text-align:center; color:var(--ink-soft); font-size:12.5px; font-family:var(--mono);}
+
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+  }
+
+  .module-nav{
+    background:var(--navy-deep); border-bottom:1px solid #2b4a6e;
+    font-family:var(--mono); font-size:12.5px;
+  }
+  .module-nav .mn-inner{
+    max-width:920px; margin:0 auto; padding:12px 24px; display:flex; align-items:center;
+    justify-content:space-between; gap:12px; flex-wrap:wrap;
+  }
+  .module-nav a{color:#bcd2e8; text-decoration:none; display:flex; align-items:center; gap:6px;}
+  .module-nav a:hover{color:#fff;}
+  .module-nav a.disabled{color:#4a678a; pointer-events:none;}
+  .module-nav .mn-index{color:#9fc0e0; font-weight:700;}
+  .module-nav .mn-side{display:flex; gap:20px; flex-wrap:wrap;}
+  .module-nav-bottom{
+    background:var(--panel); border-top:1px solid var(--line); border-bottom:1px solid var(--line);
+    font-family:var(--mono); font-size:12.5px;
+  }
+  .module-nav-bottom .mn-inner{
+    max-width:920px; margin:0 auto; padding:16px 24px; display:flex; align-items:center;
+    justify-content:space-between; gap:12px; flex-wrap:wrap;
+  }
+  .module-nav-bottom a{color:var(--navy); text-decoration:none; display:flex; align-items:center; gap:6px;}
+  .module-nav-bottom a:hover{text-decoration:underline;}
+  .module-nav-bottom a.disabled{color:#aab4c2; pointer-events:none;}
+  .module-nav-bottom .mn-side{display:flex; gap:20px; flex-wrap:wrap;}
+</style>
+</head>
+<body>
+<nav class="module-nav">
+  <div class="mn-inner">
+    <a class="mn-index" href="./BC_Index.html">≡ Index</a>
+    <div class="mn-side">
+      <a class="disabled">← 이전 모듈 없음</a>
+      <a href="./BC02_InternalControlAndERP.html">BC02. 내부회계관리제도와 ERP →</a>
+    </div>
+  </div>
+</nav>
+
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="eyebrow">Business Context Series · BC01</div>
+    <div class="tagline">From Business Challenges to SAP Solutions.</div>
+    <h1>기업 성장, 자본시장 그리고<br>IT 거버넌스</h1>
+    <p class="lead">IPO는 하나의 사례일 뿐이다. 기업이 성장하며 외부 이해관계자를 맞이할 때, 자본시장이 실제로 검증하는 것은 성장의 크기가 아니라 그 성장을 관리하고 증명할 수 있는 체계다.</p>
+    <div class="hero-tags">
+      <span class="hero-tag">Foundation Level</span>
+      <span class="hero-tag">Why 계층</span>
+      <span class="hero-tag">벤더 중립</span>
+    </div>
+    <div class="series-strip">
+      <span class="node active">BC01 성장·자본시장·거버넌스</span>
+      <span class="arrow">→</span>
+      <span class="node">BC02 내부회계관리제도와 ERP</span>
+      <span class="arrow">→</span>
+      <span class="node">BC03 IFRS와 연결결산의 진화</span>
+      <span class="arrow">→</span>
+      <span class="node">BC04 글로벌 최저한세와 시스템</span>
+      <span class="arrow">→</span>
+      <span class="node">GR01 왜 Group Reporting인가</span>
+    </div>
+  </div>
+</header>
+
+<div class="nav-wrap">
+  <nav class="nav-tabs" id="navTabs">
+    <a href="#ch0" class="active">Ch.0 도입</a>
+    <a href="#ch1">Ch.1 신뢰 메커니즘</a>
+    <a href="#ch2">Ch.2 성장과 거버넌스</a>
+    <a href="#ch3">Ch.3 리스크</a>
+    <a href="#ch4">Ch.4 IT 아키텍처</a>
+    <a href="#ch5">Ch.5 실무 시사점</a>
+    <a href="#ch6">Ch.6 Wrap-up</a>
+  </nav>
+</div>
+
+<main>
+
+  <!-- ===================== Ch.0 ===================== -->
+  <section class="chapter" id="ch0">
+    <div class="eyebrow">Chapter 0</div>
+    <h2 class="section-title">도입: 왜 이 주제를 다루는가</h2>
+    <p class="subtitle">이 모듈이 다루지 않는 것과 다루는 것의 경계</p>
+    <p class="action-title">IT 인프라는 상장의 부수 과업이 아니라 성장 검증의 일부다.</p>
+    <div class="think-box">
+      <span class="think-label">Think</span>
+      <p>IT 시스템은 상장이 결정된 이후에 준비해도 늦지 않을까?</p>
+    </div>
+
+    <div class="conclusion-box">
+      <div class="label">CH.0 핵심 결론</div>
+      <p>IT 인프라 구축은 IPO의 부수 과업이 아니라, 기업이 성장 과정에서 반드시 통과하는 검증 절차의 일부다. 이 모듈은 그 이유를 개념 층위에서 정리한다.</p>
+    </div>
+
+    <p>많은 컨설턴트와 실무자가 "IT 시스템 구축은 상장이 결정된 이후, 실무적으로 준비하면 되는 항목"이라는 전제를 갖고 있다. 이 모듈은 그 전제를 교정하는 데서 출발한다.</p>
+
+    <div class="callout wrong">
+      <span class="tag">흔한 오해</span>
+      IPO를 준비하는 기업만 ERP·연결결산 시스템이 필요하다.
+    </div>
+    <div class="callout correct">
+      <span class="tag">이 모듈의 관점</span>
+      시스템 고도화는 기업 성장에 따라 자연스럽게 요구되는 역량이며, IPO는 그 역량이 공식적으로 검증받는 하나의 이벤트일 뿐이다. 비상장 대기업, 사모투자(PE) 유치 기업, 해외 진출 기업도 동일한 논리를 따른다.
+    </div>
+
+    <div class="card">
+      <h3>이 모듈이 다루지 않는 것</h3>
+      <p>특정 상장 절차의 세부 규정, 특정 ERP·연결결산 제품의 기능 명세, 특정 회계법인의 서비스 소개. 이러한 내용은 각 영역의 전문 자료 및 후속 모듈(BC02~04, GR 시리즈)에서 다룬다.</p>
+    </div>
+  </section>
+
+  <!-- ===================== Ch.1 ===================== -->
+  <section class="chapter" id="ch1">
+    <div class="eyebrow">Chapter 1</div>
+    <h2 class="section-title">기업 성장과 자본시장의 신뢰 메커니즘</h2>
+    <p class="subtitle">IPO는 이 메커니즘이 작동하는 대표적 사례 중 하나다</p>
+    <p class="action-title">정보 비대칭은 신뢰 부족을 낳고, 제도는 이를 해소한다.</p>
+    <div class="think-box">
+      <span class="think-label">Think</span>
+      <p>투자자는 왜 경영진의 말을 그대로 믿지 않을까?</p>
+    </div>
+
+    <div class="conclusion-box">
+      <div class="label">CH.1 핵심 결론</div>
+      <p>외부 이해관계자의 등장은 정보 비대칭을 낳고, 공시와 외부감사는 이를 해소하기 위한 제도적 장치다. IPO는 이 장치가 가장 압축적으로 작동하는 사례이지, 유일한 사례는 아니다.</p>
+    </div>
+
+    <h3 style="font-family:'Noto Sans KR',sans-serif; font-weight:700; font-size:17px; color:var(--navy-deep); margin:0 0 4px;">왜 자본시장은 기업을 그대로 믿지 않는가</h3>
+    <p style="margin:0 0 4px;">이 질문에서 출발하면 이후 Ch.2~6의 논지가 자연스럽게 이어진다. 기업은 자기 자신을 가장 잘 아는 주체이지만, 투자자는 그 기업을 겉으로 드러난 정보로만 판단해야 한다. 이 비대칭이 신뢰 부족을 낳고, 신뢰 부족을 해소하기 위한 장치들이 차례로 요구된다.</p>
+
+    <div class="flow-vert">
+      <div class="step">기업은 자신을 가장 잘 안다<span class="sub">경영진은 내부 실적·리스크·의사결정 배경을 모두 알고 있음</span></div>
+      <div class="sep-vert">↓</div>
+      <div class="step">투자자는 기업을 잘 모른다<span class="sub">외부에 공개된 정보에만 접근 가능</span></div>
+      <div class="sep-vert">↓</div>
+      <div class="step emphasis">정보 비대칭 → 신뢰 부족</div>
+      <div class="sep-vert">↓</div>
+      <div class="step">공시 · 외부감사 · 내부통제<span class="sub">신뢰 부족을 해소하기 위한 제도적 장치</span></div>
+      <div class="sep-vert">↓</div>
+      <div class="step">IT Governance<span class="sub">위 장치들이 지속적·재현 가능하게 작동하도록 뒷받침하는 기반 — 이후 Ch.2~6의 주제</span></div>
+    </div>
+
+    <p>기업이 내부 자금만으로 운영될 때는 정보를 외부에 증명할 필요가 크지 않다. 그러나 기업이 성장하며 외부 자본을 조달하기 시작하면, 자금 제공자는 경영진이 가진 정보에 비해 훨씬 적은 정보만을 갖게 된다. 이 구조적 격차를 <b>정보 비대칭</b>이라 부른다.</p>
+
+    <div class="flow">
+      <div class="step">기업 성장</div><span class="sep">→</span>
+      <div class="step">외부 자본 필요</div><span class="sep">→</span>
+      <div class="step emphasis">정보 비대칭 발생</div><span class="sep">→</span>
+      <div class="step">공시·감사 요구</div>
+    </div>
+
+    <p>이 정보 비대칭을 해소하기 위한 제도적 장치가 공시(disclosure)와 외부감사(external audit)다. 외부 이해관계자는 경영진의 주장을 그대로 신뢰하는 대신, 독립된 제3자가 검증한 정보를 신뢰하는 방식을 택한다. IPO는 이 메커니즘이 가장 공식적이고 압축적으로 작동하는 이벤트다.</p>
+
+    <div class="card-grid">
+      <div class="card">
+        <h3>동일한 프레임이 적용되는 다른 사례</h3>
+        <ul style="margin:0; padding-left:18px;">
+          <li>회사채 발행 — 채권자에 대한 정보 제공 의무</li>
+          <li>사모투자(PE) 유치 — 투자자 실사(Due Diligence) 대응</li>
+          <li>해외 투자유치 — 현지 규제·회계기준 대응</li>
+          <li>ESG 공시 — 비재무 정보에 대한 신뢰성 요구 확대</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>IPO가 대표 사례로 다뤄지는 이유</h3>
+        <p style="margin:0;">다수의 불특정 투자자를 대상으로 하며, 거래소·감독기관이라는 공적 검증 주체가 개입하고, 검증 기준이 법령·규정으로 명문화되어 있어 메커니즘을 관찰하기에 가장 명확한 사례이기 때문이다.</p>
+      </div>
+    </div>
+
+    <div class="callout navy">
+      <span class="tag">국내 상황 · 참고 맥락</span>
+      2025년 1월 금융위원회·금융감독원·한국거래소는 「IPO 및 상장폐지 제도개선 방안」을 발표했다. 단기차익 목적 투자에서 기업가치 기반 투자로 시장 구조를 전환하려는 정책 방향이 핵심이며, 이는 이 모듈의 논지인 "자본시장이 정보의 양보다 신뢰성 있는 검증 체계를 요구하는 방향으로 진화한다"는 흐름과 맥을 같이한다. 세부 제도 내용은 이 모듈의 범위 밖이며, 정책 배경으로만 인용한다.
+    </div>
+  </section>
+
+  <!-- ===================== Ch.2 ===================== -->
+  <section class="chapter" id="ch2">
+    <div class="eyebrow">Chapter 2</div>
+    <h2 class="section-title">기업 성장과 상장이 왜 IT 거버넌스를 요구하는가</h2>
+    <p class="subtitle">IPO는 원인이 아니라, 이미 진행된 변화를 검증받는 계기다</p>
+    <p class="action-title">IT 거버넌스는 IPO의 원인이 아니라 성장의 결과다.</p>
+    <div class="think-box">
+      <span class="think-label">Think</span>
+      <p>상장 계획이 없는 기업도 연결결산 시스템이 필요한 이유는 무엇일까?</p>
+    </div>
+
+    <div class="conclusion-box">
+      <div class="label">CH.2 핵심 결론</div>
+      <p>IT 거버넌스 강화는 IPO가 초래하는 결과가 아니라, 기업 성장 과정에서 먼저 발생한 변화(해외법인·자회사 증가, 통제·감사 요구 강화)의 결과다. IPO는 이 변화가 이미 충분한 수준에 도달했는지를 검증받는 계기일 뿐이다.</p>
+    </div>
+
+    <div class="flow-vert">
+      <div class="step">기업 성장<span class="sub">해외법인 설립, 사업 다각화, 자회사 편입</span></div>
+      <div class="sep-vert">↓</div>
+      <div class="step">내부통제 강화 요구<span class="sub">업무분장, 승인 프로세스, 책임 소재의 명확화</span></div>
+      <div class="sep-vert">↓</div>
+      <div class="step">연결관리 복잡도 증가<span class="sub">다수 종속회사의 재무정보 통합 필요</span></div>
+      <div class="sep-vert">↓</div>
+      <div class="step">ERP 고도화<span class="sub">거래 데이터의 원천 통제 및 표준화</span></div>
+      <div class="sep-vert">↓</div>
+      <div class="step">연결결산 시스템 도입 검토<span class="sub">반복적 연결 프로세스의 표준화·재현가능성 확보</span></div>
+      <div class="sep-vert">↓</div>
+      <div class="step emphasis">(선택적) SAP Group Reporting 등 전문 솔루션 도입<span class="sub">IPO 여부와 무관하게, 연결 복잡도가 임계점을 넘는 시점에 검토</span></div>
+    </div>
+
+    <div class="callout wrong">
+      <span class="tag">경계해야 할 인과관계</span>
+      "IPO를 하기 때문에 Group Reporting이 필요하다"는 명제는 성립하지 않는다. 비상장 대기업도 연결결산을 수행하며, IFRS 연결재무제표는 상장 여부와 무관한 이슈다. 해외 자회사 관리 역시 IPO와 무관하게 발생한다.
+    </div>
+
+    <p>상장 심사 과정에서 거래소와 감독기관이 실제로 확인하는 것은 "이 기업이 상장 시점에 급조한 시스템을 갖췄는가"가 아니라 "이 기업의 관리 수준이 일정 기간 이상 안정적으로 운영되어 왔는가"다. 이 때문에 내부회계관리제도 운영보고서는 일정 기간의 운영 이력(track record)을 전제로 하며, 국내 규정상 외국기업 심사신청인의 경우 감사인의 검토의견서에 최소 3개월간의 운영성과를 첨부하도록 요구하는 것도 같은 맥락이다.</p>
+
+    <div class="card">
+      <h3>법정 요건의 예시: 내부회계관리제도</h3>
+      <p style="margin:0 0 10px;">외부감사법 제8조에 근거해 주권상장법인은 자산 규모와 무관하게 내부회계관리제도를 구축·운영해야 하며, 대표이사가 관리·운영 책임자로서 매 사업연도 주주총회·이사회·감사(위원회)에 운영실태를 보고해야 한다. 다만 자산총액 1천억원 미만 상장예비심사 신청기업은 외부감사인의 <b>감사</b>가 아닌 <b>검토</b> 수준으로 완화되는 등, 규모에 따른 차등이 존재한다.</p>
+      <p style="margin:0; font-size:13px; color:var(--ink-soft);">※ 세부 요건은 회사 규모, 업종, 사업보고서 제출 대상 여부에 따라 달라지므로 프로젝트별 확인이 필요하다.</p>
+    </div>
+  </section>
+
+  <!-- ===================== Ch.3 ===================== -->
+  <section class="chapter" id="ch3">
+    <div class="eyebrow">Chapter 3</div>
+    <h2 class="section-title">IT 인프라 부재가 초래하는 구체적 리스크</h2>
+    <p class="subtitle">세 층위에서 각각 다른 방식으로 발현된다</p>
+    <p class="action-title">시스템 부재의 리스크는 통제·연결·보고 세 층위에서 다르게 나타난다.</p>
+    <div class="think-box">
+      <span class="think-label">Think</span>
+      <p>시스템이 없다는 사실 하나만으로 상장이 불가능해질까?</p>
+    </div>
+
+    <div class="conclusion-box">
+      <div class="label">CH.3 핵심 결론</div>
+      <p>IT 인프라 부재로 인한 리스크는 통제설계, 연결결산 정확성, 재무보고 신뢰성이라는 서로 다른 층위에서 각각 다른 방식으로 발현되며, 세 층위는 상호 배타적이면서도 하나라도 결여되면 나머지에 영향을 준다.</p>
+    </div>
+
+    <table class="mece">
+      <tr><th>층위</th><th>핵심 리스크</th><th>발현 양상</th></tr>
+      <tr>
+        <td><b>① 통제설계</b></td>
+        <td>업무분장(Segregation of Duties)이 시스템으로 강제되지 않음</td>
+        <td>동일인이 기안·승인·집행을 모두 수행할 수 있는 구조가 통제 취약점으로 지적됨</td>
+      </tr>
+      <tr>
+        <td><b>② 연결결산</b></td>
+        <td>다수 종속회사 재무정보의 수작업 통합</td>
+        <td>내부거래 제거·지분법 반영 등의 반복 작업에서 오류·지연 발생 가능성 증가</td>
+      </tr>
+      <tr>
+        <td><b>③ 재무보고 신뢰성</b></td>
+        <td>추적 가능한 근거(Audit Trail) 부재</td>
+        <td>감사인의 검토의견 미표명 또는 지연, 질적심사 단계에서의 추가 소명 요구</td>
+      </tr>
+    </table>
+
+    <div class="callout navy">
+      <span class="tag">국내 상황 · 참고 맥락</span>
+      2025년 증권선물위원회는 금융감독원·한국공인회계사회와 함께 상장예정(IPO 예정) 기업에 대한 재무제표 심사를 강화하기로 했다. 상장 직후 주가 급락 등으로 재무상태에 대한 의혹이 제기된 사례에 대한 후속 조치로, 상장 준비 단계의 회계 투명성 확보 책임이 실질적으로 커지고 있는 흐름을 보여준다. 이는 위 세 층위 중 특히 ③ 재무보고 신뢰성에 대한 외부 검증 압력이 강화되고 있음을 시사한다.
+    </div>
+
+    <details class="drill">
+      <summary>왜 "시스템 부재"가 곧바로 "상장 불가"로 이어지지는 않는가?</summary>
+      <div class="drill-body">상장심사는 형식요건(양적 기준 충족 여부)과 질적심사(경영 건전성)로 구분된다. IT 인프라 미비 자체가 형식적 결격 사유는 아니지만, 질적심사 과정에서 내부통제 취약점이나 재무제표 신뢰성 이슈로 이어져 심사 지연 또는 보완 요구의 근거가 될 수 있다. 즉 시스템 부재는 직접적 탈락 사유라기보다, 질적심사에서 부정적 판단을 받을 위험을 높이는 요인으로 이해하는 것이 정확하다.</div>
+    </details>
+  </section>
+
+  <!-- ===================== Ch.4 ===================== -->
+  <section class="chapter" id="ch4">
+    <div class="eyebrow">Chapter 4</div>
+    <h2 class="section-title">재무 신뢰성을 뒷받침하는 IT 아키텍처</h2>
+    <p class="subtitle">5-Layer로 구조를 이해하고, 이후 시리즈에서 각 Layer의 SAP 제품군을 매핑한다</p>
+    <p class="action-title">재무 신뢰성은 다섯 계층이 함께 작동할 때 확보된다.</p>
+    <div class="think-box">
+      <span class="think-label">Think</span>
+      <p>ERP 하나만 잘 갖추면 재무 신뢰성은 충분할까?</p>
+    </div>
+
+    <div class="conclusion-box">
+      <div class="label">CH.4 핵심 결론</div>
+      <p>재무 신뢰성은 특정 제품 하나가 아니라 Governance-Control-Application-Data-Infrastructure의 다섯 계층이 함께 작동할 때 확보된다. 이 5-Layer 프레임은 이후 BC02~04, GR 시리즈에서 개별 SAP 솔루션의 위치를 설명하는 공통 기준이 된다.</p>
+    </div>
+
+    <div class="stack">
+      <div class="stack-row">
+        <div class="stack-label">Governance</div>
+        <div class="stack-detail"><b>Business Governance</b> — 이사회·경영진 수준의 책임 체계와 의사결정 구조</div>
+      </div>
+      <div class="stack-row">
+        <div class="stack-label">Control</div>
+        <div class="stack-detail"><b>Internal Control / GRC, IAM, Audit Trail</b> — 통제 절차의 설계와 접근 권한 관리, 그리고 그 실행 근거의 기록</div>
+      </div>
+      <div class="stack-row">
+        <div class="stack-label">Application</div>
+        <div class="stack-detail"><b>Workflow, ERP, Consolidation / EPM</b> — 실제 업무 프로세스와 거래·연결 데이터가 처리되는 애플리케이션 레이어</div>
+      </div>
+      <div class="stack-row">
+        <div class="stack-label">Data</div>
+        <div class="stack-detail"><b>Master Data → Transaction Data → Consolidation Data → Disclosure / Reporting Data</b> — 원천 데이터가 거래로 발생하고, 연결 조정을 거쳐, 최종 공시 정보로 이어지는 생명주기</div>
+      </div>
+      <div class="stack-row">
+        <div class="stack-label">Infrastructure</div>
+        <div class="stack-detail"><b>Security, Backup, DR</b> — 위 모든 레이어가 지속적으로 작동하기 위한 기반 환경</div>
+      </div>
+    </div>
+
+    <p style="font-size:13px; color:var(--ink-soft);">※ Data 레이어의 4단계 흐름은 이후 BC03(IFRS와 연결결산의 진화), GR 시리즈에서 실제 시스템 상의 데이터 흐름(원장 → 연결 조정 → 공시)으로 구체화된다. 이 모듈에서는 개념적 생명주기로만 다룬다.</p>
+
+    <p>이 프레임에서 중요한 것은 순서가 아니라 <b>레이어 간의 의존 관계</b>다. Application 레이어에 아무리 정교한 ERP를 도입해도 Control 레이어의 업무분장이 설계되어 있지 않으면 통제 효과성을 입증할 수 없다. 반대로 Governance 원칙이 명확해도 Data 레이어에서 원천 데이터의 무결성이 확보되지 않으면 그 원칙은 실행되지 않는다.</p>
+
+    <div class="callout warn">
+      <span class="tag">절제된 서술</span>
+      "시스템을 도입하면 상장이 보장된다"는 명제는 성립하지 않는다. IT 아키텍처는 재무 신뢰성을 뒷받침하는 필요조건이지 충분조건이 아니며, 이는 이 모듈 전체를 관통하는 전제다.
+    </div>
+  </section>
+
+  <!-- ===================== Ch.5 ===================== -->
+  <section class="chapter" id="ch5">
+    <div class="eyebrow">Chapter 5</div>
+    <h2 class="section-title">실무 시사점: 언제, 무엇을 준비해야 하는가</h2>
+    <p class="subtitle">ASPN 케이스로 살펴보는 연결결산 복잡성</p>
+    <p class="action-title">IT 거버넌스는 상장을 위해서가 아니라 성장하며 성숙해야 하는 역량이다.</p>
+    <div class="think-box">
+      <span class="think-label">Think</span>
+      <p>시스템 준비는 언제부터 시작해야 상장 심사 시점에 늦지 않을까?</p>
+    </div>
+
+    <div class="conclusion-box">
+      <div class="label">CH.5 핵심 결론</div>
+      <p>IT 거버넌스는 상장을 위해 구축하는 것이 아니라, 기업이 성장하는 과정에서 자연스럽게 성숙해야 하는 역량이며, IPO는 그 성숙도를 공식적으로 검증받는 대표적인 이벤트다.</p>
+    </div>
+
+    <p>준비 착수 시점은 상장예비심사 청구일이 아니라, 그로부터 역산해서 설계해야 한다. 내부회계관리제도의 운영보고서는 일정 기간의 운영 이력을 전제로 하므로, 대표주관계약 체결과 함께 내부통제 체계·시스템 정비를 병행하는 것이 통상적인 준비 방식으로 언급된다. 구체적인 소요 기간은 기업 규모·업종·기존 관리 수준에 따라 달라지므로 프로젝트별로 판단해야 한다.</p>
+
+    <div class="card-grid">
+      <div class="card">
+        <h3>규모별 시사점</h3>
+        <p style="margin:0;">자산 1천억원 미만 기업은 내부회계관리제도에 대한 외부감사가 면제되고 검토로 완화되지만, 여전히 외부감사인의 검토는 받아야 한다. 규모가 작다고 해서 시스템 정비의 필요성 자체가 사라지는 것은 아니라는 점에 유의해야 한다.</p>
+      </div>
+      <div class="card">
+        <h3>컨설턴트 관점의 시사점</h3>
+        <p style="margin:0;">클라이언트가 "IPO 시점에 임박해 시스템을 도입하면 된다"는 전제로 접근할 경우, 운영 이력 부족이라는 근본적 제약에 부딪힌다. 어드바이저리 초기 단계에서 이 시점 이슈를 명확히 짚어주는 것이 실질적 가치를 만든다.</p>
+      </div>
+    </div>
+
+    <div class="case-box">
+      <div class="case-eyebrow" id="caseEyebrow">— 연결결산 복잡성 예시</div>
+      <h3 id="caseTitle">—</h3>
+      <p style="margin:0 0 6px; color:#c9d9ec; font-size:14px;">연결 구조가 다음과 같이 세 개 층위 — 지주회사(HQ), 국내 제조 자회사, 해외 자회사 — 로 구성되어 있다고 가정하면, 수작업 연결이 왜 임계점을 넘는지 구체적으로 그려볼 수 있다.</p>
+      <div class="case-entities" id="caseEntities"></div>
+      <p style="margin:12px 0 0; color:#c9d9ec; font-size:14px;">종속회사가 3개일 때도 내부거래 제거·지분법 반영·외화환산의 조합은 수작업으로 감당 가능해 보일 수 있다. 그러나 종속회사가 늘어날수록 이 조합은 산술적으로가 아니라 <b style="color:#fff;">관계의 수만큼</b> 증가한다. 이 지점이 연결결산 시스템 도입을 검토하는 임계점이며, <b style="color:#fff;">IPO 여부와 무관하게</b> 발생하는 문제라는 점이 Ch.2의 핵심 논지와 연결된다.</p>
+    </div>
+
+    <h3 style="font-family:'Noto Sans KR',sans-serif; font-weight:700; font-size:16px; color:var(--navy-deep); margin-top:32px;">준비 체크리스트 (개념 점검용)</h3>
+    <ul class="checklist">
+      <li><span class="box"></span>대표이사 등 내부회계관리자 지정 여부와 그 역할이 문서화되어 있는가</li>
+      <li><span class="box"></span>업무분장(기안-승인-집행)이 시스템 권한으로 구현되어 있는가</li>
+      <li><span class="box"></span>종속회사 재무정보의 연결 프로세스가 반복 가능한 형태로 표준화되어 있는가</li>
+      <li><span class="box"></span>내부통제 운영 이력이 심사 시점까지 충분한 기간 축적될 수 있는 일정으로 설계되어 있는가</li>
+    </ul>
+    <p style="font-size:12.5px; color:var(--ink-soft);">※ 위 체크리스트는 개념 이해를 위한 예시이며, 실제 상장 준비 시에는 주관사·감사인과의 사전 협의를 통해 확정해야 한다.</p>
+  </section>
+
+  <!-- ===================== Ch.6 ===================== -->
+  <section class="chapter" id="ch6">
+    <div class="eyebrow">Chapter 6</div>
+    <h2 class="section-title">Wrap-up</h2>
+    <p class="subtitle">BC02~04, 그리고 GR 시리즈로 이어지는 Why</p>
+    <p class="action-title">지속 가능한 신뢰는 미리 준비된 거버넌스에서 시작된다.</p>
+
+    <div class="takeaway">
+      <div class="label">ONE SENTENCE TAKEAWAY</div>
+      <p>기업이 성장할수록 자본시장이 요구하는 것은 더 많은 정보가 아니라, 그 정보를 지속적으로 생성·통제·검증할 수 있는 거버넌스이며, IT 시스템은 이를 구현하는 핵심 기반이다.</p>
+    </div>
+
+    <div class="callout navy">
+      <span class="tag">확장 메시지</span>
+      IPO는 기업의 성장 이벤트이지만, 자본시장이 평가하는 것은 성장 자체가 아니라 그 성장을 지속적으로 관리하고 검증할 수 있는 경영 및 IT 거버넌스 체계다. ERP와 연결결산 시스템은 이러한 거버넌스를 구현하는 핵심 기반 중 하나이며, 시스템 도입만으로 상장이 보장되는 것은 아니지만 신뢰 가능한 재무보고 체계를 뒷받침하는 중요한 요소다.
+    </div>
+
+    <div class="card">
+      <h3 style="font-family:var(--mono); font-size:13px; letter-spacing:.05em; color:var(--navy); text-transform:uppercase;">Key Takeaways</h3>
+      <ul class="checklist" style="margin-top:6px;">
+        <li><span class="box" style="border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:var(--mono); font-size:11px; color:var(--navy);">1</span>기업 성장에는 신뢰 메커니즘이 필요하다 — 정보 비대칭이 공시·감사·내부통제를 요구한다.</li>
+        <li><span class="box" style="border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:var(--mono); font-size:11px; color:var(--navy);">2</span>IT 거버넌스는 성장의 결과이며, IPO는 그 성숙도를 검증하는 대표적 이벤트다.</li>
+        <li><span class="box" style="border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:var(--mono); font-size:11px; color:var(--navy);">3</span>ERP와 연결결산 시스템은 재무 신뢰성을 구현하는 핵심 기반이지만, 그 자체가 상장을 보장하지는 않는다.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>시리즈 전체 미리보기</h3>
+      <ul style="margin:0; padding-left:18px;">
+        <li><b>BC02</b> — 내부회계관리제도는 구체적으로 어떤 통제를 요구하며, ERP는 이를 어떻게 구현하는가</li>
+        <li><b>BC03</b> — IFRS 연결재무제표는 어떤 배경에서 발전해왔고, 연결결산의 방법론은 어떻게 진화했는가</li>
+        <li><b>BC04</b> — 글로벌 최저한세(필라2)는 왜 다시 한번 시스템 고도화를 요구하는가</li>
+        <li><b>GR01</b> — 위 배경 위에서, SAP Group Reporting은 구체적으로 무엇을 해결하는 도구인가</li>
+      </ul>
+    </div>
+
+    <div class="case-box" style="text-align:left;">
+      <div class="case-eyebrow">Next Module · BC02</div>
+      <h3 style="font-family:'DM Serif Display',serif; font-size:24px; font-weight:400;">내부회계관리제도와 ERP</h3>
+      <p style="margin:0; color:#c9d9ec; font-size:14.5px; line-height:1.7;">좋은 거버넌스는 결국 내부통제에서 구현된다. BC01이 "왜 신뢰가 필요한가"를 다뤘다면, BC02는 그 신뢰가 실제로 어떤 통제 절차로 번역되고, ERP가 그 통제를 어떻게 시스템적으로 강제하는지를 다룬다.</p>
+    </div>
+  </section>
+
+</main>
+
+<div class="module-nav-bottom">
+  <div class="mn-inner">
+    <a href="./BC_Index.html">≡ 전체 시리즈 Index</a>
+    <div class="mn-side">
+      <a class="disabled">← 이전 모듈 없음</a>
+      <a href="./BC02_InternalControlAndERP.html">BC02. 내부회계관리제도와 ERP →</a>
+    </div>
+  </div>
+</div>
+<footer>ASPN BAC · Business Context Series · BC01 · v1.1 (Series Design Standard 적용)</footer>
+
+<script>
+// ----- BC01 Illustrative Case config -----
+// Frame (fixed): HQ / 국내 제조 자회사 / 해외 자회사
+// Labels (swappable): set CASE_MODE to 'ASPN' (internal training) or 'Illustrative' (external-facing)
+const CASE_MODE = 'ASPN';
+
+const CASE_LIBRARY = {
+  ASPN: {
+    title: 'ASPN Holdings 그룹의 연결 구조',
+    eyebrow: 'ASPN 케이스',
+    entities: [
+      { role:'HQ', code:'K100', name:'ASPN Korea', desc:'K-IFRS 개별 재무제표 대상 법인' },
+      { role:'국내 제조 자회사', code:'K200', name:'ASPN Korea Manufacturing', desc:'제조 자회사, 재고·원가 데이터 연동 필요' },
+      { role:'해외 자회사', code:'EU', name:'ASPN Europe', desc:'해외 자회사, EUR/IFRS, 환산·환율 이슈 발생' }
+    ]
+  },
+  Illustrative: {
+    title: 'Illustrative Manufacturing Group의 연결 구조',
+    eyebrow: 'Illustrative 케이스',
+    entities: [
+      { role:'HQ', code:'HD', name:'Holding', desc:'연결재무제표 작성 대상 지주회사' },
+      { role:'국내 제조 자회사', code:'MFG', name:'Manufacturing Subsidiary', desc:'제조 자회사, 재고·원가 데이터 연동 필요' },
+      { role:'해외 자회사', code:'EU', name:'European Subsidiary', desc:'해외 자회사, 현지통화/IFRS, 환산·환율 이슈 발생' }
+    ]
+  }
+};
+
+(function renderCase(){
+  const data = CASE_LIBRARY[CASE_MODE] || CASE_LIBRARY.ASPN;
+  document.getElementById('caseEyebrow').textContent = data.eyebrow + ' · 연결결산 복잡성 예시';
+  document.getElementById('caseTitle').textContent = data.title;
+  const container = document.getElementById('caseEntities');
+  container.innerHTML = data.entities.map(e => `
+    <div class="entity">
+      <div class="role">${e.role}</div>
+      <div class="code">${e.code}</div>
+      <div class="name">${e.name}</div>
+      <div class="desc">${e.desc}</div>
+    </div>
+  `).join('');
+})();
+
+(function(){
+  const links = Array.from(document.querySelectorAll('#navTabs a'));
+  const sections = links.map(l => document.querySelector(l.getAttribute('href')));
+  function onScroll(){
+    let idx = 0;
+    const y = window.scrollY + 140;
+    sections.forEach((s,i) => { if(s && s.offsetTop <= y) idx = i; });
+    links.forEach((l,i) => l.classList.toggle('active', i === idx));
+  }
+  window.addEventListener('scroll', onScroll, {passive:true});
+  onScroll();
+})();
+</script>
+
+</body>
+</html>

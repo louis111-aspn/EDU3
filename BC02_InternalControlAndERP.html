@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BC02. 내부회계관리제도와 ERP | ASPN BAC</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Noto+Sans+KR:wght@400;500;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#003366;
+    --navy-deep:#001f3f;
+    --bg:#f0f3f8;
+    --panel:#ffffff;
+    --ink:#1a2433;
+    --ink-soft:#4a5568;
+    --line:#d7dfec;
+    --warn:#9a3b12;
+    --warn-bg:#fdf1e9;
+    --correct:#0f5c3c;
+    --correct-bg:#e9f7f0;
+    --wrong:#9a1c2e;
+    --wrong-bg:#fbeaec;
+    --mono:'JetBrains Mono','Noto Sans KR',monospace;
+  }
+  *{box-sizing:border-box;}
+  html,body{overflow-x:clip;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Noto Sans KR',sans-serif;
+    font-size:15px;
+    line-height:1.75;
+    word-break:keep-all;
+  }
+  h1,h2,h3,.serif{font-family:'DM Serif Display',serif; font-weight:400;}
+  h1{font-size:42px; line-height:1.3; margin:0 0 12px;}
+  h2.section-title{font-size:30px; margin:0 0 6px; color:var(--navy-deep);}
+  .subtitle{font-size:16px; color:var(--ink-soft); margin:0 0 28px;}
+  .action-title{
+    font-size:19px; font-weight:700; color:var(--navy-deep); margin:0 0 22px; line-height:1.55;
+    padding-bottom:18px; border-bottom:1px solid var(--line);
+  }
+  .think-box{
+    display:flex; gap:16px; align-items:flex-start; background:#eaf0f8; border:1px dashed #7fa4c9;
+    border-radius:4px; padding:14px 18px; margin:0 0 28px;
+  }
+  .think-box .think-label{
+    font-family:var(--mono); font-size:11.5px; font-weight:700; color:var(--navy); letter-spacing:.08em;
+    text-transform:uppercase; flex:0 0 auto; padding-top:1px;
+  }
+  .think-box p{margin:0; font-size:14.5px; color:var(--navy-deep); font-weight:500; line-height:1.6;}
+  .eyebrow{
+    font-family:var(--mono); font-size:13px; letter-spacing:.08em; color:var(--navy);
+    text-transform:uppercase; margin-bottom:10px; display:flex; align-items:center; gap:10px;
+  }
+  .eyebrow::before{content:""; width:22px; height:2px; background:var(--navy); display:inline-block;}
+  a{color:var(--navy);}
+
+  /* ---------- Hero ---------- */
+  .hero{
+    background:linear-gradient(180deg,var(--navy-deep) 0%, var(--navy) 100%);
+    color:#eef3fa; padding:64px 24px 88px; position:relative;
+  }
+  .hero-inner{max-width:920px; margin:0 auto;}
+  .hero .eyebrow{color:#9fc0e0;}
+  .hero .eyebrow::before{background:#9fc0e0;}
+  .tagline{font-family:'DM Serif Display',serif; font-style:italic; font-size:16px; color:#7fa4c9; margin:0 0 18px;}
+  .hero h1{color:#ffffff;}
+  .hero p.lead{font-size:17px; color:#c9d9ec; max-width:680px; margin:0 0 28px;}
+  .hero-tags{display:flex; gap:10px; flex-wrap:wrap;}
+  .hero-tag{
+    font-family:var(--mono); font-size:12px; padding:6px 12px; border:1px solid #3a5a80;
+    border-radius:3px; color:#bcd2e8;
+  }
+  .series-strip{
+    max-width:920px; margin:36px auto 0; padding-top:28px; border-top:1px solid #2b4a6e;
+    display:flex; gap:0; flex-wrap:wrap; font-family:var(--mono); font-size:12.5px;
+  }
+  .series-strip .node{padding:8px 16px 8px 0; color:#8fa9c4; white-space:nowrap;}
+  .series-strip .node.active{color:#ffffff; font-weight:700;}
+  .series-strip .arrow{padding:8px 12px 8px 0; color:#4a678a;}
+
+  /* ---------- Sticky nav ---------- */
+  .nav-wrap{
+    position:sticky; top:0; z-index:50; background:rgba(240,243,248,.92);
+    backdrop-filter:blur(6px); border-bottom:1px solid var(--line);
+  }
+  .nav-tabs{
+    max-width:920px; margin:0 auto; display:flex; overflow-x:auto; scrollbar-width:none;
+  }
+  .nav-tabs::-webkit-scrollbar{display:none;}
+  .nav-tabs a{
+    flex:0 0 auto; padding:14px 16px; font-size:13px; font-weight:500; color:var(--ink-soft);
+    text-decoration:none; border-bottom:3px solid transparent; white-space:nowrap;
+    font-family:var(--mono);
+  }
+  .nav-tabs a.active{color:var(--navy); border-bottom-color:var(--navy); font-weight:700;}
+
+  /* ---------- Layout ---------- */
+  main{max-width:920px; margin:0 auto; padding:0 24px;}
+  section.chapter{padding:64px 0; border-bottom:1px solid var(--line);}
+  section.chapter:last-of-type{border-bottom:none;}
+
+  .conclusion-box{
+    background:var(--panel); border-left:4px solid var(--navy); border-radius:2px;
+    padding:20px 24px; margin:0 0 32px; box-shadow:0 1px 2px rgba(0,20,50,.05);
+  }
+  .conclusion-box .label{font-family:var(--mono); font-size:12px; color:var(--navy); letter-spacing:.06em; margin-bottom:6px;}
+  .conclusion-box p{margin:0; font-size:17px; font-weight:500; color:var(--navy-deep); line-height:1.6;}
+
+  .card{
+    background:var(--panel); border:1px solid var(--line); border-radius:4px;
+    padding:22px 24px; margin:16px 0;
+  }
+  .card h3{font-family:'Noto Sans KR',sans-serif; font-weight:700; font-size:16px; margin:0 0 10px; color:var(--navy-deep);}
+  .card-grid{display:grid; grid-template-columns:1fr 1fr; gap:16px;}
+  @media (max-width:640px){.card-grid{grid-template-columns:1fr;}}
+
+  .callout{border-radius:4px; padding:16px 20px; margin:20px 0; font-size:14.5px;}
+  .callout .tag{font-family:var(--mono); font-size:11.5px; font-weight:700; letter-spacing:.05em; margin-bottom:6px; display:block;}
+  .callout.navy{background:#eaf0f8; border:1px solid #c3d5e8;}
+  .callout.navy .tag{color:var(--navy);}
+  .callout.warn{background:var(--warn-bg); border:1px solid #f0d3ba;}
+  .callout.warn .tag{color:var(--warn);}
+  .callout.correct{background:var(--correct-bg); border:1px solid #b9e2cb;}
+  .callout.correct .tag{color:var(--correct);}
+  .callout.wrong{background:var(--wrong-bg); border:1px solid #f0c1ca;}
+  .callout.wrong .tag{color:var(--wrong);}
+
+  /* ---------- Flow diagram ---------- */
+  .flow{display:flex; align-items:center; flex-wrap:wrap; gap:0; margin:24px 0; font-size:13.5px;}
+  .flow .step{
+    background:var(--panel); border:1px solid var(--line); border-radius:4px;
+    padding:12px 14px; min-width:112px; text-align:center; font-weight:500;
+  }
+  .flow .step.emphasis{border-color:var(--navy); background:#eaf0f8; color:var(--navy-deep); font-weight:700;}
+  .flow .sep{padding:0 8px; color:var(--ink-soft); font-family:var(--mono);}
+  .flow-vert{display:flex; flex-direction:column; gap:0; margin:24px 0;}
+  .flow-vert .step{
+    background:var(--panel); border:1px solid var(--line); border-radius:4px;
+    padding:14px 18px; font-weight:500; font-size:14px;
+  }
+  .flow-vert .step .sub{display:block; font-size:12.5px; color:var(--ink-soft); font-weight:400; margin-top:3px;}
+  .flow-vert .sep-vert{text-align:center; color:var(--ink-soft); padding:2px 0; font-family:var(--mono);}
+  .flow-vert .step.emphasis{border-color:var(--navy); background:#eaf0f8; color:var(--navy-deep); font-weight:700;}
+  .flow-vert .step.mini{padding:10px 18px; font-size:13px;}
+
+  /* ---------- Layer stack ---------- */
+  .stack{margin:28px 0; border-radius:4px; overflow:hidden; border:1px solid var(--line);}
+  .stack-row{display:grid; grid-template-columns:180px 1fr; border-top:1px solid var(--line);}
+  .stack-row:first-child{border-top:none;}
+  .stack-label{
+    background:var(--navy); color:#fff; padding:16px 18px; font-weight:700; font-size:14px;
+    display:flex; align-items:center;
+  }
+  .stack-detail{background:var(--panel); padding:16px 18px; font-size:13.5px; color:var(--ink-soft); display:flex; align-items:center;}
+  .stack-detail b{color:var(--ink); font-weight:500;}
+  @media (max-width:640px){.stack-row{grid-template-columns:1fr;} .stack-label{padding:10px 18px;}}
+
+  /* ---------- Checklist ---------- */
+  .checklist{list-style:none; margin:20px 0; padding:0;}
+  .checklist li{
+    display:flex; gap:12px; padding:12px 0; border-bottom:1px solid var(--line); font-size:14.5px;
+  }
+  .checklist li:last-child{border-bottom:none;}
+  .checklist .box{
+    flex:0 0 18px; height:18px; border:2px solid var(--navy); border-radius:3px; margin-top:2px;
+  }
+
+  /* ---------- Drill toggle ---------- */
+  .drill{border:1px solid var(--line); border-radius:4px; margin:14px 0; background:var(--panel); overflow:hidden;}
+  .drill summary{
+    cursor:pointer; padding:14px 18px; font-weight:500; font-size:14.5px; list-style:none;
+    display:flex; justify-content:space-between; align-items:center; color:var(--navy-deep);
+  }
+  .drill summary::-webkit-details-marker{display:none;}
+  .drill summary::after{content:"+"; font-family:var(--mono); font-size:18px; color:var(--navy);}
+  .drill[open] summary::after{content:"−";}
+  .drill .drill-body{padding:0 18px 18px; font-size:14px; color:var(--ink-soft); border-top:1px solid var(--line); padding-top:14px;}
+
+  /* ---------- Illustrative case box ---------- */
+  .case-box{
+    background:var(--navy-deep); color:#e8eef7; border-radius:6px; padding:28px; margin:28px 0;
+  }
+  .case-box .case-eyebrow{font-family:var(--mono); font-size:12px; color:#9fc0e0; margin-bottom:12px; letter-spacing:.06em;}
+  .case-box h3{color:#fff; font-family:'Noto Sans KR',sans-serif; font-weight:700; font-size:17px; margin:0 0 14px;}
+  .case-flow{display:flex; flex-direction:column; gap:0; margin:18px 0;}
+  .case-flow .cstep{
+    background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.15); border-radius:4px;
+    padding:12px 16px; font-size:13.5px;
+  }
+  .case-flow .cstep.warn{border-color:#c97a4a; background:rgba(201,122,74,.15); font-weight:700;}
+  .case-flow .csep{text-align:center; padding:4px 0; color:#7fa4c9; font-family:var(--mono);}
+
+  /* ---------- Takeaway ---------- */
+  .takeaway{
+    background:var(--panel); border:2px solid var(--navy); border-radius:6px;
+    padding:32px; margin:32px 0; text-align:left;
+  }
+  .takeaway .label{font-family:var(--mono); font-size:12px; color:var(--navy); letter-spacing:.08em; margin-bottom:12px;}
+  .takeaway p{font-size:19px; line-height:1.75; margin:0; color:var(--navy-deep); font-weight:500;}
+
+  table.mece{width:100%; border-collapse:collapse; margin:20px 0; font-size:13.5px;}
+  table.mece th, table.mece td{border:1px solid var(--line); padding:10px 12px; text-align:left; vertical-align:top;}
+  table.mece th{background:var(--navy); color:#fff; font-weight:700; font-size:12.5px;}
+  table.mece tr:nth-child(even){background:#fafbfd;}
+
+  footer{padding:40px 24px 60px; text-align:center; color:var(--ink-soft); font-size:12.5px; font-family:var(--mono);}
+
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+  }
+
+  .module-nav{
+    background:var(--navy-deep); border-bottom:1px solid #2b4a6e;
+    font-family:var(--mono); font-size:12.5px;
+  }
+  .module-nav .mn-inner{
+    max-width:920px; margin:0 auto; padding:12px 24px; display:flex; align-items:center;
+    justify-content:space-between; gap:12px; flex-wrap:wrap;
+  }
+  .module-nav a{color:#bcd2e8; text-decoration:none; display:flex; align-items:center; gap:6px;}
+  .module-nav a:hover{color:#fff;}
+  .module-nav a.disabled{color:#4a678a; pointer-events:none;}
+  .module-nav .mn-index{color:#9fc0e0; font-weight:700;}
+  .module-nav .mn-side{display:flex; gap:20px; flex-wrap:wrap;}
+  .module-nav-bottom{
+    background:var(--panel); border-top:1px solid var(--line); border-bottom:1px solid var(--line);
+    font-family:var(--mono); font-size:12.5px;
+  }
+  .module-nav-bottom .mn-inner{
+    max-width:920px; margin:0 auto; padding:16px 24px; display:flex; align-items:center;
+    justify-content:space-between; gap:12px; flex-wrap:wrap;
+  }
+  .module-nav-bottom a{color:var(--navy); text-decoration:none; display:flex; align-items:center; gap:6px;}
+  .module-nav-bottom a:hover{text-decoration:underline;}
+  .module-nav-bottom a.disabled{color:#aab4c2; pointer-events:none;}
+  .module-nav-bottom .mn-side{display:flex; gap:20px; flex-wrap:wrap;}
+</style>
+</head>
+<body>
+<nav class="module-nav">
+  <div class="mn-inner">
+    <a class="mn-index" href="./BC_Index.html">≡ Index</a>
+    <div class="mn-side">
+      <a href="./BC01_CorporateGrowthAndITGovernance.html">← BC01. 기업 성장과 IT 거버넌스</a>
+      <a href="./BC03_IFRSAndConsolidationEvolution.html">BC03. IFRS와 연결결산의 진화 →</a>
+    </div>
+  </div>
+</nav>
+
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="eyebrow">Business Context Series · BC02</div>
+    <div class="tagline">From Business Challenges to SAP Solutions.</div>
+    <h1>내부회계관리제도와 ERP</h1>
+    <p class="lead">BC01이 "왜 신뢰가 필요한가"를 다뤘다면, BC02는 그 신뢰가 어떤 절차로 번역되는지를 다룬다. 좋은 통제는 사람을 믿지 않아서가 아니라, 누구라도 같은 절차를 따르게 만드는 설계다.</p>
+    <div class="hero-tags">
+      <span class="hero-tag">Foundation Level</span>
+      <span class="hero-tag">How Control 계층</span>
+      <span class="hero-tag">벤더 중립</span>
+    </div>
+    <div class="series-strip">
+      <span class="node">BC01 성장·자본시장·거버넌스</span>
+      <span class="arrow">→</span>
+      <span class="node active">BC02 내부회계관리제도와 ERP</span>
+      <span class="arrow">→</span>
+      <span class="node">BC03 IFRS와 연결결산의 진화</span>
+      <span class="arrow">→</span>
+      <span class="node">BC04 글로벌 최저한세와 시스템</span>
+      <span class="arrow">→</span>
+      <span class="node">GR01 왜 Group Reporting인가</span>
+    </div>
+  </div>
+</header>
+
+<div class="nav-wrap">
+  <nav class="nav-tabs" id="navTabs">
+    <a href="#ch0" class="active">Ch.0 도입</a>
+    <a href="#ch1">Ch.1 왜 통제인가</a>
+    <a href="#ch2">Ch.2 COSO</a>
+    <a href="#ch3">Ch.3 ERP 내재화</a>
+    <a href="#ch4">Ch.4 통제 메커니즘</a>
+    <a href="#ch5">Ch.5 실패 패턴</a>
+    <a href="#ch6">Ch.6 Wrap-up</a>
+  </nav>
+</div>
+
+<main>
+
+  <!-- ===================== Ch.0 ===================== -->
+  <section class="chapter" id="ch0">
+    <div class="eyebrow">Chapter 0</div>
+    <h2 class="section-title">도입: Why Trust에서 How Control로</h2>
+    <p class="subtitle">BC01의 결론을 실행 절차로 번역한다</p>
+    <p class="action-title">신뢰는 원칙에서 절차로 내려올 때 비로소 작동한다.</p>
+    <div class="think-box">
+      <span class="think-label">Think</span>
+      <p>BC01은 왜 신뢰가 필요한지를 설명했다. 그렇다면 그 신뢰는 실제로 무엇을 통해 만들어질까?</p>
+    </div>
+
+    <div class="conclusion-box">
+      <div class="label">CH.0 핵심 결론</div>
+      <p>BC01이 신뢰가 필요한 이유(Why Trust)를 다뤘다면, BC02는 그 신뢰가 구체적으로 어떤 통제 절차와 시스템 메커니즘으로 구현되는지(How Control)를 다룬다.</p>
+    </div>
+
+    <div class="flow">
+      <div class="step">BC01<span style="display:block; font-size:11px; color:var(--ink-soft); margin-top:2px;">Why Trust?</span></div><span class="sep">→</span>
+      <div class="step emphasis">BC02<span style="display:block; font-size:11px; margin-top:2px;">How Control?</span></div><span class="sep">→</span>
+      <div class="step">BC03<span style="display:block; font-size:11px; color:var(--ink-soft); margin-top:2px;">How Accounting?</span></div><span class="sep">→</span>
+      <div class="step">GR01<span style="display:block; font-size:11px; color:var(--ink-soft); margin-top:2px;">How SAP?</span></div>
+    </div>
+
+    <p>BC01에서 정리했듯, 내부회계관리제도는 외부감사법 제8조에 근거해 주권상장법인이 구축·운영해야 하는 법정 제도다. BC02는 그 법정 요건 자체를 반복하지 않고, "그 제도가 실제로 어떻게 설계되고 시스템으로 구현되는가"에 집중한다.</p>
+  </section>
+
+  <!-- ===================== Ch.1 ===================== -->
+  <section class="chapter" id="ch1">
+    <div class="eyebrow">Chapter 1</div>
+    <h2 class="section-title">왜 내부통제가 필요한가</h2>
+    <p class="subtitle">신뢰는 선언이 아니라 절차로 증명된다</p>
+    <p class="action-title">신뢰는 선언이 아니라 절차를 통해 증명된다.</p>
+    <div class="think-box">
+      <span class="think-label">Think</span>
+      <p>"우리는 정직하게 운영합니다"라는 말과 "동일한 절차를 거쳐야만 처리된다"는 사실, 투자자는 둘 중 무엇을 더 신뢰할까?</p>
+    </div>
+
+    <div class="conclusion-box">
+      <div class="label">CH.1 핵심 결론</div>
+      <p>신뢰는 "우리 회사는 정직하게 운영됩니다"라는 선언으로 증명되지 않는다. 누가 업무를 수행하든 동일한 절차를 거치도록 설계되어 있을 때, 비로소 외부 이해관계자가 검증 가능한 형태의 신뢰가 만들어진다.</p>
+    </div>
+
+    <p>BC01에서 다룬 정보 비대칭은 "정보를 더 많이 공개하면 해소된다"는 단순한 문제가 아니다. 공개된 정보 자체가 신뢰할 수 있는 절차를 거쳐 생성되었는지가 더 중요하다. 내부통제는 바로 이 지점, 즉 <b>정보가 만들어지는 과정의 신뢰성</b>을 다루는 장치다.</p>
+
+    <div class="callout wrong">
+      <span class="tag">흔한 오해</span>
+      내부통제는 "직원을 믿지 못해서" 도입하는 감시 장치다.
+    </div>
+    <div class="callout correct">
+      <span class="tag">이 모듈의 관점</span>
+      내부통제는 특정 개인의 선의나 능력에 결과가 좌우되지 않도록, 절차 자체를 표준화하는 설계다. 담당자가 바뀌어도, 회사가 커져도 동일한 수준의 신뢰성이 유지되도록 만드는 것이 목적이다.
+    </div>
+  </section>
+
+  <!-- ===================== Ch.2 ===================== -->
+  <section class="chapter" id="ch2">
+    <div class="eyebrow">Chapter 2</div>
+    <h2 class="section-title">COSO와 내부회계관리제도</h2>
+    <p class="subtitle">외우는 프레임워크가 아니라, 통제가 설계되는 순서</p>
+    <p class="action-title">좋은 통제는 체계적으로 설계된다.</p>
+    <div class="think-box">
+      <span class="think-label">Think</span>
+      <p>통제는 왜 체크리스트만으로는 유지되지 않을까?</p>
+    </div>
+
+    <div class="conclusion-box">
+      <div class="label">CH.2 핵심 결론</div>
+      <p>COSO는 다섯 개 구성요소를 나열한 체크리스트가 아니라, "누가 책임지는가 → 무엇이 위험한가 → 어떻게 막는가 → 어떻게 기록하는가 → 잘 작동하는지 어떻게 확인하는가"라는 통제 설계의 자연스러운 순서다.</p>
+    </div>
+
+    <div class="flow-vert">
+      <div class="step mini">Governance<span class="sub">누가 책임지는가 — 이사회·경영진의 책임 구조</span></div>
+      <div class="sep-vert">↓</div>
+      <div class="step mini">Risk<span class="sub">무엇이 위험한가 — 재무보고 왜곡 가능 지점의 식별</span></div>
+      <div class="sep-vert">↓</div>
+      <div class="step mini emphasis">Control<span class="sub">어떻게 막는가 — 위험을 낮추는 절차의 설계</span></div>
+      <div class="sep-vert">↓</div>
+      <div class="step mini">Information<span class="sub">어떻게 기록하고 전달하는가 — 통제 수행의 근거화</span></div>
+      <div class="sep-vert">↓</div>
+      <div class="step mini">Monitoring<span class="sub">잘 작동하는지 어떻게 확인하는가 — 지속적 점검과 개선</span></div>
+    </div>
+
+    <p>이 다섯 단계 위에 COSO 프레임워크의 5개 구성요소(Control Environment, Risk Assessment, Control Activities, Information &amp; Communication, Monitoring Activities)를 그대로 매핑할 수 있다. 순서를 먼저 이해하면, 각 구성요소가 "왜 그 자리에 있는지"가 자연스럽게 설명된다.</p>
+
+    <div class="card">
+      <h3>BC01과의 경계</h3>
+      <p style="margin:0;">내부회계관리제도의 법정 근거(외부감사법 제8조), 대표이사의 관리·운영 책임, 자산 규모에 따른 감사·검토 차등 적용은 BC01 Ch.2에서 다뤘다. BC02는 이를 반복하지 않고, 그 법정 제도가 기반하는 COSO 프레임워크의 설계 논리에 집중한다.</p>
+    </div>
+  </section>
+
+  <!-- ===================== Ch.3 ===================== -->
+  <section class="chapter" id="ch3">
+    <div class="eyebrow">Chapter 3</div>
+    <h2 class="section-title">ERP가 통제를 어떻게 내재화하는가</h2>
+    <p class="subtitle">통제는 문서가 아니라 시스템으로 실행될 때 지속된다</p>
+    <p class="action-title">통제는 시스템 안에서 반복 가능해야 한다.</p>
+    <div class="think-box">
+      <span class="think-label">Think</span>
+      <p>규정집에 적힌 절차와, 시스템이 물리적으로 강제하는 절차 — 담당자가 바뀌어도 똑같이 지켜지는 쪽은 어디일까?</p>
+    </div>
+
+    <div class="conclusion-box">
+      <div class="label">CH.3 핵심 결론</div>
+      <p>통제 절차가 규정 문서로만 존재하면 실행 여부가 사람의 의지에 의존한다. ERP에 내재화되면 절차 준수가 시스템적으로 강제되고, 그 실행 기록이 자동으로 남는다.</p>
+    </div>
+
+    <p>내부통제 규정집에 "재고조정 전표는 작성자와 승인자가 달라야 한다"고 적어두는 것과, ERP 권한 체계상 동일인이 물리적으로 승인 버튼을 누를 수 없도록 만드는 것은 전혀 다른 수준의 신뢰를 만든다. 전자는 규정 위반을 사후에 적발해야 하지만, 후자는 애초에 위반이 발생하지 않는다.</p>
+
+    <div class="callout navy">
+      <span class="tag">통제 구현 계층</span>
+      아래 다이어그램은 내부통제라는 추상적 개념이 어떻게 ERP의 구체적 기능으로 내려오는지를 보여준다. Ch.4의 4가지 통제 메커니즘은 이 계층의 마지막 단계에서 나온다.
+    </div>
+
+    <div class="flow-vert">
+      <div class="step mini">Internal Control<span class="sub">신뢰를 절차로 증명하겠다는 원칙</span></div>
+      <div class="sep-vert">↓</div>
+      <div class="step mini">People<span class="sub">누가 그 절차를 수행하는가 — 역할과 책임의 정의</span></div>
+      <div class="sep-vert">↓</div>
+      <div class="step mini">Process<span class="sub">그 역할이 어떤 순서로 업무를 수행하는가 — 업무 흐름의 설계</span></div>
+      <div class="sep-vert">↓</div>
+      <div class="step mini">System<span class="sub">그 흐름을 사람의 의지가 아니라 시스템이 강제하는가</span></div>
+      <div class="sep-vert">↓</div>
+      <div class="step mini emphasis">ERP Control Mechanisms<span class="sub">Authorization(SoD) · Workflow · Validation Rules · Audit Trail</span></div>
+    </div>
+
+    <p>이 계층에서 중요한 것은 System 단계가 People·Process 단계를 대체하지 않는다는 점이다. 역할과 절차가 먼저 명확히 설계되어 있어야, ERP는 그것을 "강제"할 수 있다. 설계되지 않은 절차는 시스템으로도 구현할 수 없다.</p>
+  </section>
+
+  <!-- ===================== Ch.4 ===================== -->
+  <section class="chapter" id="ch4">
+    <div class="eyebrow">Chapter 4</div>
+    <h2 class="section-title">ERP의 4대 통제 메커니즘</h2>
+    <p class="subtitle">SoD · Workflow · Validation Rules · Audit Trail</p>
+    <p class="action-title">ERP는 다양한 통제 메커니즘을 함께 제공한다.</p>
+    <div class="think-box">
+      <span class="think-label">Think</span>
+      <p>SoD만 잘 설계하면 충분할까, 아니면 다른 메커니즘도 함께 필요할까?</p>
+    </div>
+
+    <div class="conclusion-box">
+      <div class="label">CH.4 핵심 결론</div>
+      <p>ERP가 구현하는 통제는 직무 분리, 승인 통제, 입력 오류 예방, 사후 추적이라는 서로 다른 목적을 가진 네 가지 메커니즘으로 MECE하게 분류할 수 있으며, 이는 특정 ERP 제품과 무관하게 공통적으로 적용되는 개념 프레임이다.</p>
+    </div>
+
+    <table class="mece">
+      <tr><th>통제 메커니즘</th><th>목적</th><th>작동 시점</th></tr>
+      <tr>
+        <td><b>Authorization (SoD)</b></td>
+        <td>직무 분리 — 동일인이 상충되는 업무(기안·승인·집행)를 모두 수행하지 못하도록 원천 차단</td>
+        <td>사전 (거래 발생 전 권한 설계)</td>
+      </tr>
+      <tr>
+        <td><b>Workflow</b></td>
+        <td>승인 통제 — 정해진 순서와 권한 단계를 거쳐야 거래가 완결되도록 강제</td>
+        <td>실행 중 (거래 처리 과정)</td>
+      </tr>
+      <tr>
+        <td><b>Validation Rules</b></td>
+        <td>입력 오류 예방 — 필수 입력값, 허용값 범위, 전표 유형, 회계기간 등을 시스템이 사전 검사</td>
+        <td>실행 중 (입력 시점)</td>
+      </tr>
+      <tr>
+        <td><b>Audit Trail</b></td>
+        <td>사후 추적 — 누가, 언제, 무엇을, 어떻게 변경했는지에 대한 변경 불가능한 기록</td>
+        <td>사후 (거래 완료 이후)</td>
+      </tr>
+    </table>
+
+    <div class="callout warn">
+      <span class="tag">절제된 서술</span>
+      네 가지 메커니즘은 특정 ERP 제품의 기능명이 아니라 개념 범주다. 실제 구현 방식(예: 권한 객체, 릴리즈 전략, 검증 테이블 설계)은 제품별로 상이하며, 이는 이후 GR·구현 시리즈에서 다룬다.
+    </div>
+  </section>
+
+  <!-- ===================== Ch.5 ===================== -->
+  <section class="chapter" id="ch5">
+    <div class="eyebrow">Chapter 5</div>
+    <h2 class="section-title">통제 실패 패턴 → Illustrative Scenario</h2>
+    <p class="subtitle">"누가 잘못했는가"가 아니라 "어떤 통제가 없으면 어떤 위험이 발생하는가"</p>
+    <p class="action-title">통제 실패는 시스템보다 설계와 운영에서 발생한다.</p>
+    <div class="think-box">
+      <span class="think-label">Think</span>
+      <p>ERP를 도입했는데도 왜 내부통제가 실패하는 기업이 있을까?</p>
+    </div>
+
+    <div class="conclusion-box">
+      <div class="label">CH.5 핵심 결론</div>
+      <p>ERP 도입 자체가 통제 성공을 보장하지 않는다. 통제 실패는 특정 기업의 사고가 아니라, 어떤 조직에서도 반복될 수 있는 네 가지 범용 패턴으로 설명할 수 있다.</p>
+    </div>
+
+    <h3 style="font-family:'Noto Sans KR',sans-serif; font-weight:700; font-size:16px; color:var(--navy-deep);">① 범용 실패 패턴</h3>
+    <table class="mece">
+      <tr><th>실패 패턴</th><th>왜 발생하는가</th><th>결과</th></tr>
+      <tr>
+        <td><b>권한 설계 오류</b></td>
+        <td>SoD 미설계</td>
+        <td>동일 사용자가 생성·승인·전표 처리를 모두 수행 가능</td>
+      </tr>
+      <tr>
+        <td><b>Workflow 우회</b></td>
+        <td>예외 승인 남용</td>
+        <td>승인 절차가 형식화됨</td>
+      </tr>
+      <tr>
+        <td><b>Master Data 관리 미흡</b></td>
+        <td>변경 통제 부재</td>
+        <td>잘못된 거래가 지속적으로 발생</td>
+      </tr>
+      <tr>
+        <td><b>로그 미관리</b></td>
+        <td>Audit Trail 부족</td>
+        <td>사후 입증 불가</td>
+      </tr>
+    </table>
+
+    <h3 style="font-family:'Noto Sans KR',sans-serif; font-weight:700; font-size:16px; color:var(--navy-deep); margin-top:32px;">② Illustrative Scenario</h3>
+    <p>위 패턴 중 "권한 설계 오류"를 구체적인 흐름으로 그려보면 다음과 같다. 아래 시나리오는 특정 사고 사례가 아니라, SoD 설계가 없을 때 구조적으로 발생하는 위험을 보여주기 위한 예시다.</p>
+
+    <div class="case-box">
+      <div class="case-eyebrow" id="caseEyebrow">— Illustrative Scenario</div>
+      <h3 id="caseTitle">—</h3>
+      <div class="case-flow" id="caseFlow"></div>
+    </div>
+
+    <details class="drill">
+      <summary>왜 "회사 이름을 넣은 사고 사례"보다 이 방식이 교육적으로 더 유효한가?</summary>
+      <div class="drill-body">특정 회사의 사고 사례는 흥미롭지만, 학습자가 "우리 회사는 다르다"고 여기며 일반화를 회피하게 만들 위험이 있다. 반면 "이런 통제가 없으면 이런 위험이 발생한다"는 구조로 제시하면, 학습자는 자신의 조직에 동일한 패턴이 존재하는지를 스스로 점검하게 된다. 이는 컨설팅 방법론으로서도 더 실용적인 접근이다.</div>
+    </details>
+  </section>
+
+  <!-- ===================== Ch.6 ===================== -->
+  <section class="chapter" id="ch6">
+    <div class="eyebrow">Chapter 6</div>
+    <h2 class="section-title">Wrap-up</h2>
+    <p class="subtitle">BC03(연결결산)으로 이어지는 다음 질문</p>
+    <p class="action-title">지속 가능한 신뢰는 반복 가능한 통제에서 시작된다.</p>
+
+    <div class="takeaway">
+      <div class="label">ONE SENTENCE TAKEAWAY</div>
+      <p>좋은 내부통제는 사람을 믿지 않아서가 아니라, 누구라도 동일한 절차를 따르도록 시스템으로 구현하는 것이다. ERP는 이러한 통제를 일관되고 반복 가능하게 실행하는 기반이며, 내부회계관리제도는 그 효과성을 지속적으로 검증하는 체계이다.</p>
+    </div>
+
+    <div class="card">
+      <h3 style="font-family:var(--mono); font-size:13px; letter-spacing:.05em; color:var(--navy); text-transform:uppercase;">Key Takeaways</h3>
+      <ul class="checklist" style="margin-top:6px;">
+        <li><span class="box" style="border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:var(--mono); font-size:11px; color:var(--navy);">1</span>신뢰는 선언이 아니라 절차로 증명되며, 내부통제는 그 절차를 표준화하는 설계다.</li>
+        <li><span class="box" style="border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:var(--mono); font-size:11px; color:var(--navy);">2</span>ERP는 SoD·Workflow·Validation Rules·Audit Trail의 4대 메커니즘으로 통제를 내재화한다.</li>
+        <li><span class="box" style="border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:var(--mono); font-size:11px; color:var(--navy);">3</span>시스템 도입은 통제 실패를 자동으로 막지 못하며, 실패는 몇 가지 범용 패턴으로 반복된다.</li>
+      </ul>
+    </div>
+
+    <div class="callout navy">
+      <span class="tag">BC03으로 이어지는 다리</span>
+      통제가 올바르게 실행되더라도, 기업집단 전체의 재무정보를 어떻게 하나의 신뢰 가능한 재무제표로 통합할 것인가는 또 다른 과제다.
+    </div>
+
+    <div class="case-box" style="text-align:left;">
+      <div class="case-eyebrow">Next Module · BC03</div>
+      <h3 style="font-family:'DM Serif Display',serif; font-size:24px; font-weight:400;">IFRS와 연결결산의 진화</h3>
+      <p style="margin:0; color:#c9d9ec; font-size:14.5px; line-height:1.7;">BC02가 "개별 거래 수준의 신뢰"를 다뤘다면, BC03은 다수의 법인이 만들어내는 개별 거래들을 어떻게 하나의 연결재무제표로 통합하는지를 다룬다. 왜 연결재무제표가 등장했는지, IFRS 도입이 어떤 의미를 가지는지부터 시작한다.</p>
+    </div>
+  </section>
+
+</main>
+
+<div class="module-nav-bottom">
+  <div class="mn-inner">
+    <a href="./BC_Index.html">≡ 전체 시리즈 Index</a>
+    <div class="mn-side">
+      <a href="./BC01_CorporateGrowthAndITGovernance.html">← BC01. 기업 성장과 IT 거버넌스</a>
+      <a href="./BC03_IFRSAndConsolidationEvolution.html">BC03. IFRS와 연결결산의 진화 →</a>
+    </div>
+  </div>
+</div>
+<footer>ASPN BAC · Business Context Series · BC02 · Baseline v1.0</footer>
+
+<script>
+// ----- BC02 Illustrative Scenario config -----
+// 통제 실패 패턴 중 "권한 설계 오류(SoD 미설계)"를 구체 흐름으로 표현
+// CASE_MODE: 'ASPN' (내부 교육) or 'Illustrative' (외부 교육)
+const CASE_MODE = 'ASPN';
+
+const CASE_LIBRARY = {
+  ASPN: {
+    eyebrow: 'ASPN Illustrative Scenario',
+    title: 'K200(제조 자회사) 재고조정 프로세스',
+    steps: [
+      { text:'K200 재고조정 전표 입력', warn:false },
+      { text:'동일 담당자가 승인까지 수행 가능', warn:false },
+      { text:'SoD 위반 — 기안과 승인의 권한 분리 부재', warn:true },
+      { text:'외부감사 시 통제 미흡(Deficiency)으로 지적', warn:false }
+    ]
+  },
+  Illustrative: {
+    eyebrow: 'Illustrative Scenario',
+    title: '제조 자회사(Manufacturing Subsidiary) 재고조정 프로세스',
+    steps: [
+      { text:'제조 자회사 재고조정 전표 입력', warn:false },
+      { text:'동일 담당자가 승인까지 수행 가능', warn:false },
+      { text:'SoD 위반 — 기안과 승인의 권한 분리 부재', warn:true },
+      { text:'외부감사 시 통제 미흡(Deficiency)으로 지적', warn:false }
+    ]
+  }
+};
+
+(function renderCase(){
+  const data = CASE_LIBRARY[CASE_MODE] || CASE_LIBRARY.ASPN;
+  document.getElementById('caseEyebrow').textContent = data.eyebrow;
+  document.getElementById('caseTitle').textContent = data.title;
+  const container = document.getElementById('caseFlow');
+  container.innerHTML = data.steps.map((s, i) => {
+    const arrow = i > 0 ? '<div class="csep">↓</div>' : '';
+    return `${arrow}<div class="cstep${s.warn ? ' warn' : ''}">${s.text}</div>`;
+  }).join('');
+})();
+
+(function(){
+  const links = Array.from(document.querySelectorAll('#navTabs a'));
+  const sections = links.map(l => document.querySelector(l.getAttribute('href')));
+  function onScroll(){
+    let idx = 0;
+    const y = window.scrollY + 140;
+    sections.forEach((s,i) => { if(s && s.offsetTop <= y) idx = i; });
+    links.forEach((l,i) => l.classList.toggle('active', i === idx));
+  }
+  window.addEventListener('scroll', onScroll, {passive:true});
+  onScroll();
+})();
+</script>
+
+</body>
+</html>

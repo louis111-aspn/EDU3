@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BC03. IFRS와 연결결산의 진화 | ASPN BAC</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Noto+Sans+KR:wght@400;500;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#003366;
+    --navy-deep:#001f3f;
+    --bg:#f0f3f8;
+    --panel:#ffffff;
+    --ink:#1a2433;
+    --ink-soft:#4a5568;
+    --line:#d7dfec;
+    --warn:#9a3b12;
+    --warn-bg:#fdf1e9;
+    --correct:#0f5c3c;
+    --correct-bg:#e9f7f0;
+    --wrong:#9a1c2e;
+    --wrong-bg:#fbeaec;
+    --mono:'JetBrains Mono','Noto Sans KR',monospace;
+  }
+  *{box-sizing:border-box;}
+  html,body{overflow-x:clip;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Noto Sans KR',sans-serif;
+    font-size:15px;
+    line-height:1.75;
+    word-break:keep-all;
+  }
+  h1,h2,h3,.serif{font-family:'DM Serif Display',serif; font-weight:400;}
+  h1{font-size:42px; line-height:1.3; margin:0 0 12px;}
+  h2.section-title{font-size:30px; margin:0 0 6px; color:var(--navy-deep);}
+  .subtitle{font-size:16px; color:var(--ink-soft); margin:0 0 28px;}
+  .action-title{
+    font-size:19px; font-weight:700; color:var(--navy-deep); margin:0 0 22px; line-height:1.55;
+    padding-bottom:18px; border-bottom:1px solid var(--line);
+  }
+  .think-box{
+    display:flex; gap:16px; align-items:flex-start; background:#eaf0f8; border:1px dashed #7fa4c9;
+    border-radius:4px; padding:14px 18px; margin:0 0 28px;
+  }
+  .think-box .think-label{
+    font-family:var(--mono); font-size:11.5px; font-weight:700; color:var(--navy); letter-spacing:.08em;
+    text-transform:uppercase; flex:0 0 auto; padding-top:1px;
+  }
+  .think-box p{margin:0; font-size:14.5px; color:var(--navy-deep); font-weight:500; line-height:1.6;}
+  .eyebrow{
+    font-family:var(--mono); font-size:13px; letter-spacing:.08em; color:var(--navy);
+    text-transform:uppercase; margin-bottom:10px; display:flex; align-items:center; gap:10px;
+  }
+  .eyebrow::before{content:""; width:22px; height:2px; background:var(--navy); display:inline-block;}
+  a{color:var(--navy);}
+
+  /* ---------- Hero ---------- */
+  .hero{
+    background:linear-gradient(180deg,var(--navy-deep) 0%, var(--navy) 100%);
+    color:#eef3fa; padding:64px 24px 88px; position:relative;
+  }
+  .hero-inner{max-width:920px; margin:0 auto;}
+  .hero .eyebrow{color:#9fc0e0;}
+  .hero .eyebrow::before{background:#9fc0e0;}
+  .tagline{font-family:'DM Serif Display',serif; font-style:italic; font-size:16px; color:#7fa4c9; margin:0 0 18px;}
+  .hero h1{color:#ffffff;}
+  .hero p.lead{font-size:17px; color:#c9d9ec; max-width:680px; margin:0 0 28px;}
+  .hero-tags{display:flex; gap:10px; flex-wrap:wrap;}
+  .hero-tag{
+    font-family:var(--mono); font-size:12px; padding:6px 12px; border:1px solid #3a5a80;
+    border-radius:3px; color:#bcd2e8;
+  }
+  .series-strip{
+    max-width:920px; margin:36px auto 0; padding-top:28px; border-top:1px solid #2b4a6e;
+    display:flex; gap:0; flex-wrap:wrap; font-family:var(--mono); font-size:12.5px;
+  }
+  .series-strip .node{padding:8px 16px 8px 0; color:#8fa9c4; white-space:nowrap;}
+  .series-strip .node.active{color:#ffffff; font-weight:700;}
+  .series-strip .arrow{padding:8px 12px 8px 0; color:#4a678a;}
+
+  /* ---------- Sticky nav ---------- */
+  .nav-wrap{
+    position:sticky; top:0; z-index:50; background:rgba(240,243,248,.92);
+    backdrop-filter:blur(6px); border-bottom:1px solid var(--line);
+  }
+  .nav-tabs{
+    max-width:920px; margin:0 auto; display:flex; overflow-x:auto; scrollbar-width:none;
+  }
+  .nav-tabs::-webkit-scrollbar{display:none;}
+  .nav-tabs a{
+    flex:0 0 auto; padding:14px 16px; font-size:13px; font-weight:500; color:var(--ink-soft);
+    text-decoration:none; border-bottom:3px solid transparent; white-space:nowrap;
+    font-family:var(--mono);
+  }
+  .nav-tabs a.active{color:var(--navy); border-bottom-color:var(--navy); font-weight:700;}
+
+  /* ---------- Layout ---------- */
+  main{max-width:920px; margin:0 auto; padding:0 24px;}
+  section.chapter{padding:64px 0; border-bottom:1px solid var(--line);}
+  section.chapter:last-of-type{border-bottom:none;}
+
+  .conclusion-box{
+    background:var(--panel); border-left:4px solid var(--navy); border-radius:2px;
+    padding:20px 24px; margin:0 0 32px; box-shadow:0 1px 2px rgba(0,20,50,.05);
+  }
+  .conclusion-box .label{font-family:var(--mono); font-size:12px; color:var(--navy); letter-spacing:.06em; margin-bottom:6px;}
+  .conclusion-box p{margin:0; font-size:17px; font-weight:500; color:var(--navy-deep); line-height:1.6;}
+
+  .card{
+    background:var(--panel); border:1px solid var(--line); border-radius:4px;
+    padding:22px 24px; margin:16px 0;
+  }
+  .card h3{font-family:'Noto Sans KR',sans-serif; font-weight:700; font-size:16px; margin:0 0 10px; color:var(--navy-deep);}
+  .card-grid{display:grid; grid-template-columns:1fr 1fr; gap:16px;}
+  @media (max-width:640px){.card-grid{grid-template-columns:1fr;}}
+
+  .callout{border-radius:4px; padding:16px 20px; margin:20px 0; font-size:14.5px;}
+  .callout .tag{font-family:var(--mono); font-size:11.5px; font-weight:700; letter-spacing:.05em; margin-bottom:6px; display:block;}
+  .callout.navy{background:#eaf0f8; border:1px solid #c3d5e8;}
+  .callout.navy .tag{color:var(--navy);}
+  .callout.warn{background:var(--warn-bg); border:1px solid #f0d3ba;}
+  .callout.warn .tag{color:var(--warn);}
+  .callout.correct{background:var(--correct-bg); border:1px solid #b9e2cb;}
+  .callout.correct .tag{color:var(--correct);}
+  .callout.wrong{background:var(--wrong-bg); border:1px solid #f0c1ca;}
+  .callout.wrong .tag{color:var(--wrong);}
+
+  /* ---------- Flow diagram ---------- */
+  .flow{display:flex; align-items:center; flex-wrap:wrap; gap:0; margin:24px 0; font-size:13.5px;}
+  .flow .step{
+    background:var(--panel); border:1px solid var(--line); border-radius:4px;
+    padding:12px 14px; min-width:112px; text-align:center; font-weight:500;
+  }
+  .flow .step.emphasis{border-color:var(--navy); background:#eaf0f8; color:var(--navy-deep); font-weight:700;}
+  .flow .sep{padding:0 8px; color:var(--ink-soft); font-family:var(--mono);}
+  .flow-vert{display:flex; flex-direction:column; gap:0; margin:24px 0;}
+  .flow-vert .step{
+    background:var(--panel); border:1px solid var(--line); border-radius:4px;
+    padding:14px 18px; font-weight:500; font-size:14px;
+  }
+  .flow-vert .step .sub{display:block; font-size:12.5px; color:var(--ink-soft); font-weight:400; margin-top:3px;}
+  .flow-vert .sep-vert{text-align:center; color:var(--ink-soft); padding:2px 0; font-family:var(--mono);}
+  .flow-vert .step.emphasis{border-color:var(--navy); background:#eaf0f8; color:var(--navy-deep); font-weight:700;}
+  .flow-vert .step.mini{padding:10px 18px; font-size:13px;}
+
+  /* ---------- Checklist / numbered ---------- */
+  .checklist{list-style:none; margin:20px 0; padding:0;}
+  .checklist li{
+    display:flex; gap:12px; padding:12px 0; border-bottom:1px solid var(--line); font-size:14.5px;
+  }
+  .checklist li:last-child{border-bottom:none;}
+  .checklist .box{
+    flex:0 0 18px; height:18px; border:2px solid var(--navy); border-radius:3px; margin-top:2px;
+  }
+
+  /* ---------- Drill toggle ---------- */
+  .drill{border:1px solid var(--line); border-radius:4px; margin:14px 0; background:var(--panel); overflow:hidden;}
+  .drill summary{
+    cursor:pointer; padding:14px 18px; font-weight:500; font-size:14.5px; list-style:none;
+    display:flex; justify-content:space-between; align-items:center; color:var(--navy-deep);
+  }
+  .drill summary::-webkit-details-marker{display:none;}
+  .drill summary::after{content:"+"; font-family:var(--mono); font-size:18px; color:var(--navy);}
+  .drill[open] summary::after{content:"−";}
+  .drill .drill-body{padding:0 18px 18px; font-size:14px; color:var(--ink-soft); border-top:1px solid var(--line); padding-top:14px;}
+
+  /* ---------- Case box ---------- */
+  .case-box{
+    background:var(--navy-deep); color:#e8eef7; border-radius:6px; padding:28px; margin:28px 0;
+  }
+  .case-box .case-eyebrow{font-family:var(--mono); font-size:12px; color:#9fc0e0; margin-bottom:12px; letter-spacing:.06em;}
+  .case-box h3{color:#fff; font-family:'Noto Sans KR',sans-serif; font-weight:700; font-size:17px; margin:0 0 14px;}
+
+  /* ---------- Relationship graph grid ---------- */
+  .graph-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin:24px 0;}
+  @media (max-width:720px){.graph-grid{grid-template-columns:1fr;}}
+  .graph-card{background:var(--panel); border:1px solid var(--line); border-radius:4px; padding:16px; text-align:center;}
+  .graph-card svg{width:100%; height:auto; max-width:180px;}
+  .graph-card .n-label{font-family:var(--mono); font-size:12px; color:var(--ink-soft); margin-top:8px;}
+  .graph-card .r-count{font-size:20px; font-weight:700; color:var(--navy-deep); font-family:'DM Serif Display',serif;}
+  .graph-card .r-sub{font-size:11.5px; color:var(--ink-soft);}
+
+  table.mece{width:100%; border-collapse:collapse; margin:20px 0; font-size:13.5px;}
+  table.mece th, table.mece td{border:1px solid var(--line); padding:10px 12px; text-align:left; vertical-align:top;}
+  table.mece th{background:var(--navy); color:#fff; font-weight:700; font-size:12.5px;}
+  table.mece tr:nth-child(even){background:#fafbfd;}
+
+  /* ---------- Takeaway ---------- */
+  .takeaway{
+    background:var(--panel); border:2px solid var(--navy); border-radius:6px;
+    padding:32px; margin:32px 0; text-align:left;
+  }
+  .takeaway .label{font-family:var(--mono); font-size:12px; color:var(--navy); letter-spacing:.08em; margin-bottom:12px;}
+  .takeaway p{font-size:19px; line-height:1.75; margin:0; color:var(--navy-deep); font-weight:500;}
+
+  footer{padding:40px 24px 60px; text-align:center; color:var(--ink-soft); font-size:12.5px; font-family:var(--mono);}
+
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+  }
+
+  .module-nav{
+    background:var(--navy-deep); border-bottom:1px solid #2b4a6e;
+    font-family:var(--mono); font-size:12.5px;
+  }
+  .module-nav .mn-inner{
+    max-width:920px; margin:0 auto; padding:12px 24px; display:flex; align-items:center;
+    justify-content:space-between; gap:12px; flex-wrap:wrap;
+  }
+  .module-nav a{color:#bcd2e8; text-decoration:none; display:flex; align-items:center; gap:6px;}
+  .module-nav a:hover{color:#fff;}
+  .module-nav a.disabled{color:#4a678a; pointer-events:none;}
+  .module-nav .mn-index{color:#9fc0e0; font-weight:700;}
+  .module-nav .mn-side{display:flex; gap:20px; flex-wrap:wrap;}
+  .module-nav-bottom{
+    background:var(--panel); border-top:1px solid var(--line); border-bottom:1px solid var(--line);
+    font-family:var(--mono); font-size:12.5px;
+  }
+  .module-nav-bottom .mn-inner{
+    max-width:920px; margin:0 auto; padding:16px 24px; display:flex; align-items:center;
+    justify-content:space-between; gap:12px; flex-wrap:wrap;
+  }
+  .module-nav-bottom a{color:var(--navy); text-decoration:none; display:flex; align-items:center; gap:6px;}
+  .module-nav-bottom a:hover{text-decoration:underline;}
+  .module-nav-bottom a.disabled{color:#aab4c2; pointer-events:none;}
+  .module-nav-bottom .mn-side{display:flex; gap:20px; flex-wrap:wrap;}
+</style>
+</head>
+<body>
+<nav class="module-nav">
+  <div class="mn-inner">
+    <a class="mn-index" href="./BC_Index.html">≡ Index</a>
+    <div class="mn-side">
+      <a href="./BC02_InternalControlAndERP.html">← BC02. 내부회계관리제도와 ERP</a>
+      <a href="./BC04_GlobalMinimumTaxAndSystems.html">BC04. 글로벌 최저한세와 시스템 →</a>
+    </div>
+  </div>
+</nav>
+
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="eyebrow">Business Context Series · BC03</div>
+    <div class="tagline">From Business Challenges to SAP Solutions.</div>
+    <h1>IFRS와 연결결산의 진화</h1>
+    <p class="lead">회사는 하나인데, 왜 재무제표는 여러 개일까? BC03의 주인공은 IFRS가 아니라 기업집단(Group)이다 — 법인이라는 법적 단위가 왜 경제적 실체(Economic Entity)로 다시 그려져야 했는지를 다룬다.</p>
+    <div class="hero-tags">
+      <span class="hero-tag">Foundation Level</span>
+      <span class="hero-tag">How Complexity 계층</span>
+      <span class="hero-tag">벤더 중립</span>
+    </div>
+    <div class="series-strip">
+      <span class="node">BC01 성장·자본시장·거버넌스</span>
+      <span class="arrow">→</span>
+      <span class="node">BC02 내부회계관리제도와 ERP</span>
+      <span class="arrow">→</span>
+      <span class="node active">BC03 IFRS와 연결결산의 진화</span>
+      <span class="arrow">→</span>
+      <span class="node">BC04 글로벌 최저한세와 시스템</span>
+      <span class="arrow">→</span>
+      <span class="node">GR01 왜 Group Reporting인가</span>
+    </div>
+  </div>
+</header>
+
+<div class="nav-wrap">
+  <nav class="nav-tabs" id="navTabs">
+    <a href="#ch0" class="active">Ch.0 도입</a>
+    <a href="#ch1">Ch.1 왜 여러 개인가</a>
+    <a href="#ch2">Ch.2 관점의 전환</a>
+    <a href="#ch3">Ch.3 연결의 실제 작업</a>
+    <a href="#ch4">Ch.4 복잡성의 차원</a>
+    <a href="#ch5">Ch.5 관계의 수</a>
+    <a href="#ch6">Ch.6 Wrap-up</a>
+  </nav>
+</div>
+
+<main>
+
+  <!-- ===================== Ch.0 ===================== -->
+  <section class="chapter" id="ch0">
+    <div class="eyebrow">Chapter 0</div>
+    <h2 class="section-title">도입: Control에서 Complexity로</h2>
+    <p class="subtitle">BC02가 개별 거래의 신뢰를 다뤘다면, BC03은 여러 법인의 신뢰를 하나로 모으는 문제를 다룬다</p>
+    <p class="action-title">신뢰는 이제 하나의 경제적 실체로 통합되어 표현되어야 한다.</p>
+
+    <div class="conclusion-box">
+      <div class="label">CH.0 핵심 결론</div>
+      <p>BC02는 "개별 거래가 신뢰할 수 있게 만들어지는가"를 다뤘다. BC03은 그렇게 만들어진 여러 법인의 정보를, 어떻게 하나의 기업집단 재무정보로 표현할 것인가를 다룬다.</p>
+    </div>
+
+    <div class="flow">
+      <div class="step">BC01<span style="display:block; font-size:11px; color:var(--ink-soft); margin-top:2px;">Governance</span></div><span class="sep">→</span>
+      <div class="step">BC02<span style="display:block; font-size:11px; color:var(--ink-soft); margin-top:2px;">Control</span></div><span class="sep">→</span>
+      <div class="step emphasis">BC03<span style="display:block; font-size:11px; margin-top:2px;">Complexity</span></div><span class="sep">→</span>
+      <div class="step">BC04<span style="display:block; font-size:11px; color:var(--ink-soft); margin-top:2px;">Regulation</span></div>
+    </div>
+
+    <div class="callout navy">
+      <span class="tag">이 모듈이 다루지 않는 것</span>
+      BC03은 IAS 27, IFRS 10, IFRS 3 등 개별 기준서의 조문을 해설하지 않는다. 기준서는 "왜 이런 관점이 필요했는가"를 공식화한 결과물일 뿐이며, 이 모듈은 그 결과물이 아니라 그 이전의 질문에 집중한다.
+    </div>
+  </section>
+
+  <!-- ===================== Ch.1 ===================== -->
+  <section class="chapter" id="ch1">
+    <div class="eyebrow">Chapter 1</div>
+    <h2 class="section-title">회사는 하나인데, 왜 재무제표는 여러 개일까</h2>
+    <p class="subtitle">투자자가 실제로 보고 싶어 하는 것에서 출발한다</p>
+    <p class="action-title">법인 단위의 재무제표는 투자자가 보고 싶은 것을 보여주지 못한다.</p>
+    <div class="think-box">
+      <span class="think-label">Think</span>
+      <p>투자자는 개별 법인 하나의 실적을 보고 싶을까, 아니면 그 회사가 실질적으로 지배하는 사업 전체의 실적을 보고 싶을까?</p>
+    </div>
+
+    <p>ASPN Korea(K100)에 투자하려는 사람은 K100의 개별 재무제표만으로 충분한 정보를 얻을 수 있을까? K100이 제조 자회사 K200을 통해 생산하고, 해외 법인 Europe을 통해 판매한다면, K100 개별 재무제표는 그 사업 전체 그림의 일부만 보여준다.</p>
+
+    <div class="callout wrong">
+      <span class="tag">흔한 오해</span>
+      개별 법인의 재무제표를 모두 모아서 보면 그룹 전체를 이해할 수 있다.
+    </div>
+    <div class="callout correct">
+      <span class="tag">이 모듈의 관점</span>
+      법인 간 거래(내부거래), 미실현 손익, 지분 관계는 개별 재무제표를 단순히 나열하는 방식으로는 드러나지 않거나 오히려 왜곡된다. 투자자가 필요로 하는 것은 법적 경계가 아니라 <b>경제적으로 하나인 단위</b>에 대한 정보다.
+    </div>
+  </section>
+
+  <!-- ===================== Ch.2 ===================== -->
+  <section class="chapter" id="ch2">
+    <div class="eyebrow">Chapter 2</div>
+    <h2 class="section-title">법인에서 기업집단으로 — 관점의 전환</h2>
+    <p class="subtitle">회계는 법적 실체가 아니라 경제적 실체를 설명하는 방향으로 진화했다</p>
+    <p class="action-title">회계는 법적 실체가 아니라 경제적 실체를 설명하는 방향으로 진화했다.</p>
+    <div class="think-box">
+      <span class="think-label">Think</span>
+      <p>법적으로 서로 다른 회사인 K100과 K200을 왜 재무보고에서는 "하나"처럼 다뤄야 할까?</p>
+    </div>
+
+    <div class="flow-vert">
+      <div class="step mini">법인(Legal Entity)<span class="sub">법적으로 독립된 단위 — 각자 별도의 재무제표를 가짐</span></div>
+      <div class="sep-vert">↓</div>
+      <div class="step mini">기업집단(Group)<span class="sub">지배력을 통해 실질적으로 하나의 사업처럼 운영되는 법인들의 묶음</span></div>
+      <div class="sep-vert">↓</div>
+      <div class="step mini emphasis">Economic Entity<span class="sub">법적 경계가 아니라 경제적 실질을 기준으로 다시 정의된 보고 단위</span></div>
+      <div class="sep-vert">↓</div>
+      <div class="step mini">Consolidation<span class="sub">Economic Entity를 하나의 재무제표로 표현하는 절차</span></div>
+      <div class="sep-vert">↓</div>
+      <div class="step mini">IFRS<span class="sub">위 관점을 국제적으로 공식화한 회계기준 체계</span></div>
+    </div>
+
+    <p>이 흐름에서 IFRS는 출발점이 아니라 도착점이다. "경제적 실체를 하나로 봐야 한다"는 관점이 먼저 있었고, 그 관점을 구체적인 회계처리 규칙으로 공식화한 결과가 IFRS의 연결 관련 기준서(지배력 판단, 연결 범위, 사업결합 등)다.</p>
+  </section>
+
+  <!-- ===================== Ch.3 ===================== -->
+  <section class="chapter" id="ch3">
+    <div class="eyebrow">Chapter 3</div>
+    <h2 class="section-title">연결재무제표가 실제로 하는 일</h2>
+    <p class="subtitle">합산이 아니라 재구성이다</p>
+    <p class="action-title">연결은 숫자를 더하는 작업이 아니라 경제적 실체 하나를 다시 그려내는 작업이다.</p>
+    <div class="think-box">
+      <span class="think-label">Think</span>
+      <p>K100과 K200의 매출을 단순히 더하면, 두 회사 사이에 오간 거래는 어떻게 처리될까?</p>
+    </div>
+
+    <p>K100이 K200에 원재료를 판매하고, K200이 이를 가공해 외부에 판매한다고 하자. 두 회사의 매출을 단순히 더하면 K100→K200 거래의 매출이 두 번 계산되는 것처럼 보인다. 그러나 그룹 외부 관점에서는 최종적으로 외부에 판매된 금액만이 의미 있는 매출이다.</p>
+
+    <div class="card-grid">
+      <div class="card">
+        <h3>합산이 왜곡을 만드는 지점</h3>
+        <ul style="margin:0; padding-left:18px;">
+          <li>내부거래로 인한 매출·매입의 이중 계산</li>
+          <li>내부거래에서 발생한 미실현 손익 (그룹 외부로 아직 판매되지 않은 재고에 포함된 이익)</li>
+          <li>지분 관계로 인한 자본의 중복 계상</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>연결이 하는 재구성</h3>
+        <p style="margin:0;">단순 합산 후, 내부거래와 미실현손익을 제거하고, 지배력에 따라 지분을 재분류하는 절차를 거쳐 "그룹이 외부와 거래한 결과"만 남긴다. 이것이 연결재무제표가 나타내는 숫자다.</p>
+      </div>
+    </div>
+
+    <div class="callout warn">
+      <span class="tag">절제된 서술</span>
+      이 모듈은 연결조정의 세부 회계처리(지분법, 사업결합원가배분 등)를 다루지 않는다. "왜 이런 조정이 필요한가"라는 개념까지만 다루며, 구체적 처리 방법은 전문 회계 교육의 영역이다.
+    </div>
+  </section>
+
+  <!-- ===================== Ch.4 ===================== -->
+  <section class="chapter" id="ch4">
+    <div class="eyebrow">Chapter 4</div>
+    <h2 class="section-title">복잡성의 네 가지 차원</h2>
+    <p class="subtitle">무엇이 복잡한가가 아니라, 왜 복잡성이 생기는가</p>
+    <p class="action-title">연결결산의 복잡성은 네 가지 서로 다른 차원에서 각각 커진다.</p>
+    <div class="think-box">
+      <span class="think-label">Think</span>
+      <p>종속회사가 하나 늘어나는 것과, 그 종속회사가 지분 50%에서 80%로 바뀌는 것 — 둘 중 어느 쪽이 연결결산 담당자를 더 긴장하게 만들까?</p>
+    </div>
+
+    <table class="mece">
+      <tr><th>Complexity Dimension</th><th>대표 사례</th></tr>
+      <tr>
+        <td><b>Organization</b></td>
+        <td>종속회사 수 증가, 지배구조 변화(신규 편입·매각), 다단계 지배구조</td>
+      </tr>
+      <tr>
+        <td><b>Transaction</b></td>
+        <td>내부거래(매출·매입), 미실현손익, 법인 간 채권·채무</td>
+      </tr>
+      <tr>
+        <td><b>Accounting</b></td>
+        <td>회계정책 차이(개별 법인 간), 지분율 변화에 따른 회계처리 전환</td>
+      </tr>
+      <tr>
+        <td><b>Time</b></td>
+        <td>취득·처분 시점의 회계처리, 기말 외화환산, 기간별 지분 변동</td>
+      </tr>
+    </table>
+
+    <p>네 가지 차원은 서로 독립적으로 존재하지 않는다. 해외 자회사를 신규로 인수(Organization + Time)하면, 그 시점부터 내부거래(Transaction)와 회계정책 차이(Accounting)가 동시에 발생한다. 복잡성은 이 차원들이 겹치는 지점에서 기하급수적으로 커진다.</p>
+  </section>
+
+  <!-- ===================== Ch.5 ===================== -->
+  <section class="chapter" id="ch5">
+    <div class="eyebrow">Chapter 5</div>
+    <h2 class="section-title">원리 → 패턴 → 사례: 관계의 수</h2>
+    <p class="subtitle">복잡성은 회사 수가 아니라 관계 수에 비례한다</p>
+    <p class="action-title">복잡성은 회사 수보다 관계 수에 비례한다.</p>
+    <div class="think-box">
+      <span class="think-label">Think</span>
+      <p>종속회사가 2개에서 4개로, 두 배가 되면 확인해야 할 내부거래 관계의 수도 두 배가 될까?</p>
+    </div>
+
+    <p>① 원리: 회사가 <b>n</b>개일 때, 서로 확인해야 할 관계(내부거래·지분 관계)의 최대 개수는 회사 수가 아니라 회사 <b>쌍(pair)</b>의 수, 즉 n(n−1)/2로 늘어난다. 회사 수는 산술급수적으로 늘어도 관계 수는 그보다 훨씬 빠르게 증가한다.</p>
+
+    <div class="graph-grid">
+      <div class="graph-card">
+        <svg id="graph2" viewBox="0 0 180 180"></svg>
+        <div class="r-count" id="count2">—</div>
+        <div class="r-sub">relationships</div>
+        <div class="n-label">2개 법인</div>
+      </div>
+      <div class="graph-card">
+        <svg id="graph4" viewBox="0 0 180 180"></svg>
+        <div class="r-count" id="count4">—</div>
+        <div class="r-sub">relationships</div>
+        <div class="n-label">4개 법인</div>
+      </div>
+      <div class="graph-card">
+        <svg id="graph8" viewBox="0 0 180 180"></svg>
+        <div class="r-count" id="count8">—</div>
+        <div class="r-sub">relationships</div>
+        <div class="n-label">8개 법인</div>
+      </div>
+    </div>
+
+    <p style="font-size:12.5px; color:var(--ink-soft); text-align:center; margin-top:-8px;">법인 수는 4배(2→8) 늘었지만, 확인해야 할 관계 수는 28배(1→28) 늘어난다.</p>
+
+    <h3 style="font-family:'Noto Sans KR',sans-serif; font-weight:700; font-size:16px; color:var(--navy-deep); margin-top:32px;">② 패턴 → ③ ASPN 사례</h3>
+    <p>② 이 원리는 특정 기업만의 문제가 아니라, 종속회사를 보유한 모든 기업집단에 동일하게 적용되는 구조적 패턴이다. ③ ASPN 그룹을 예로 들면, 현재 K100·K200·Europe 세 개 법인만으로도 3개의 관계(K100–K200, K100–Europe, K200–Europe)를 확인해야 한다. 만약 ASPN Energy(K300)가 새로 편입되면 어떻게 될까?</p>
+
+    <div class="case-box">
+      <div class="case-eyebrow">ASPN Illustrative Scenario</div>
+      <h3>K300(에너지 자회사) 편입 시 관계 수의 변화</h3>
+      <div class="graph-grid" style="grid-template-columns:1fr 1fr;">
+        <div class="graph-card" style="background:rgba(255,255,255,.06); border-color:rgba(255,255,255,.15);">
+          <svg id="graphAspn3" viewBox="0 0 180 180"></svg>
+          <div class="r-count" id="countAspn3" style="color:#fff;">—</div>
+          <div class="r-sub" style="color:#b9c9dc;">relationships</div>
+          <div class="n-label" style="color:#9fc0e0;">K100 · K200 · Europe</div>
+        </div>
+        <div class="graph-card" style="background:rgba(255,255,255,.06); border-color:rgba(255,255,255,.15);">
+          <svg id="graphAspn4" viewBox="0 0 180 180"></svg>
+          <div class="r-count" id="countAspn4" style="color:#fff;">—</div>
+          <div class="r-sub" style="color:#b9c9dc;">relationships</div>
+          <div class="n-label" style="color:#9fc0e0;">+ K300 (Energy)</div>
+        </div>
+      </div>
+      <p style="margin:14px 0 0; color:#c9d9ec; font-size:14px;">법인 하나를 추가했을 뿐인데, 확인해야 할 관계는 3개에서 6개로 두 배가 된다. 이 지점이 "사람이 감당할 수 있는 복잡성의 범위"를 판단하는 실질적 기준이 된다.</p>
+    </div>
+  </section>
+
+  <!-- ===================== Ch.6 ===================== -->
+  <section class="chapter" id="ch6">
+    <div class="eyebrow">Chapter 6</div>
+    <h2 class="section-title">Wrap-up</h2>
+    <p class="subtitle">GR01(왜 Group Reporting인가)로 이어지는 다리</p>
+    <p class="action-title">경제적 실체를 표현하는 일은, 일정 복잡성을 넘어서면 표준화된 시스템을 요구한다.</p>
+
+    <div class="takeaway">
+      <div class="label">ONE SENTENCE TAKEAWAY</div>
+      <p>연결재무제표는 여러 회사의 숫자를 단순히 합산하는 작업이 아니라, 하나의 경제적 실체(Economic Entity)를 일관된 회계원칙으로 표현하는 과정이다.</p>
+    </div>
+
+    <div class="card">
+      <h3 style="font-family:var(--mono); font-size:13px; letter-spacing:.05em; color:var(--navy); text-transform:uppercase;">Key Takeaways</h3>
+      <ul class="checklist" style="margin-top:6px;">
+        <li><span class="box" style="border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:var(--mono); font-size:11px; color:var(--navy);">1</span>투자자가 필요로 하는 것은 법인 단위 정보가 아니라 경제적 실체 단위의 정보다.</li>
+        <li><span class="box" style="border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:var(--mono); font-size:11px; color:var(--navy);">2</span>연결은 합산이 아니라 내부거래·미실현손익을 제거하는 재구성 작업이다.</li>
+        <li><span class="box" style="border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:var(--mono); font-size:11px; color:var(--navy);">3</span>복잡성은 법인 수가 아니라 관계 수에 비례해 기하급수적으로 커진다.</li>
+      </ul>
+    </div>
+
+    <div class="callout navy">
+      <span class="tag">BC04로, 그리고 GR01로 이어지는 다리</span>
+      복잡성이 일정 수준을 넘어서면, 연결결산은 사람의 경험과 숙련도가 아니라 표준화된 프로세스와 시스템에 의존하게 된다. 다음 모듈(BC04)에서는 이 복잡성 위에 최근 도입된 규제(글로벌 최저한세)가 어떤 새로운 데이터 요구를 얹는지부터 살펴보고, 그 이후 GR01에서 이 모든 요구가 어떻게 하나의 시스템으로 구현되는지를 다룬다.
+    </div>
+
+    <div class="case-box" style="text-align:left;">
+      <div class="case-eyebrow">Next Module · BC04</div>
+      <h3 style="font-family:'DM Serif Display',serif; font-size:24px; font-weight:400;">글로벌 최저한세와 시스템</h3>
+      <p style="margin:0; color:#c9d9ec; font-size:14.5px; line-height:1.7;">BC03이 "여러 법인을 어떻게 하나의 실체로 통합하는가"를 다뤘다면, BC04는 그렇게 통합된 그룹에 새로운 국제 규제(필라2)가 어떤 데이터를 요구하는지를 다룬다.</p>
+    </div>
+  </section>
+
+</main>
+
+<div class="module-nav-bottom">
+  <div class="mn-inner">
+    <a href="./BC_Index.html">≡ 전체 시리즈 Index</a>
+    <div class="mn-side">
+      <a href="./BC02_InternalControlAndERP.html">← BC02. 내부회계관리제도와 ERP</a>
+      <a href="./BC04_GlobalMinimumTaxAndSystems.html">BC04. 글로벌 최저한세와 시스템 →</a>
+    </div>
+  </div>
+</div>
+<footer>ASPN BAC · Business Context Series · BC03 · Baseline v1.0</footer>
+
+<script>
+// ----- Complete-graph relationship diagrams -----
+function drawCompleteGraph(svgId, countId, n, color){
+  const svg = document.getElementById(svgId);
+  const ns = 'http://www.w3.org/2000/svg';
+  const cx = 90, cy = 90, r = 62;
+  const points = [];
+  for(let i=0;i<n;i++){
+    const angle = (Math.PI*2*i/n) - Math.PI/2;
+    points.push([cx + r*Math.cos(angle), cy + r*Math.sin(angle)]);
+  }
+  // edges
+  for(let i=0;i<n;i++){
+    for(let j=i+1;j<n;j++){
+      const line = document.createElementNS(ns,'line');
+      line.setAttribute('x1', points[i][0]); line.setAttribute('y1', points[i][1]);
+      line.setAttribute('x2', points[j][0]); line.setAttribute('y2', points[j][1]);
+      line.setAttribute('stroke', color); line.setAttribute('stroke-width','1'); line.setAttribute('opacity','0.5');
+      svg.appendChild(line);
+    }
+  }
+  // nodes
+  points.forEach(p => {
+    const circle = document.createElementNS(ns,'circle');
+    circle.setAttribute('cx', p[0]); circle.setAttribute('cy', p[1]); circle.setAttribute('r', 7);
+    circle.setAttribute('fill', color);
+    svg.appendChild(circle);
+  });
+  const edgeCount = n*(n-1)/2;
+  if(countId) document.getElementById(countId).textContent = edgeCount;
+  return edgeCount;
+}
+
+drawCompleteGraph('graph2','count2',2,'#003366');
+drawCompleteGraph('graph4','count4',4,'#003366');
+drawCompleteGraph('graph8','count8',8,'#003366');
+drawCompleteGraph('graphAspn3','countAspn3',3,'#9fc0e0');
+drawCompleteGraph('graphAspn4','countAspn4',4,'#9fc0e0');
+
+(function(){
+  const links = Array.from(document.querySelectorAll('#navTabs a'));
+  const sections = links.map(l => document.querySelector(l.getAttribute('href')));
+  function onScroll(){
+    let idx = 0;
+    const y = window.scrollY + 140;
+    sections.forEach((s,i) => { if(s && s.offsetTop <= y) idx = i; });
+    links.forEach((l,i) => l.classList.toggle('active', i === idx));
+  }
+  window.addEventListener('scroll', onScroll, {passive:true});
+  onScroll();
+})();
+</script>
+
+</body>
+</html>
