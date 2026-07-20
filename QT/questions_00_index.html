@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>정답 없는 질문들 | 다섯 개의 역할, 다섯 개의 질문</title>
+<meta name="description" content="조직은 직급으로 성장하지 않는다. 질문의 깊이로 성장한다. 컨설턴트, PM, 개발자, 팀장, 임원 — 다섯 편의 역할이 만나는 갈림길들.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Noto+Sans+KR:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#f0f3f8;
+    --paper:#ffffff;
+    --navy:#003366;
+    --navy-deep:#001b3d;
+    --navy-soft:#e8eef6;
+    --gold:#a8823a;
+    --gold-soft:#f4ead3;
+    --ink:#1a1f2b;
+    --ink-mute:#5b6472;
+    --line:#d7deea;
+    --serif:'DM Serif Display', 'Noto Sans KR', serif;
+    --sans:'Noto Sans KR', sans-serif;
+    --mono:'JetBrains Mono', 'Noto Sans KR', monospace;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:var(--sans); font-size:15px; line-height:1.75;
+    word-break:keep-all; overflow-wrap:break-word; overflow-x:clip;
+  }
+  h1,h2,h3{font-family:var(--serif); font-weight:400; color:var(--navy); margin:0;}
+
+  /* ===================== COVER ===================== */
+  .cover{
+    min-height:100vh;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center; padding:60px 24px;
+    background:
+      radial-gradient(ellipse 900px 600px at 50% 0%, rgba(168,130,58,0.22), transparent 65%),
+      linear-gradient(180deg, var(--navy-deep) 0%, var(--navy) 60%, #0a2748 100%);
+    color:#fff; position:relative;
+  }
+  .cover .kicker{
+    font-family:var(--mono); font-size:12px; letter-spacing:.2em; text-transform:uppercase;
+    color:var(--gold); margin-bottom:28px;
+  }
+  .cover h1{
+    font-size:clamp(38px, 7vw, 64px); color:#fff; line-height:1.3; margin-bottom:20px;
+  }
+  .cover .tagline{
+    font-family:var(--mono); font-size:14px; color:#a8b8cc; letter-spacing:.06em;
+    margin-bottom:40px; line-height:2;
+  }
+  .cover .tagline b{color:var(--gold-soft); font-weight:600;}
+  .cover .sub{
+    font-family:var(--serif); font-style:italic; font-size:20px; color:var(--gold-soft);
+    max-width:520px; line-height:1.8; margin-bottom:56px;
+  }
+  .scroll-cue{
+    font-family:var(--mono); font-size:11px; color:#7d90a8; letter-spacing:.1em;
+    display:flex; flex-direction:column; align-items:center; gap:8px;
+  }
+  .scroll-cue .arrow{
+    width:1px; height:36px; background:linear-gradient(180deg, var(--gold), transparent);
+    animation:pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse{0%,100%{opacity:.3;}50%{opacity:1;}}
+
+  /* ===================== PROLOGUE ===================== */
+  .prologue{
+    max-width:640px; margin:0 auto; padding:120px 24px;
+  }
+  .prologue .section-kicker{
+    font-family:var(--mono); font-size:12px; color:var(--navy); letter-spacing:.14em;
+    text-transform:uppercase; text-align:center; display:block; margin-bottom:32px;
+  }
+  .prologue p{
+    font-size:17px; line-height:2; color:var(--ink); margin-bottom:28px;
+  }
+  .prologue p.lead{
+    font-family:var(--serif); font-size:24px; color:var(--navy); line-height:1.7;
+    text-align:center; margin-bottom:44px;
+  }
+  .prologue p.close{
+    font-family:var(--serif); font-size:20px; color:var(--navy); line-height:1.8;
+    text-align:center; margin-top:44px; padding-top:36px; border-top:1px solid var(--line);
+  }
+
+  /* ===================== JOURNEY MAP ===================== */
+  .journey{
+    background:var(--paper);
+    padding:100px 24px 120px;
+    border-top:1px solid var(--line);
+    border-bottom:1px solid var(--line);
+  }
+  .journey-inner{max-width:640px; margin:0 auto;}
+  .journey .section-kicker{
+    font-family:var(--mono); font-size:12px; color:var(--navy); letter-spacing:.14em;
+    text-transform:uppercase; text-align:center; display:block; margin-bottom:14px;
+  }
+  .journey h2{
+    font-size:30px; text-align:center; margin-bottom:12px;
+  }
+  .journey .journey-desc{
+    text-align:center; color:var(--ink-mute); font-size:15px; margin-bottom:64px;
+  }
+  .jm-track{position:relative; padding-left:38px;}
+  .jm-track::before{
+    content:""; position:absolute; left:13px; top:10px; bottom:10px; width:2px;
+    background:linear-gradient(180deg, var(--navy-soft), var(--gold), var(--navy-soft));
+  }
+  .jm-node{position:relative; padding-bottom:48px;}
+  .jm-node:last-child{padding-bottom:0;}
+  .jm-node::before{
+    content:""; position:absolute; left:-38px; top:4px; width:28px; height:28px;
+    border-radius:50%; background:var(--paper); border:2px solid var(--navy);
+  }
+  .jm-node.final::before{border-color:var(--gold);}
+  .jm-node .jm-part{
+    font-family:var(--mono); font-size:11px; color:var(--ink-mute);
+    letter-spacing:.08em; text-transform:uppercase; margin-bottom:6px;
+  }
+  .jm-node .jm-role{
+    font-family:var(--serif); font-size:22px; color:var(--navy); margin-bottom:6px;
+  }
+  .jm-node .jm-def{font-size:14.5px; color:var(--ink); margin-bottom:10px;}
+  .jm-tags{display:flex; gap:8px; flex-wrap:wrap;}
+  .jm-tags span{
+    font-family:var(--mono); font-size:11px;
+    border-radius:999px; padding:3px 11px;
+  }
+  .jm-tags .scope{background:var(--navy-soft); color:var(--navy);}
+  .jm-tags .keyword{background:var(--gold-soft); color:var(--gold);}
+
+  /* ===================== INDEX ===================== */
+  .index-section{padding:100px 24px 60px;}
+  .index-inner{max-width:760px; margin:0 auto;}
+  .index-section .section-kicker{
+    font-family:var(--mono); font-size:12px; color:var(--navy); letter-spacing:.14em;
+    text-transform:uppercase; text-align:center; display:block; margin-bottom:14px;
+  }
+  .index-section h2{font-size:30px; text-align:center; margin-bottom:12px;}
+  .index-desc{text-align:center; color:var(--ink-mute); font-size:15px; margin-bottom:56px;}
+
+  .index-list{display:flex; flex-direction:column; gap:16px;}
+  .index-card{
+    display:block; text-decoration:none; color:inherit;
+    background:var(--paper); border:1px solid var(--line); border-radius:10px;
+    padding:26px 28px; transition:border-color .15s, transform .15s;
+  }
+  .index-card:hover{border-color:var(--navy); transform:translateX(4px);}
+  .index-card.final:hover{border-color:var(--gold);}
+  .ic-top{display:flex; align-items:baseline; justify-content:space-between; gap:12px; margin-bottom:8px;}
+  .ic-part{font-family:var(--mono); font-size:12px; color:var(--ink-mute); letter-spacing:.08em;}
+  .ic-keyword{
+    font-family:var(--mono); font-size:11px; color:var(--navy); background:var(--navy-soft);
+    border-radius:999px; padding:3px 11px;
+  }
+  .index-card.final .ic-keyword{color:var(--gold); background:var(--gold-soft);}
+  .ic-title{font-family:var(--serif); font-size:24px; color:var(--navy); margin-bottom:6px;}
+  .ic-def{font-size:14.5px; color:var(--ink-mute); margin-bottom:4px;}
+  .ic-arrow{
+    font-family:var(--mono); font-size:13px; color:var(--navy);
+    display:inline-flex; align-items:center; gap:6px; margin-top:10px;
+  }
+
+  footer{
+    text-align:center; padding:56px 24px 72px; color:var(--ink-mute); font-size:13px;
+    border-top:1px solid var(--line);
+  }
+  footer .footer-mark{
+    font-family:var(--mono); font-size:11px; color:var(--gold); letter-spacing:.1em;
+    text-transform:uppercase; display:block; margin-bottom:10px;
+  }
+
+  @media (max-width:600px){
+    .cover h1{font-size:34px;}
+    .prologue{padding:80px 20px;}
+    .journey{padding:72px 18px 88px;}
+    .index-section{padding:72px 18px 40px;}
+    .jm-track{padding-left:30px;}
+    .jm-node::before{left:-30px;}
+  }
+</style>
+</head>
+<body>
+
+<!-- ===================== COVER ===================== -->
+<div class="cover">
+  <span class="kicker">A Series on Judgment, Not Job Titles</span>
+  <h1>정답 없는 질문들</h1>
+  <p class="tagline">Five Roles. <b>Five Questions.</b> One Journey.</p>
+  <p class="sub">조직은 직급으로 성장하지 않는다.<br>질문의 깊이로 성장한다.</p>
+  <div class="scroll-cue">
+    <span>SCROLL</span>
+    <span class="arrow"></span>
+  </div>
+</div>
+
+<!-- ===================== PROLOGUE ===================== -->
+<div class="prologue">
+  <span class="section-kicker">Prologue</span>
+  <p class="lead">우리는 늘 성공한 사람의 답을 배우려 한다.</p>
+  <p>하지만 조직에서 정말 중요한 순간은 답을 외우는 순간이 아니라, 누구도 대신 풀어줄 수 없는 질문을 처음 만나는 순간이다.</p>
+  <p>컨설턴트에서 PM으로, 개발자에서 팀장으로, 팀장에서 임원으로 — 역할이 바뀔 때마다 우리는 새로운 기술을 배워야 한다고 생각한다. 하지만 실제로 달라지는 것은 기술이 아니라 질문의 크기다. 나의 판단이 우리의 판단이 되고, 제품의 판단이 되고, 팀의 판단이 되고, 마침내 회사의 판단이 된다. 그 사이 어디에도 정답을 알려주는 매뉴얼은 없다.</p>
+  <p>이 시리즈는 다섯 개의 역할 — 컨설턴트, PM, 개발자, 팀장, 임원 — 이 각자의 자리에서 마주치는 갈림길들을 모았다. 실존 인물이 아닌, 여러 사람의 경험을 재구성한 가상의 사례들이다. 어느 쪽을 선택해도 비용이 있었고, 어느 쪽도 유일한 정답은 아니었다.</p>
+  <p class="close">이 글은 정답을 알려주기 위해 쓰이지 않았다.<br>당신이 지금 어떤 질문 앞에 서 있는지를<br>함께 생각하기 위해 쓰였다.</p>
+</div>
+
+<!-- ===================== JOURNEY MAP ===================== -->
+<div class="journey">
+  <div class="journey-inner">
+    <span class="section-kicker">Journey Map</span>
+    <h2>판단의 범위가 넓어지는 이야기</h2>
+    <p class="journey-desc">이 시리즈는 직무 이야기가 아니라, 의사결정의 범위가 넓어지는 이야기다.</p>
+
+    <div class="jm-track">
+      <div class="jm-node">
+        <div class="jm-part">Part 1</div>
+        <div class="jm-role">컨설턴트</div>
+        <div class="jm-def">문제를 정의하는 사람</div>
+        <div class="jm-tags"><span class="scope">나의 판단</span><span class="keyword">Problem</span></div>
+      </div>
+      <div class="jm-node">
+        <div class="jm-part">Part 2</div>
+        <div class="jm-role">PM</div>
+        <div class="jm-def">사람들을 같은 방향으로 움직이게 하는 사람</div>
+        <div class="jm-tags"><span class="scope">우리의 판단</span><span class="keyword">Alignment</span></div>
+      </div>
+      <div class="jm-node">
+        <div class="jm-part">Part 3</div>
+        <div class="jm-role">개발자</div>
+        <div class="jm-def">품질을 책임지는 사람</div>
+        <div class="jm-tags"><span class="scope">제품의 판단</span><span class="keyword">Quality</span></div>
+      </div>
+      <div class="jm-node">
+        <div class="jm-part">Part 4</div>
+        <div class="jm-role">팀장</div>
+        <div class="jm-def">사람을 통해 결과를 만드는 사람</div>
+        <div class="jm-tags"><span class="scope">팀의 판단</span><span class="keyword">Trust</span></div>
+      </div>
+      <div class="jm-node final">
+        <div class="jm-part">Part 5</div>
+        <div class="jm-role">임원</div>
+        <div class="jm-def">조직이 아직 보지 못한 미래를 먼저 결정하는 사람</div>
+        <div class="jm-tags"><span class="scope">회사의 판단</span><span class="keyword">Direction</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== INDEX ===================== -->
+<div class="index-section">
+  <div class="index-inner">
+    <span class="section-kicker">Index</span>
+    <h2>다섯 편 전체 목차</h2>
+    <p class="index-desc">각 편은 프로젝트 수행 · 자기계발 · 워라밸 · 생활 패턴 · 커리어, 같은 다섯 축으로 구성되어 있습니다.</p>
+
+    <div class="index-list">
+      <a class="index-card" href="questions_01_consultant.html">
+        <div class="ic-top"><span class="ic-part">Part 1 · 정답 없는 질문들</span><span class="ic-keyword">논리</span></div>
+        <div class="ic-title">컨설턴트로 살아남는 질문들</div>
+        <div class="ic-def">문제를 정의하는 사람 — 나는 논리를 완성하고 있는가, 불안을 달래고 있는가.</div>
+        <div class="ic-arrow">읽기 →</div>
+      </a>
+
+      <a class="index-card" href="questions_02_pm.html">
+        <div class="ic-top"><span class="ic-part">Part 2 · 정답 없는 질문들</span><span class="ic-keyword">선택</span></div>
+        <div class="ic-title">PM으로 살아남는 질문들</div>
+        <div class="ic-def">사람들을 같은 방향으로 움직이게 하는 사람 — 나는 무엇을 만들고, 무엇을 만들지 않기로 결정했는가.</div>
+        <div class="ic-arrow">읽기 →</div>
+      </a>
+
+      <a class="index-card" href="questions_03_developer.html">
+        <div class="ic-top"><span class="ic-part">Part 3 · 정답 없는 질문들</span><span class="ic-keyword">단순함</span></div>
+        <div class="ic-title">개발자로 살아남는 질문들</div>
+        <div class="ic-def">품질을 책임지는 사람 — 나는 지금 무엇을 일반화하고, 무엇을 일반화하지 않기로 결정했는가.</div>
+        <div class="ic-arrow">읽기 →</div>
+      </a>
+
+      <a class="index-card" href="questions_04_leader.html">
+        <div class="ic-top"><span class="ic-part">Part 4 · 정답 없는 질문들</span><span class="ic-keyword">신뢰</span></div>
+        <div class="ic-title">팀장으로 살아남는 질문들</div>
+        <div class="ic-def">사람을 통해 결과를 만드는 사람 — 나는 문제를 해결하고 있는가, 팀의 기회를 가져가고 있는가.</div>
+        <div class="ic-arrow">읽기 →</div>
+      </a>
+
+      <a class="index-card final" href="questions_05_executive.html">
+        <div class="ic-top"><span class="ic-part">Part 5 · 정답 없는 질문들 · 완결</span><span class="ic-keyword">방향</span></div>
+        <div class="ic-title">임원으로 살아남는 질문들</div>
+        <div class="ic-def">아직 오지 않은 미래의 방향을 결정하는 사람 — 나는 정보를 기다리는가, 책임을 미루고 있는가.</div>
+        <div class="ic-arrow">읽기 →</div>
+      </a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <span class="footer-mark">정답 없는 질문들</span>
+  Five Roles. Five Questions. One Journey.
+</footer>
+
+</body>
+</html>
