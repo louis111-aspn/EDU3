@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BAC PC 2030 — 팀을 위한 요약본</title>
+<meta name="description" content="BAC PC 2030 Constitution을 팀원들이 편하게 읽을 수 있도록 풀어쓴 버전.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Noto+Sans+KR:wght@400;500;600;700;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#003366;
+    --navy-deep:#001f3d;
+    --accent:#4A90E2;
+    --bg:#F7F8FA;
+    --paper:#FFFFFF;
+    --ink:#20242B;
+    --ink-soft:#5B6472;
+    --line:#E2E6EC;
+    --line-strong:#C7CEDA;
+    --serif:'DM Serif Display', serif;
+    --sans:'Noto Sans KR', sans-serif;
+    --mono:'JetBrains Mono', 'Noto Sans KR', monospace;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{font-family:var(--sans); background:var(--bg); color:var(--ink); line-height:1.75;}
+  .wrap{max-width:760px; margin:0 auto; padding:0 26px;}
+
+  .topnav{position:sticky; top:0; z-index:50; background:rgba(247,248,250,0.94); backdrop-filter:blur(8px); border-bottom:1px solid var(--line);}
+  .topnav-inner{max-width:900px; margin:0 auto; padding:13px 26px; display:flex; align-items:center; justify-content:space-between; gap:14px;}
+  .topnav-brand{font-family:var(--serif); font-size:15px; color:var(--navy); white-space:nowrap;}
+  .topnav-links{display:flex; gap:2px; overflow-x:auto; scrollbar-width:none;}
+  .topnav-links::-webkit-scrollbar{display:none;}
+  .topnav-links a{font-size:12px; font-weight:500; color:var(--ink-soft); padding:7px 9px; border-radius:6px; white-space:nowrap; text-decoration:none;}
+  .topnav-links a:hover{color:var(--navy); background:#EDF2F8;}
+
+  .hero{padding:96px 26px 64px; text-align:center; background:radial-gradient(ellipse 800px 420px at 50% -10%, #EAF1FB 0%, transparent 60%), var(--bg); border-bottom:1px solid var(--line);}
+  .hero-eyebrow{font-family:var(--mono); font-size:12.5px; letter-spacing:0.12em; color:var(--accent); text-transform:uppercase; margin-bottom:18px; font-weight:500;}
+  .hero h1{font-family:var(--serif); font-weight:400; font-size:clamp(34px,6.5vw,52px); color:var(--navy); line-height:1.2;}
+  .hero-sub{margin-top:20px; font-size:16px; color:var(--ink-soft); max-width:480px; margin-left:auto; margin-right:auto; line-height:1.7;}
+  .hero-links{margin-top:28px; font-family:var(--mono); font-size:12px; color:#9099A6;}
+  .hero-links a{color:var(--accent); text-decoration:none; font-weight:500;}
+
+  section{padding:64px 0;}
+  section.alt{background:var(--paper); border-top:1px solid var(--line); border-bottom:1px solid var(--line);}
+  .eyebrow{font-family:var(--mono); font-size:12px; letter-spacing:0.1em; color:var(--accent); text-transform:uppercase; font-weight:500; margin-bottom:10px;}
+  h2.title{font-family:var(--serif); font-weight:400; font-size:clamp(26px,4.4vw,34px); color:var(--navy); margin-bottom:10px;}
+  p.lede{font-size:15.5px; color:var(--ink-soft); margin-bottom:28px; max-width:600px;}
+  h3.sub{font-family:var(--sans); font-weight:700; font-size:16px; color:var(--navy); margin:28px 0 10px;}
+  p{font-size:15px; color:var(--ink); margin-bottom:14px;}
+
+  .why{
+    background:#EDF2F8; border-left:3px solid var(--accent); border-radius:0 8px 8px 0;
+    padding:14px 18px; margin:16px 0; font-size:13.5px; color:#2C5A8C;
+  }
+  .why b{color:var(--navy);}
+
+  blockquote{font-family:var(--serif); font-size:19px; color:var(--navy); line-height:1.5; margin:18px 0; padding:4px 0 4px 20px; border-left:3px solid var(--navy); font-style:italic;}
+
+  .grid5{display:grid; grid-template-columns:repeat(2,1fr); gap:14px; margin-top:28px;}
+  .grid5 .item{background:var(--paper); border:1px solid var(--line-strong); border-radius:10px; padding:18px 20px;}
+  .grid5 .item .n{font-family:var(--mono); font-size:11px; color:var(--accent); margin-bottom:6px;}
+  .grid5 .item .t{font-weight:700; font-size:15px; color:var(--navy); margin-bottom:6px;}
+  .grid5 .item .d{font-size:13px; color:var(--ink-soft); line-height:1.6;}
+
+  .tbl-scroll{overflow-x:auto; margin:22px 0; border-radius:8px; border:1px solid var(--line-strong);}
+  table{width:100%; border-collapse:collapse; min-width:480px; background:var(--paper);}
+  th{background:var(--navy); color:#fff; font-size:12px; text-align:left; padding:11px 14px; font-weight:600;}
+  td{padding:11px 14px; font-size:13px; color:var(--ink); border-top:1px solid var(--line); vertical-align:top;}
+
+  .flow{display:flex; flex-direction:column; align-items:center; gap:0; margin:26px 0; padding:26px 18px; background:#FAFBFD; border:1px solid var(--line-strong); border-radius:10px;}
+  .flow-step{font-family:var(--mono); font-size:12.5px; font-weight:500; color:var(--navy); background:#fff; border:1.5px solid var(--line-strong); border-radius:7px; padding:9px 18px; text-align:center; min-width:200px;}
+  .flow-arrow{font-family:var(--mono); color:#A7AFBB; font-size:15px; margin:5px 0;}
+
+  .cardpolicy{background:var(--paper); border:1px solid var(--line-strong); border-radius:10px; padding:20px 22px; margin-bottom:14px;}
+  .cardpolicy .t{font-weight:700; font-size:15px; color:var(--navy); margin-bottom:6px;}
+  .cardpolicy p{font-size:13.5px; margin-bottom:0; color:var(--ink);}
+
+  .manifesto{text-align:center; padding:110px 26px; background:var(--navy); color:#fff;}
+  .manifesto .m-eyebrow{font-family:var(--mono); font-size:11.5px; letter-spacing:0.16em; color:#8FB3E0; text-transform:uppercase; margin-bottom:26px;}
+  .manifesto p{font-family:var(--serif); font-size:clamp(18px,3vw,26px); color:#fff; max-width:600px; margin:0 auto 20px; line-height:1.55; font-style:italic;}
+  .manifesto p.final{font-style:normal; font-size:clamp(21px,3.6vw,30px); margin-top:34px; color:#fff;}
+  .manifesto .rule{width:40px; height:2px; background:var(--accent); margin:28px auto;}
+
+  .other-versions{display:flex; gap:12px; flex-wrap:wrap; margin-top:24px;}
+  .other-versions a{flex:1; min-width:200px; text-decoration:none; background:var(--paper); border:1px solid var(--line-strong); border-radius:10px; padding:16px 18px; display:block;}
+  .other-versions .vt{font-weight:700; font-size:13.5px; color:var(--navy); margin-bottom:4px;}
+  .other-versions .vd{font-size:12px; color:var(--ink-soft);}
+
+  footer{padding:44px 26px; text-align:center; font-family:var(--mono); font-size:11px; color:#9099A6; background:var(--bg);}
+
+  @media (max-width:640px){
+    .hero{padding:80px 20px 48px;}
+    section{padding:48px 0;}
+    .wrap{padding:0 20px;}
+    .grid5{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="topnav-inner">
+    <div class="topnav-brand">BAC PC 2030 · 팀 요약본</div>
+    <div class="topnav-links">
+      <a href="#overview">전체 흐름</a>
+      <a href="#identity">우리는 왜</a>
+      <a href="#capability">뭘 쌓나</a>
+      <a href="#operating">어떻게</a>
+      <a href="#measure">측정</a>
+      <a href="#next">다음은</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="hero-eyebrow">BAC PC 2030 Constitution · 팀을 위한 요약본</div>
+  <h1>우리가 왜 이렇게<br>일하기로 했는지</h1>
+  <p class="hero-sub">정식 Constitution을 팀원들이 부담 없이 읽을 수 있도록 풀어썼습니다. 핵심 원칙과 표현은 그대로 두고, 설명만 편하게 바꿨습니다.</p>
+  <div class="hero-links">더 짧게 보고 싶다면 <a href="BAC2030_Constitution_Casual.html">캐주얼 버전</a> · 더 자세히 보고 싶다면 <a href="BAC2030_Constitution.html">정식 Constitution</a></div>
+</header>
+
+<section id="overview">
+  <div class="wrap">
+    <div class="eyebrow">한눈에 보기</div>
+    <h2 class="title">다섯 개의 질문</h2>
+    <p class="lede">이 문서는 다섯 가지 질문에 순서대로 답합니다. 순서대로 읽으면 자연스럽게 이해가 됩니다.</p>
+    <div class="grid5">
+      <div class="item"><div class="n">1</div><div class="t">우리는 왜 존재하나</div><div class="d">BAC PC파트가 이 시장에 있어야 하는 이유</div></div>
+      <div class="item"><div class="n">2</div><div class="t">뭘 쌓아야 하나</div><div class="d">2030년까지 갖춰야 할 5가지 역량</div></div>
+      <div class="item"><div class="n">3</div><div class="t">어떻게 쌓나</div><div class="d">실제로 돌아가는 정책과 제도</div></div>
+      <div class="item"><div class="n">4</div><div class="t">잘 쌓이고 있나</div><div class="d">측정하는 방법</div></div>
+      <div class="item"><div class="n">5</div><div class="t">앞으로는</div><div class="d">2026~2030 로드맵</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="alt" id="identity">
+  <div class="wrap">
+    <div class="eyebrow">Part 1 · Identity</div>
+    <h2 class="title">우리는 왜 존재하나</h2>
+    <p class="lede">한 줄로 말하면, 우리는 SAP를 구축하는 조직이 아니라 고객이 스스로 판단할 수 있는 역량을 만들어주는 조직입니다.</p>
+
+    <blockquote>우리는 기업의 Performance Management 시스템을 구축하는 것이 아니라, 데이터 기반의 경영 의사결정 역량을 만든다.</blockquote>
+    <p>회계와 시스템 사이, 데이터와 판단 사이에는 항상 간극이 있습니다. 그 간극을 메우는 게 우리 일입니다. Group Reporting이나 SAC Planning, AGRA는 전부 이 목적을 위한 수단이지, 그 자체가 목적은 아닙니다.</p>
+    <div class="why"><b>왜 중요한가.</b> "우리가 왜 이 일을 하는가"에 대한 답이 명확해야, 애매한 프로젝트를 받을지 말지도 판단할 수 있습니다.</div>
+
+    <h3 class="sub">비전 — 2030년엔 어떤 모습일까</h3>
+    <blockquote>2030년까지 대한민국 최고의 SAP EPM Capability Builder가 된다.</blockquote>
+    <p>여기서 EPM은 연결결산이나 계획수립에 그치지 않습니다. Financial Close, Disclosure, ESG, GloBE, AI 기반 Finance까지 포함하는 넓은 개념입니다. '최고'는 매출이나 프로젝트 수가 아니라, 남들이 쉽게 못 따라오는 전문성으로 판단합니다.</p>
+
+    <h3 class="sub">원칙 — 뭘 기준으로 판단하나</h3>
+    <blockquote>우리는 프로젝트를 수행하는 조직이 아니라, 프로젝트를 통해 역량을 축적하는 조직이다.</blockquote>
+    <p>프로젝트를 매출로만 보지 않습니다. "이 프로젝트가 끝나고 나면 우리한테 뭐가 남는가"를 항상 같이 봅니다. 어떤 제안을 받을지, 뭘 자산으로 남길지 같은 결정들이 전부 이 기준 위에서 이뤄집니다.</p>
+
+    <h3 class="sub">신념 — 변하지 않는 것</h3>
+    <blockquote>우리가 하는 일은 바뀌어도, 우리가 남기는 것은 언제나 Capability다.</blockquote>
+  </div>
+</section>
+
+<section id="capability">
+  <div class="wrap">
+    <div class="eyebrow">Part 2 · Future Capability Model</div>
+    <h2 class="title">뭘 쌓아야 하나</h2>
+    <p class="lede">Capability는 프로젝트 결과물이 아니라, 조직이 반복해서 잘할 수 있는 능력입니다. 사람이 떠나도 남는 것이어야 진짜 Capability입니다.</p>
+
+    <div class="tbl-scroll">
+      <table>
+        <tr><th>Capability</th><th>한 줄로 말하면</th><th>대표 자산</th></tr>
+        <tr><td><b>Domain</b></td><td>회계·재무 전문성이 시스템 구현으로 이어지는 것</td><td>IFRS/GR Knowledge Base</td></tr>
+        <tr><td><b>Delivery</b></td><td>프로젝트마다 새로 안 만들고 재사용하는 것</td><td>BAC Delivery Framework</td></tr>
+        <tr><td><b>Product</b></td><td>서비스가 아니라 재사용 가능한 솔루션을 갖는 것</td><td>AGRA</td></tr>
+        <tr><td><b>Knowledge</b></td><td>개인의 경험을 조직 자산으로 바꾸는 것</td><td>BAC Knowledge Repository</td></tr>
+        <tr><td><b>Business</b></td><td>쌓은 역량을 실제 시장 기회로 연결하는 것</td><td>Business Development Operating Framework</td></tr>
+      </table>
+    </div>
+    <div class="why"><b>왜 다섯 개인가.</b> 하나라도 빠지면 나머지가 성립하지 않습니다. 전문성만 있고 실행력이 없으면 프로젝트로 옮겨지지 않고, 실행력만 있고 자산화가 안 되면 사람이 떠날 때 같이 사라집니다.</div>
+
+    <h3 class="sub">다섯 개가 서로 연결되는 방식</h3>
+    <p>Domain은 Delivery와 Product 두 갈래 모두의 출발점입니다. Delivery에서 검증된 결과물은 Asset Review Board를 거쳐 Knowledge로 승격되고, Knowledge는 다시 Product를 강화합니다. Product와 Knowledge가 함께 Business를 키우고, 그 결과가 Brand로 나타납니다. (자세한 구조도는 정식 Constitution의 Reference Architecture를 참고하세요.)</p>
+
+    <h3 class="sub">시간이 지나면서 어떻게 성숙해지나</h3>
+    <p><b>Stage 1</b> — Domain과 Delivery를 표준으로 다지는 단계 &nbsp;·&nbsp; <b>Stage 2</b> — Product와 Knowledge가 쌓이는 단계 &nbsp;·&nbsp; <b>Stage 3</b> — Business와 Brand로 확장되는 단계. 구조 자체는 안 바뀌고, 성숙도만 올라갑니다.</p>
+  </div>
+</section>
+
+<section class="alt" id="operating">
+  <div class="wrap">
+    <div class="eyebrow">Part 3 · Capability Operating System</div>
+    <h2 class="title">어떻게 쌓나</h2>
+    <p class="lede">Capability는 저절로 쌓이지 않습니다. 실제로 돌아가는 정책 네 가지가 이걸 담당합니다.</p>
+
+    <h3 class="sub">일이 굴러가는 순서</h3>
+    <div class="flow">
+      <div class="flow-step">BD Portfolio — 이 프로젝트 할지 말지 선별</div>
+      <div class="flow-arrow">↓</div>
+      <div class="flow-step">Current State &amp; Gap — 우리 지금 뭐가 부족한지 확인</div>
+      <div class="flow-arrow">↓</div>
+      <div class="flow-step">Bridge Funding — 투자 재원 마련</div>
+      <div class="flow-arrow">↓</div>
+      <div class="flow-step">Execution — 실행</div>
+      <div class="flow-arrow">↓</div>
+      <div class="flow-step">Asset Review Board — 남길 자산 심사</div>
+      <div class="flow-arrow">↓</div>
+      <div class="flow-step">Measure &amp; Learn — 다음 라운드로</div>
+    </div>
+
+    <div class="cardpolicy">
+      <div class="t">Bridge Funding — Product에 재투자하는 돈</div>
+      <p>AMS 사업에서 남긴 이익을 AGRA 같은 제품에 재투자하는 정책입니다. 처음엔 개발자 1명 정도의 작은 규모로 시작하고, AMS 매출 비중이 30%를 넘는 등 일정 조건을 채우면 Product 조직이 독립적으로 운영됩니다.</p>
+    </div>
+    <div class="cardpolicy">
+      <div class="t">BD 2×2 — 어떤 프로젝트를 할지 정하는 기준</div>
+      <p>역량 축적에 얼마나 도움 되는지(Strategic Capability)와 상업적 가치(Commercial Value) 두 축으로 프로젝트를 Invest / Grow / Harvest / Pass로 나눕니다. 캡티브 SI 하청 프로젝트는 기본적으로 상업적 가치를 낮게 보되, AGRA 적용이나 Reference 확보가 가능하면 예외적으로 격상될 수 있습니다.</p>
+    </div>
+    <div class="cardpolicy">
+      <div class="t">Asset Review Board — 뭘 남길지 정하는 곳</div>
+      <p>프로젝트에서 나온 산출물 중 조직 자산으로 남길 만한 걸 골라주는 심사 기구입니다. 여기서 승인된(Approved) 것만 나중에 Consultant 평가에 반영됩니다.</p>
+    </div>
+    <div class="cardpolicy">
+      <div class="t">Consultant Growth Framework — 평가 기준</div>
+      <p>프로젝트 성과가 70%, 방법론 개선·Repository 등록 같은 Capability 기여가 30%입니다. 열심히 일한 것도 중요하지만, 그걸 조직에 남기는 것도 평가에 들어간다는 뜻입니다.</p>
+    </div>
+  </div>
+</section>
+
+<section id="measure">
+  <div class="wrap">
+    <div class="eyebrow">Part 4 · Capability Scorecard</div>
+    <h2 class="title">잘 쌓이고 있는지 어떻게 아나</h2>
+    <p class="lede">측정의 목적은 사람 평가가 아니라 Capability가 얼마나 성숙했는지 보는 것입니다.</p>
+    <div class="tbl-scroll">
+      <table>
+        <tr><th>Capability</th><th>뭘 보는가</th></tr>
+        <tr><td>Domain</td><td>교육·자격 이수, 전문 영역 커버리지</td></tr>
+        <tr><td>Delivery</td><td>표준 템플릿 활용률, 산출물 품질</td></tr>
+        <tr><td>Product</td><td>AGRA 도입 고객 수, 제품 매출</td></tr>
+        <tr><td>Knowledge</td><td>승인된 자산 등록 건수, 재사용 횟수</td></tr>
+        <tr><td>Business</td><td>파이프라인 상태, 매출·AMS 비율</td></tr>
+      </table>
+    </div>
+    <p>Product와 Business 지표는 지금도 바로 계산되지만, 나머지는 아직 데이터 수집 체계를 더 갖춰야 합니다. 전부 1~5점 척도로 봅니다 — 별도의 등급(Bronze/Silver/Gold) 같은 건 안 씁니다.</p>
+  </div>
+</section>
+
+<section class="alt" id="next">
+  <div class="wrap">
+    <div class="eyebrow">Part 5 · Transition Architecture</div>
+    <h2 class="title">앞으로 어떻게 가나</h2>
+    <p class="lede">Capability가 성숙해지는 흐름, 자금 운영 단계, 실제 연도별 일정 — 이 세 가지는 서로 다른 시간표라서 억지로 하나로 묶지 않습니다.</p>
+    <div class="tbl-scroll">
+      <table>
+        <tr><th>Capability</th><th>목표</th></tr>
+        <tr><td>Domain</td><td>Domain Knowledge Base 표준화</td></tr>
+        <tr><td>Delivery</td><td>Delivery Framework 전사 적용</td></tr>
+        <tr><td>Product</td><td>Bridge Funding Phase 2 전환</td></tr>
+        <tr><td>Knowledge</td><td>Asset Review Board 정례화</td></tr>
+        <tr><td>Business</td><td>Big4 협업 채널 확대</td></tr>
+      </table>
+    </div>
+    <p>이 원칙(Part 1~2)은 매년 검토 대상이 아니지만, 운영 정책(Part 3~4)은 매년 돌아보고 고쳐갑니다. 헌장이 흔들리지 않아야 정책을 편하게 바꿀 수 있다는 게 이 구조의 취지입니다.</p>
+  </div>
+</section>
+
+<section class="manifesto">
+  <div class="m-eyebrow">마지막으로</div>
+  <p>우리는 프로젝트를 수행하는 조직이 아니라, Capability를 축적하는 조직입니다.</p>
+  <p>우리가 하는 일은 바뀔 수 있습니다. 그러나 우리가 남기는 것은 언제나 Capability입니다.</p>
+  <div class="rule"></div>
+  <p class="final">모든 프로젝트는 끝납니다.<br>Capability는 조직에 남습니다.</p>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="eyebrow">다른 버전도 있습니다</div>
+    <h2 class="title" style="font-size:22px;">읽는 방식은 취향껏</h2>
+    <div class="other-versions">
+      <a href="BAC2030_Constitution.html"><div class="vt">정식 Constitution</div><div class="vd">전체 내용, 상세 정책, 표와 다이어그램까지 다 담긴 버전</div></a>
+      <a href="BAC2030_Constitution_Casual.html"><div class="vt">캐주얼 버전</div><div class="vd">3분 컷, 가볍게 훑어보고 싶을 때</div></a>
+    </div>
+  </div>
+</section>
+
+<footer>BAC PC 2030 Constitution · 팀 요약본 · 원문과 다른 표현이 있다면 정식 버전이 우선입니다</footer>
+
+</body>
+</html>

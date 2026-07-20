@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BAC PC 2030, 쉽게 말하면</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Noto+Sans+KR:wght@400;500;700;900&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#003366;
+    --coral:#FF6B4A;
+    --coral-deep:#E8502F;
+    --yellow:#FFC94A;
+    --mint:#3FBF8F;
+    --bg:#FFFBF3;
+    --paper:#FFFFFF;
+    --ink:#22262E;
+    --ink-soft:#6B6357;
+    --line:#EFE6D8;
+    --hand:'Gaegu', 'Noto Sans KR', sans-serif;
+    --sans:'Noto Sans KR', sans-serif;
+    --mono:'JetBrains Mono', monospace;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    font-family:var(--sans);
+    background:var(--bg);
+    color:var(--ink);
+    line-height:1.7;
+  }
+  .wrap{max-width:760px; margin:0 auto; padding:0 24px;}
+
+  .hero{
+    padding:90px 24px 60px; text-align:center; position:relative; overflow:hidden;
+  }
+  .hero-badge{
+    display:inline-block; font-family:var(--mono); font-size:12px; font-weight:500;
+    background:#FFF0E8; color:var(--coral-deep); padding:7px 16px; border-radius:999px;
+    border:1.5px dashed var(--coral); margin-bottom:26px; transform:rotate(-2deg);
+  }
+  .hero h1{
+    font-family:var(--hand); font-weight:700; font-size:clamp(38px,8vw,58px);
+    color:var(--navy); line-height:1.25;
+  }
+  .hero h1 .hl{color:var(--coral); position:relative; display:inline-block;}
+  .hero-sub{
+    margin-top:18px; font-size:clamp(15px,2.2vw,18px); color:var(--ink-soft); font-weight:500;
+  }
+  .hero-note{
+    margin-top:34px; display:inline-block; font-family:var(--sans); font-size:13px; color:#A79E8F;
+    background:var(--paper); border:1.5px solid var(--line); border-radius:12px; padding:10px 18px;
+  }
+
+  section{padding:56px 0;}
+  .tldr{
+    background:var(--navy); color:#fff; border-radius:20px; padding:34px 30px; margin:0 auto;
+    max-width:600px; text-align:center;
+  }
+  .tldr .tag{font-family:var(--mono); font-size:11px; color:#8FB3E0; letter-spacing:0.1em; margin-bottom:14px;}
+  .tldr .row{font-family:var(--sans); font-size:16px; margin:10px 0;}
+  .tldr .row.no{color:#FF9B85; font-weight:700; text-decoration:line-through; text-decoration-color:#FF6B4A;}
+  .tldr .row.yes{color:#8FE0C0; font-weight:900; font-size:19px;}
+  .tldr .arrow{font-family:var(--mono); color:#5A80AC; font-size:13px; margin:2px 0;}
+
+  h2.sec-title{
+    font-family:var(--hand); font-weight:700; font-size:clamp(26px,5vw,34px); color:var(--navy);
+    text-align:center; margin-bottom:8px;
+  }
+  p.sec-sub{text-align:center; color:var(--ink-soft); font-size:14px; margin-bottom:34px;}
+
+  .card-stack{display:flex; flex-direction:column; gap:18px;}
+  .sticky{
+    background:var(--paper); border:2px solid var(--ink); border-radius:14px; padding:22px 24px;
+    box-shadow:5px 5px 0 var(--line); position:relative;
+  }
+  .sticky:nth-child(odd){transform:rotate(-0.6deg);}
+  .sticky:nth-child(even){transform:rotate(0.6deg);}
+  .sticky .emoji{font-size:30px; margin-bottom:8px; display:block;}
+  .sticky .name{font-family:var(--hand); font-weight:700; font-size:22px; color:var(--navy); margin-bottom:6px;}
+  .sticky .tag2{
+    display:inline-block; font-family:var(--mono); font-size:10.5px; color:var(--coral-deep);
+    background:#FFF0E8; padding:3px 9px; border-radius:6px; margin-bottom:10px; font-weight:500;
+  }
+  .sticky p{font-size:14.5px; color:var(--ink);}
+  .sticky .quip{
+    margin-top:10px; font-size:13px; color:var(--ink-soft); font-style:italic;
+    border-left:3px solid var(--yellow); padding-left:10px;
+  }
+
+  .cycle{
+    display:flex; flex-direction:column; align-items:center; gap:0;
+  }
+  .cyc-step{
+    font-family:var(--sans); font-weight:700; font-size:14.5px; color:var(--navy);
+    background:#fff; border:2px dashed var(--navy); border-radius:12px;
+    padding:12px 22px; text-align:center; min-width:230px;
+  }
+  .cyc-step .sub{display:block; font-weight:400; font-size:12.5px; color:var(--ink-soft); margin-top:3px;}
+  .cyc-arrow{font-size:20px; color:var(--coral); margin:4px 0; font-family:var(--mono);}
+
+  .manifesto{
+    background:var(--coral); color:#fff; border-radius:24px; padding:56px 30px; text-align:center;
+    max-width:640px; margin:0 auto;
+  }
+  .manifesto .big{font-family:var(--hand); font-weight:700; font-size:clamp(24px,5vw,32px); line-height:1.5;}
+  .manifesto .small{margin-top:16px; font-size:14px; color:#FFE3D8;}
+
+  .cta{
+    text-align:center; padding:60px 24px 90px;
+  }
+  .cta a{
+    display:inline-block; background:var(--navy); color:#fff; text-decoration:none;
+    font-weight:700; font-size:14px; padding:14px 28px; border-radius:999px; margin-top:14px;
+  }
+  .cta p{color:var(--ink-soft); font-size:13.5px;}
+
+  footer{text-align:center; padding:30px; font-family:var(--mono); font-size:11px; color:#B5AC9C;}
+
+  @media (max-width:600px){
+    .hero{padding:70px 20px 40px;}
+    section{padding:40px 0;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <span class="hero-badge">정독 강요 안 함, 그래도 5분만 🙂</span>
+  <h1>BAC PC 2030,<br>쉽게 말하면 <span class="hl">이거임</span></h1>
+  <p class="hero-sub">그 두꺼운 Constitution, 사실 3분이면 다 얘기함 🫡</p>
+  <div class="hero-note">정식 버전 있음 &nbsp;→&nbsp; 근데 이거 먼저 읽어도 됨</div>
+</header>
+
+<section>
+  <div class="wrap">
+    <div class="tldr">
+      <div class="tag">TL;DR</div>
+      <div class="row no">우리 = SAP 구축해주는 회사</div>
+      <div class="arrow">↓ 아니고</div>
+      <div class="row yes">우리 = 잘하는 능력을 쌓아가는 회사</div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2 class="sec-title">우리가 쌓아야 하는 것 5개</h2>
+    <p class="sec-sub">Capability Model, 어렵게 말하면 이거고 쉽게 말하면 이거임</p>
+    <div class="card-stack">
+      <div class="sticky">
+        <span class="emoji">🧠</span>
+        <div class="name">Domain</div>
+        <div class="tag2">회계 잘 아는 거</div>
+        <p>IFRS, GR, GloBE... 이런 거 모르면 사실 우리 그냥 SI임. 이거 아는 게 우리 무기.</p>
+        <div class="quip">"이번 프로젝트는 개발자만 있으면 되지 않나요?" → 안 됩니다</div>
+      </div>
+      <div class="sticky">
+        <span class="emoji">🛠️</span>
+        <div class="name">Delivery</div>
+        <div class="tag2">매번 새로 안 만드는 거</div>
+        <p>프로젝트마다 템플릿 처음부터 만들지 말자. 있는 거 쓰고, 쓴 건 더 좋게 고치자.</p>
+        <div class="quip">"저번 프로젝트 산출물 어디갔지" → 이 말 이제 그만</div>
+      </div>
+      <div class="sticky">
+        <span class="emoji">📦</span>
+        <div class="name">Product</div>
+        <div class="tag2">AGRA = 우리 무기</div>
+        <p>매번 사람 갈아넣어서 돈 버는 거 말고, 한 번 만들어서 여러 번 파는 거 하자.</p>
+        <div class="quip">서비스업 → 제품도 파는 회사로. 이게 진짜 목표</div>
+      </div>
+      <div class="sticky">
+        <span class="emoji">📚</span>
+        <div class="name">Knowledge</div>
+        <div class="tag2">배운 거 안 버리는 거</div>
+        <p>프로젝트 끝나면 그 사람 머릿속 지식도 같이 증발함. 그거 막자는 거임.</p>
+        <div class="quip">Asset Review Board = 남길 가치 있는 거 골라주는 곳</div>
+      </div>
+      <div class="sticky">
+        <span class="emoji">🤝</span>
+        <div class="name">Business</div>
+        <div class="tag2">관계 잘 만드는 거</div>
+        <p>Big4랑은 진짜 친하게, 캡티브 SI 하청은 적당히만. 아무 프로젝트나 다 하지 말자.</p>
+        <div class="quip">가격으로만 승부보는 제안 = Pass. 이건 원칙임</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2 class="sec-title">일이 굴러가는 순서</h2>
+    <p class="sec-sub">이론상은 이렇게 돌아감</p>
+    <div class="cycle">
+      <div class="cyc-step">이 프로젝트 할까 말까<span class="sub">BD Portfolio</span></div>
+      <div class="cyc-arrow">↓</div>
+      <div class="cyc-step">우리 지금 뭐 잘함?<span class="sub">Current State</span></div>
+      <div class="cyc-arrow">↓</div>
+      <div class="cyc-step">돈 어디서 남겨서 제품에 넣지<span class="sub">Bridge Funding</span></div>
+      <div class="cyc-arrow">↓</div>
+      <div class="cyc-step">일단 한다<span class="sub">Execution</span></div>
+      <div class="cyc-arrow">↓</div>
+      <div class="cyc-step">이거 남길 만한 거 있나?<span class="sub">Asset Review Board</span></div>
+      <div class="cyc-arrow">↓</div>
+      <div class="cyc-step">다음에 또 씀 🔁<span class="sub">Measure & Learn</span></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="manifesto">
+      <div class="big">"프로젝트는 끝나도,<br>우리가 배운 건 안 없어짐."</div>
+      <div class="small">그니까 산출물 대충 버리지 말고 자산화 좀 하자... 제발 🙏</div>
+    </div>
+  </div>
+</section>
+
+<section class="cta">
+  <p>더 진지하게 알고 싶다면 정식 Constitution 참고<br>필요할 때 찾아보면 됨</p>
+</section>
+
+<footer>BAC PC 2030 · 진지 버전 아님 · 편하게 보시라고 만든 거</footer>
+
+</body>
+</html>
