@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LA05. Header-Item Data Model | SAP Legacy Architecture Evolution</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Noto+Sans+KR:wght@400;500;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#003366; --navy-10:#e6ecf3; --bg:#f0f3f8; --ink:#1a1a1a; --sub:#5a6472; --line:#d7deea;
+    --white:#ffffff; --warn:#8a5a00; --warn-bg:#fdf3e3; --correct:#0f5c33; --correct-bg:#e7f5ec;
+  }
+  *{box-sizing:border-box;}
+  html,body{overflow-x:clip;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:'Noto Sans KR', sans-serif;font-size:15px;line-height:1.7;word-break:keep-all;overflow-wrap:break-word;}
+  .label{font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:13px;letter-spacing:0.04em;color:var(--navy);text-transform:uppercase;}
+  header.top{position:sticky;top:0;z-index:20;background:var(--white);border-bottom:1px solid var(--line);padding:14px 40px;display:flex;align-items:center;justify-content:space-between;}
+  header.top .series-tag{font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:13px;color:var(--sub);}
+  header.top .series-tag b{color:var(--navy);}
+  header.top nav{font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:13px;color:var(--sub);}
+  .wrap{max-width:880px;margin:0 auto;padding:56px 32px 96px;}
+  .eyebrow{font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:13px;color:var(--navy);letter-spacing:0.06em;margin-bottom:14px;}
+  h1{font-family:'DM Serif Display','Noto Sans KR',serif;font-size:42px;line-height:1.3;color:var(--navy);margin:0 0 12px;}
+  .subtitle{font-size:16px;color:var(--sub);margin-bottom:28px;}
+  .origin-card{background:var(--navy);color:var(--white);border-radius:6px;padding:22px 28px;margin-bottom:36px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;}
+  .origin-card .origin-label{font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:12px;color:#a9c2dc;letter-spacing:0.04em;display:block;margin-bottom:6px;}
+  .origin-chain{display:flex;align-items:center;gap:14px;font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:15px;flex-wrap:wrap;}
+  .origin-chain .from{color:#cfe0f0;}
+  .origin-chain .arrow{color:#7fa8cc;}
+  .origin-chain .to{background:rgba(255,255,255,0.12);padding:4px 12px;border-radius:4px;font-weight:700;}
+  h2.section-title{font-family:'DM Serif Display','Noto Sans KR',serif;font-size:30px;color:var(--navy);margin:56px 0 20px;display:flex;align-items:baseline;gap:12px;}
+  h2.section-title .num{font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:16px;color:var(--sub);font-style:normal;}
+  h3{font-size:18px;color:var(--ink);margin:28px 0 12px;font-weight:700;}
+  p{margin:0 0 16px;}
+  .card{background:var(--white);border:1px solid var(--line);border-radius:6px;padding:24px 28px;margin:20px 0;}
+  .callout{border-left:4px solid var(--navy);background:var(--navy-10);padding:20px 24px;margin:24px 0;border-radius:0 6px 6px 0;}
+  .callout .label{margin-bottom:8px;display:block;}
+  .callout.warn{border-left-color:var(--warn);background:var(--warn-bg);}
+  .callout.warn .label{color:var(--warn);}
+  .callout.correct{border-left-color:var(--correct);background:var(--correct-bg);}
+  .callout.correct .label{color:var(--correct);}
+  table.principle-table{width:100%;border-collapse:collapse;margin:20px 0;background:var(--white);border:1px solid var(--line);}
+  table.principle-table th{font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:13px;text-align:left;color:var(--white);background:var(--navy);padding:12px 18px;font-weight:500;}
+  table.principle-table td{padding:14px 18px;border-bottom:1px solid var(--line);vertical-align:top;font-size:14px;}
+  table.principle-table tr:last-child td{border-bottom:none;}
+  table.principle-table td.decision-col{font-weight:700;color:var(--navy);}
+  code.inline{font-family:'JetBrains Mono','Noto Sans KR',monospace;background:var(--navy-10);color:var(--navy);padding:2px 6px;border-radius:3px;font-size:13.5px;}
+  pre.code-block{font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:13px;background:#0d1b2a;color:#dce8f5;padding:18px 22px;border-radius:6px;overflow-x:auto;line-height:1.6;margin:16px 0;}
+  pre.code-block .cm{color:#7fa8cc;}
+  ul.plain{margin:0 0 16px;padding-left:20px;}
+  ul.plain li{margin-bottom:8px;}
+
+  /* header-item model diagram */
+  .model-diagram{background:var(--white);border:1px solid var(--line);border-radius:6px;padding:24px;margin:20px 0;}
+  .model-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  .model-box{border:1.5px solid var(--navy);border-radius:6px;padding:14px 16px;}
+  .model-box .m-title{font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:13px;font-weight:700;color:var(--navy);display:block;margin-bottom:8px;}
+  .model-box ul{margin:0;padding-left:16px;font-size:13px;color:var(--ink);}
+  .model-box ul li{margin-bottom:4px;}
+  .model-arrow-down{text-align:center;font-size:20px;color:var(--sub);margin:14px 0;}
+  .model-evolved{border:1.5px solid var(--correct);background:var(--correct-bg);border-radius:6px;padding:14px 16px;text-align:center;}
+  .model-evolved .m-title{font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:13px;font-weight:700;color:var(--correct);}
+  @media (max-width:560px){.model-row{grid-template-columns:1fr;}}
+
+  .takeaway{margin-top:56px;padding:28px 32px;background:var(--navy);color:var(--white);border-radius:6px;}
+  .takeaway .label{color:#a9c2dc;margin-bottom:10px;display:block;}
+  .takeaway .sentence{font-family:'DM Serif Display','Noto Sans KR',serif;font-size:22px;line-height:1.5;}
+  .nav-footer{display:flex;justify-content:space-between;margin-top:48px;padding-top:24px;border-top:1px solid var(--line);font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:13px;color:var(--sub);}
+  @media (max-width:480px){
+    header.top{padding:12px 20px;}
+    .wrap{padding:40px 20px 72px;}
+    h1{font-size:30px;}
+    h2.section-title{font-size:22px;}
+    .card, .callout, .takeaway, .origin-card, .model-diagram{padding:18px 20px;}
+  }
+
+  .nav-footer a{color:var(--sub);text-decoration:none;}
+  .nav-footer a:hover{color:var(--navy);text-decoration:underline;}
+  .nav-footer .nav-index{font-weight:700;color:var(--navy);}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="series-tag">SAP Legacy Architecture Evolution &nbsp;·&nbsp; <b>LA05</b></div>
+  <nav>PART 3 — Chapter 5 / 8</nav>
+</header>
+
+<div class="wrap">
+
+  <div class="eyebrow">PART 3. Database Architecture Legacy</div>
+  <h1>Header-Item Data Model</h1>
+  <div class="subtitle">
+    LA04가 System 격리 축이었다면, LA05는 다시 Database Architecture 축으로 돌아온다. 질문은
+    "왜 SAP는 BKPF/BSEG처럼 전표를 분리 저장했으며, 왜 S/4HANA는 ACDOCA(Universal Journal) 방향으로
+    이동했는가"다.
+  </div>
+
+  <div class="origin-card">
+    <div>
+      <span class="origin-label">Origin Architecture Decision (LA01 연결)</span>
+      <div class="origin-chain">
+        <span class="from">Database Normalization</span>
+        <span class="arrow">→</span>
+        <span class="to">Header-Item Transaction Model</span>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="section-title"><span class="num">5.1</span> Legacy Origin — RDBMS Normalization</h2>
+
+  <p>하나의 회계 전표(Accounting Document)는 Header 정보(회사코드, 전표번호, 회계연도, 전기일, 전표유형)와
+  다수의 Line Item(계정, 금액, Cost Center, 차대구분)으로 구성된다. Header 정보를 모든 Line Item 행마다
+  반복 저장하면 같은 값이 수십~수백 번 중복된다.</p>
+
+  <p>1980~90년대 RDBMS 설계 원칙은 이런 반복을 허용하지 않는다. SAP는 Header와 Item을 별도 Table로
+  분리해서 저장했다 — 이는 다음 세 가지를 동시에 달성하기 위한 선택이었다.</p>
+
+  <ul class="plain">
+    <li><b>RDBMS Normalization</b> — 반복 데이터를 제거해 정규화 원칙 준수</li>
+    <li><b>Data Redundancy Reduction</b> — Header 정보 중복 저장을 피해 동일 정보의 반복 저장을 최소화</li>
+    <li><b>Data Integrity</b> — Header 값 변경 시 한 곳만 수정하면 되는 단일 진실 지점 확보</li>
+  </ul>
+
+  <table class="principle-table">
+    <tr><th>목적</th><th>설명</th></tr>
+    <tr><td class="decision-col">Data Redundancy Reduction</td><td>동일 정보 반복 저장 최소화</td></tr>
+    <tr><td class="decision-col">Data Integrity</td><td>Header/Item 관계 보장</td></tr>
+    <tr><td class="decision-col">Transaction Management</td><td>변경 단위(Unit of Work) 관리</td></tr>
+  </table>
+
+  <h2 class="section-title"><span class="num">5.2</span> Technical Mechanism — BKPF / BSEG 구조</h2>
+
+  <pre class="code-block"><span class="cm">" BKPF — Accounting Document Header</span>
+BKPF
+  MANDT / BUKRS / BELNR / GJAHR   <span class="cm">" Key</span>
+  BLDAT, BUDAT, BLART             <span class="cm">" 전표일자, 전기일, 전표유형</span>
+
+<span class="cm">" BSEG — Accounting Document Segment (Line Item)</span>
+BSEG
+  MANDT / BUKRS / BELNR / GJAHR / BUZEI   <span class="cm">" Key (BUZEI = Item Number)</span>
+  HKONT, DMBTR, SHKZG                      <span class="cm">" G/L 계정, 금액, 차대구분</span></pre>
+
+  <p>BKPF는 전표당 하나의 행만 가지고, BSEG는 전표당 여러 행(Line Item 수만큼)을 가진다. 하나의 전표를
+  완전히 읽으려면 항상 BKPF와 BSEG를 Key로 Join해야 한다. ECC 시대 SAP Application 대부분은 이와 같은
+  <b>Header-Item 기반 Transaction Persistence Pattern</b>을 사용했다 — CO 영역의
+  <code class="inline">COEP</code>, Open/Cleared Item Index인 <code class="inline">BSIS</code>/<code class="inline">BSAS</code>
+  등이 대표적이다.</p>
+
+  <h2 class="section-title"><span class="num">5.3</span> Transaction Consistency — Lock / Commit / Referential Integrity</h2>
+
+  <p>Header-Item 분리는 저장 효율만을 위한 것이 아니었다. 전표 저장(Posting) 시 여러 Line Item이
+  하나의 Header 아래 원자적으로 커밋되어야 한다는 Transaction 요구사항과도 맞물려 있다.</p>
+
+  <ul class="plain">
+    <li><b>Lock</b> — 전표 Posting 중 Header/Item이 동시에 Lock되어 부분 저장을 방지</li>
+    <li><b>Commit</b> — Header와 모든 Item이 하나의 LUW(Logical Unit of Work) 안에서 함께 Commit</li>
+    <li><b>Referential Integrity</b> — SAP Business Transaction의 핵심 정합성은 Application Layer
+    Logic과 SAP Transaction Control Framework에 의해 관리되었으며, 전통적인 Database Foreign Key
+    중심 설계와는 다른 접근이었다</li>
+  </ul>
+
+  <h2 class="section-title"><span class="num">5.4</span> Modern Challenge — Real-time Analytics 시대의 비용</h2>
+
+  <table class="principle-table">
+    <tr><th>영역</th><th>비용</th></tr>
+    <tr>
+      <td>Join Complexity</td>
+      <td>전표 하나를 온전히 조회하려면 BKPF+BSEG(+COEP 등 관련 Table)를 항상 Join해야 함</td>
+    </tr>
+    <tr>
+      <td>Real-time Analytics</td>
+      <td>대량의 Item 데이터를 실시간으로 집계하려면 Join 비용이 누적되어 응답 속도에 영향</td>
+    </tr>
+    <tr>
+      <td>Parallel Processing</td>
+      <td>Header-Item 구조에서의 병렬 집계는 Row 기반 RDBMS 환경에서 추가적인 처리 비용을 동반</td>
+    </tr>
+  </table>
+
+  <div class="callout warn">
+    <span class="label">Architecture Misconception Warning</span>
+    Header-Item은 잘못된 모델이 아니다. Header-Item 구조는 OLTP 환경에서 Transaction Integrity와
+    Update Efficiency를 확보하기 위한 합리적인 설계였다. 문제는 같은 모델을 Real-time Analytics와
+    Enterprise Reporting 요구까지 그대로 확장하려 했을 때 발생한 <b>Architecture Mismatch</b>다.
+  </div>
+
+  <h2 class="section-title"><span class="num">5.5</span> S/4HANA Evolution — ACDOCA / Universal Journal</h2>
+
+  <div class="model-diagram">
+    <div class="model-row">
+      <div class="model-box">
+        <span class="m-title">BKPF (Header)</span>
+        <ul><li>전표 단위 1행</li><li>BUKRS / BELNR / GJAHR</li></ul>
+      </div>
+      <div class="model-box">
+        <span class="m-title">BSEG (Item)</span>
+        <ul><li>Line Item 단위 N행</li><li>HKONT / DMBTR / SHKZG</li></ul>
+      </div>
+    </div>
+    <div class="model-arrow-down">↓ HANA Columnar Store 위에서 통합</div>
+    <div class="model-evolved">
+      <span class="m-title">ACDOCA — Universal Journal</span>
+      FI(BSEG) + CO(COEP) + AA + ML Line Item을 하나의 테이블로 통합
+    </div>
+  </div>
+
+  <p>S/4HANA는 Header-Item 모델을 "폐기"한 것이 아니다. BKPF는 여전히 존재하며 Header 정보를 담는다.
+  변화는 Line Item 계열 Table들 — 과거 FI(BSEG)·CO(COEP)·AA·ML로 흩어져 있던 데이터를 HANA의 Columnar
+  In-Memory 구조 위에서 <code class="inline">ACDOCA</code> 하나로 통합한 것이다. Join 비용이 문제였던
+  자리에, HANA는 Column 단위 집계로 대응하고, 데이터 모델은 여러 하위원장을 하나의 Universal Journal로
+  묶었다.</p>
+
+  <p>이 역시 "Normalization을 버리는 것"이 아니라, <b>OLTP 정합성을 유지하면서 OLAP 집계 비용을
+  Hardware(HANA In-Memory Columnar)와 Data Model 통합으로 함께 흡수</b>하는 방향이다. 다만 이 변화는
+  Financial Actual Data 영역에서 여러 Application Index와 Aggregate Table을 제거하고 Single Journal
+  기반 접근을 강화한 것이지, SAP 전체가 Header-Item 구조를 폐기한 것은 아니다 — Sales Order, Purchase
+  Order, Delivery 등 다른 Business Object는 여전히 Header-Item 구조를 유지한다.</p>
+
+  <div class="callout correct">
+    <span class="label">Architecture Reading Point</span>
+    LA05는 Database Architecture 축의 첫 사례다. 같은 축의 다음 사례는 LA06(Batch Processing 중심
+    운영)이며, Header-Item 구조가 만들어낸 Join 비용이 왜 과거에는 Batch(야간 처리)로 흡수될 수밖에
+    없었는지를 다룬다.
+  </div>
+
+  <div class="takeaway">
+    <span class="label">One Sentence Takeaway</span>
+    <div class="sentence">
+      SAP Architecture의 변화는 과거 설계를 부정하는 과정이 아니라, Transaction 중심 최적화를
+      Real-time Business Platform으로 확장하는 진화 과정이다.
+    </div>
+  </div>
+
+  <div class="nav-footer">
+    <a href="LA04.html">◀ LA04 — MANDT Client Dependency</a>
+    <a href="La_Index.html" class="nav-index">목차</a>
+    <a href="LA06.html">LA06 — Batch Processing 중심 운영 ▶</a>
+  </div>
+
+</div>
+
+</body>
+</html>

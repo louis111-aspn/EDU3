@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LA13. S/4HANA ABAP | SAP Legacy Architecture Evolution</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Noto+Sans+KR:wght@400;500;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#003366; --navy-10:#e6ecf3; --bg:#f0f3f8; --ink:#1a1a1a; --sub:#5a6472; --line:#d7deea;
+    --white:#ffffff; --warn:#8a5a00; --warn-bg:#fdf3e3; --correct:#0f5c33; --correct-bg:#e7f5ec;
+  }
+  *{box-sizing:border-box;}
+  html,body{overflow-x:clip;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:'Noto Sans KR', sans-serif;font-size:15px;line-height:1.7;word-break:keep-all;overflow-wrap:break-word;}
+  .label{font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:13px;letter-spacing:0.04em;color:var(--navy);text-transform:uppercase;}
+  header.top{position:sticky;top:0;z-index:20;background:var(--white);border-bottom:1px solid var(--line);padding:14px 40px;display:flex;align-items:center;justify-content:space-between;}
+  header.top .series-tag{font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:13px;color:var(--sub);}
+  header.top .series-tag b{color:var(--navy);}
+  header.top nav{font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:13px;color:var(--sub);}
+  .wrap{max-width:880px;margin:0 auto;padding:56px 32px 96px;}
+  .eyebrow{font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:13px;color:var(--navy);letter-spacing:0.06em;margin-bottom:14px;}
+  h1{font-family:'DM Serif Display','Noto Sans KR',serif;font-size:42px;line-height:1.3;color:var(--navy);margin:0 0 12px;}
+  .subtitle{font-size:16px;color:var(--sub);margin-bottom:20px;}
+
+  .meta-nav{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:28px;}
+  .meta-tag{font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:11px;padding:4px 10px;border-radius:12px;background:var(--bg);color:var(--sub);border:1px solid var(--line);}
+  .meta-tag.done{background:var(--correct-bg);color:var(--correct);border-color:var(--correct);}
+  .meta-tag.current{background:var(--navy);color:var(--white);border-color:var(--navy);font-weight:700;}
+  .origin-card{background:var(--navy);color:var(--white);border-radius:6px;padding:22px 28px;margin-bottom:36px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;}
+  .origin-card .origin-label{font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:12px;color:#a9c2dc;letter-spacing:0.04em;display:block;margin-bottom:6px;}
+  .origin-chain{display:flex;align-items:center;gap:14px;font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:15px;flex-wrap:wrap;}
+  .origin-chain .from{color:#cfe0f0;}
+  .origin-chain .arrow{color:#7fa8cc;}
+  .origin-chain .to{background:rgba(255,255,255,0.12);padding:4px 12px;border-radius:4px;font-weight:700;}
+  h2.section-title{font-family:'DM Serif Display','Noto Sans KR',serif;font-size:30px;color:var(--navy);margin:56px 0 20px;display:flex;align-items:baseline;gap:12px;}
+  h2.section-title .num{font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:16px;color:var(--sub);font-style:normal;}
+  h3{font-size:18px;color:var(--ink);margin:28px 0 12px;font-weight:700;}
+  p{margin:0 0 16px;}
+  .card{background:var(--white);border:1px solid var(--line);border-radius:6px;padding:24px 28px;margin:20px 0;}
+  .callout{border-left:4px solid var(--navy);background:var(--navy-10);padding:20px 24px;margin:24px 0;border-radius:0 6px 6px 0;}
+  .callout .label{margin-bottom:8px;display:block;}
+  .callout.warn{border-left-color:var(--warn);background:var(--warn-bg);}
+  .callout.warn .label{color:var(--warn);}
+  .callout.correct{border-left-color:var(--correct);background:var(--correct-bg);}
+  .callout.correct .label{color:var(--correct);}
+  table.principle-table{width:100%;border-collapse:collapse;margin:20px 0;background:var(--white);border:1px solid var(--line);}
+  table.principle-table th{font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:13px;text-align:left;color:var(--white);background:var(--navy);padding:12px 18px;font-weight:500;}
+  table.principle-table td{padding:14px 18px;border-bottom:1px solid var(--line);vertical-align:top;font-size:14px;}
+  table.principle-table tr:last-child td{border-bottom:none;}
+  table.principle-table td.decision-col{font-weight:700;color:var(--navy);}
+  code.inline{font-family:'JetBrains Mono','Noto Sans KR',monospace;background:var(--navy-10);color:var(--navy);padding:2px 6px;border-radius:3px;font-size:13.5px;}
+  pre.code-block{font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:13px;background:#0d1b2a;color:#dce8f5;padding:18px 22px;border-radius:6px;overflow-x:auto;line-height:1.6;margin:16px 0;}
+  pre.code-block .cm{color:#7fa8cc;}
+  ul.plain{margin:0 0 16px;padding-left:20px;}
+  ul.plain li{margin-bottom:8px;}
+
+  .foundation-map{background:var(--white);border:1px solid var(--line);border-radius:6px;padding:24px;margin:20px 0;font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:13px;color:var(--ink);line-height:1.9;}
+  .foundation-map .fm-root{color:var(--navy);font-weight:700;}
+  .foundation-map .fm-node{color:var(--sub);}
+
+  .related-reading{margin-top:24px;padding:14px 18px;border:1px dashed var(--line);border-radius:6px;font-size:13px;color:var(--sub);}
+  .related-reading b{color:var(--navy);}
+
+  .takeaway{margin-top:56px;padding:28px 32px;background:var(--navy);color:var(--white);border-radius:6px;}
+  .takeaway .label{color:#a9c2dc;margin-bottom:10px;display:block;}
+  .takeaway .sentence{font-family:'DM Serif Display','Noto Sans KR',serif;font-size:22px;line-height:1.5;}
+  .design-law{margin-top:16px;padding-top:16px;border-top:1px solid rgba(255,255,255,0.2);}
+  .design-law .dl-label{font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:11px;color:#7fa8cc;letter-spacing:0.06em;display:block;margin-bottom:8px;}
+  .design-law .dl-text{font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:14px;color:#dce8f5;font-style:italic;line-height:1.6;}
+  .nav-footer{display:flex;justify-content:space-between;margin-top:48px;padding-top:24px;border-top:1px solid var(--line);font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:13px;color:var(--sub);}
+  @media (max-width:480px){
+    header.top{padding:12px 20px;}
+    .wrap{padding:40px 20px 72px;}
+    h1{font-size:30px;}
+    h2.section-title{font-size:22px;}
+    .card, .callout, .takeaway, .origin-card, .foundation-map{padding:18px 20px;}
+  }
+
+  .nav-footer a{color:var(--sub);text-decoration:none;}
+  .nav-footer a:hover{color:var(--navy);text-decoration:underline;}
+  .nav-footer .nav-index{font-weight:700;color:var(--navy);}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="series-tag">SAP Legacy Architecture Evolution &nbsp;·&nbsp; <b>LA13</b></div>
+  <nav>PART 5 — Chapter 13 / 20</nav>
+</header>
+
+<div class="wrap">
+
+  <div class="eyebrow">PART 5. Modern Enterprise Architecture — Legacy Reinterpreted Axis</div>
+  <h1>S/4HANA ABAP</h1>
+  <div class="subtitle">
+    Part 1~4가 "왜 이렇게 만들었는가"를 물었다면, Part 5부터는 "왜 지금은 이렇게 선택하는가"를 묻는다.
+    핵심 질문 — 왜 ABAP 개발자는 이제 "ERP 모듈"이 아니라 "Digital Core" 관점에서 개발해야 하는가?
+  </div>
+
+  <div class="meta-nav">
+    <span class="meta-tag current">Data</span>
+    <span class="meta-tag">Boundary</span>
+    <span class="meta-tag">Contract</span>
+    <span class="meta-tag">Object</span>
+    <span class="meta-tag">Event</span>
+    <span class="meta-tag">Platform</span>
+    <span class="meta-tag">Enterprise</span>
+    <span class="meta-tag">Principle</span>
+  </div>
+
+  <div class="origin-card">
+    <div>
+      <span class="origin-label">Origin Decision (제약의 변화)</span>
+      <div class="origin-chain">
+        <span class="from">Application Logic</span>
+        <span class="arrow">→</span>
+        <span class="to">Data-centric Architecture</span>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="section-title"><span class="num">13.1</span> Modern Mechanism — Data Model First</h2>
+
+  <p>LA05에서 본 것처럼, ECC 시대 ABAP 개발자는 BKPF/BSEG 같은 여러 Table을 직접 Join·집계하는 코드를
+  작성했다. 흔히 이 변화를 "CDS View를 쓴다"는 구현 차원으로 이해하지만, 더 정확한 표현은 <b>Data
+  Model First</b>라는 설계 철학의 전환이다. CDS는 그 철학을 구현하는 수단일 뿐이다.</p>
+
+  <pre class="code-block"><span class="cm">" ECC — ABAP가 SQL을 감싸고 Table을 직접 다룸</span>
+ABAP
+  ↓
+SQL
+  ↓
+Table
+
+<span class="cm">" S/4HANA — Business Model이 먼저 정의되고, CDS/ABAP는 그 아래에서 동작</span>
+Business Model
+  ↓
+CDS
+  ↓
+ABAP</pre>
+
+  <p>계산 로직을 ABAP Loop가 아니라 View 정의와 HANA Push-down으로 표현하는 것은 이 순서 반전의
+  결과다 — 원인이 아니다.</p>
+
+  <pre class="code-block"><span class="cm">" 과거: ABAP에서 직접 Loop 돌며 집계</span>
+LOOP AT it_bseg INTO ls_bseg.
+  lv_total = lv_total + ls_bseg-dmbtr.
+ENDLOOP.
+
+<span class="cm">" 현재: CDS View로 집계를 선언 -- 계산은 HANA로 Push-down</span>
+DEFINE VIEW ZI_SalesTotal AS SELECT FROM acdoca {
+  key rbukrs,
+  sum( hsl ) as total_amount
+} GROUP BY rbukrs</pre>
+
+  <h2 class="section-title"><span class="num">13.2</span> Why It Solves Today's Constraints — Redundancy 제거가 먼저다</h2>
+
+  <p>S/4HANA의 가장 큰 목적은 흔히 말하는 "실시간성"이 아니라 <b>Redundancy 제거</b>다. Real-time은
+  그 결과로 따라오는 것이지, 목적 자체가 아니다.</p>
+
+  <pre class="code-block"><span class="cm">" ECC — 같은 데이터를 여러 형태로 중복 저장</span>
+Index Table
+Aggregate Table
+Summary Table
+Application Cache
+
+<span class="cm">" S/4HANA — 하나의 진실 지점 위에서 필요한 View를 즉시 계산</span>
+Memory (HANA)
+  └─ ACDOCA
+       └─ CDS</pre>
+
+  <p>LA06에서 본 Batch 중심 운영은 익일 데이터를 전제로 했다. 하지만 그 근본 원인은 "느려서"가 아니라
+  FI/CO/AA 등 하위 원장이 나중에 서로 맞춰봐야 하는(Reconciliation) 구조였기 때문이다. <b>Single
+  Source of Truth(ACDOCA)</b>가 먼저 확보되고, 그 위에서 Real-time 조회가 자연스럽게 뒤따른다.</p>
+
+  <h2 class="section-title"><span class="num">13.3</span> New Trade-offs — 새로운 학습 곡선과 호환성 비용</h2>
+
+  <table class="principle-table">
+    <tr><th>영역</th><th>Trade-off</th></tr>
+    <tr>
+      <td>Modeling 학습 곡선</td>
+      <td>Annotation 중심 CDS 모델링은 단순 ABAP Report 작성보다 진입 장벽이 높음</td>
+    </tr>
+    <tr>
+      <td>호환성 계층</td>
+      <td>과거 Aggregate Table을 참조하던 Z-Program을 위해 Compatibility View를 유지해야 하는 경우가
+      있음</td>
+    </tr>
+    <tr>
+      <td>성능 튜닝 관점 전환</td>
+      <td>"야간 Batch Job 최적화"에서 "CDS View/SQL Push-down 최적화"로 개발자의 성능 사고 방식
+      자체가 바뀜</td>
+    </tr>
+    <tr>
+      <td>Database Dependency</td>
+      <td>과거 ABAP는 DB를 추상화해 감췄지만, 이제 개발자가 Execution Plan·Join·Cardinality·
+      Annotation·Push-down을 이해해야 함 — DB를 몰라도 되던 시대가 끝났다</td>
+    </tr>
+  </table>
+
+  <div class="callout warn">
+    <span class="label">Architecture Misconception Warning</span>
+    S/4HANA는 ECC를 최적화한 제품이 아니라, <b>ERP의 계산 위치를 다시 정의한 아키텍처</b>다. 성능
+    개선은 결과일 뿐이며, 본질은 데이터 중심 아키텍처(Data Model First)로의 전환이다. ABAP 개발자의
+    역할도 계산 로직 작성에서 Semantic Data Model 설계로 이동했다.
+  </div>
+
+  <h2 class="section-title"><span class="num">13.4</span> Next Evolution — Digital Core가 여는 다음 질문</h2>
+
+  <p>Digital Core가 "하나의 진실 지점"을 전제로 하려면, 그 Core 자체가 흔들리지 않아야 한다 — 즉
+  LA11에서 본 Modification 문화가 계속되면 Digital Core의 전제가 무너진다. 다만 이는 Customization의
+  시대가 끝난다는 뜻이 아니다. Customization은 사라지는 것이 아니라, <b>그 Boundary가 재정의되는
+  것</b>이다 — 다음 챕터인 LA14(Clean Core)는 바로 이 지점에서 출발한다.</p>
+
+  <div class="callout correct">
+    <span class="label">Architecture Reading Point</span>
+    LA13은 Part 5의 출발점이다. LA05(Header-Item→ACDOCA)와 LA06(Batch→Real-time)에서 이미 다룬
+    Architecture 변화가, 이제 "ABAP 개발자가 무엇을 짜는가"라는 관점에서 재해석된다.
+  </div>
+
+  <div class="related-reading">
+    <b>Related Reading</b> — ASPN BAC GR Series: Universal Journal Architecture Checkpoint
+    (Release Universal Journal → Posting Level → Posting Framework)
+  </div>
+
+  <div class="foundation-map">
+    <span class="fm-root">PART 5 — Modern Enterprise Architecture</span><br>
+    LA13 S/4HANA ABAP <span class="fm-node">(현재)</span> → LA14 Clean Core → LA15 ABAP Cloud<br>
+    → LA16 RAP → LA17 Event-Driven Integration → LA18 BTP Extension<br>
+    → LA19 Digital Enterprise Architecture → LA20 Legacy Reinterpreted
+  </div>
+
+  <div class="takeaway">
+    <span class="label">Architectural Principle</span>
+    <div class="sentence">
+      S/4HANA ABAP은 ERP를 대체한 것이 아니라, ABAP 개발의 기본 단위를 Table에서 CDS View로,
+      개발자의 역할을 계산 로직 작성자에서 Semantic Data Model 설계자로 전환시켰다.
+    </div>
+    <div class="design-law">
+      <span class="dl-label">Design Law</span>
+      <div class="dl-text">Move computation closer to the data, not the data closer to the computation.</div>
+    </div>
+  </div>
+
+  <div class="nav-footer">
+    <a href="LA12.html">◀ LA12 — Transport-based Delivery</a>
+    <a href="La_Index.html" class="nav-index">목차</a>
+    <a href="LA14.html">LA14 — Clean Core ▶</a>
+  </div>
+
+</div>
+
+</body>
+</html>

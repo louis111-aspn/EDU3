@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LA02. Leading Zero (ALPHA Conversion) | SAP Legacy Architecture Evolution</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Noto+Sans+KR:wght@400;500;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#003366;
+    --navy-10:#e6ecf3;
+    --bg:#f0f3f8;
+    --ink:#1a1a1a;
+    --sub:#5a6472;
+    --line:#d7deea;
+    --white:#ffffff;
+    --warn:#8a5a00;
+    --warn-bg:#fdf3e3;
+    --correct:#0f5c33;
+    --correct-bg:#e7f5ec;
+    --wrong:#8c1d1d;
+    --wrong-bg:#fbe9e9;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{overflow-x:clip;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Noto Sans KR', sans-serif;
+    font-size:15px;
+    line-height:1.7;
+    word-break:keep-all;
+    overflow-wrap:break-word;
+  }
+
+  .label{
+    font-family:'JetBrains Mono','Noto Sans KR',monospace;
+    font-size:13px;
+    letter-spacing:0.04em;
+    color:var(--navy);
+    text-transform:uppercase;
+  }
+
+  header.top{
+    position:sticky;
+    top:0;
+    z-index:20;
+    background:var(--white);
+    border-bottom:1px solid var(--line);
+    padding:14px 40px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+  }
+  header.top .series-tag{
+    font-family:'JetBrains Mono','Noto Sans KR',monospace;
+    font-size:13px;
+    color:var(--sub);
+  }
+  header.top .series-tag b{color:var(--navy);}
+  header.top nav{
+    font-family:'JetBrains Mono','Noto Sans KR',monospace;
+    font-size:13px;
+    color:var(--sub);
+  }
+
+  .wrap{
+    max-width:880px;
+    margin:0 auto;
+    padding:56px 32px 96px;
+  }
+
+  .eyebrow{
+    font-family:'JetBrains Mono','Noto Sans KR',monospace;
+    font-size:13px;
+    color:var(--navy);
+    letter-spacing:0.06em;
+    margin-bottom:14px;
+  }
+
+  h1{
+    font-family:'DM Serif Display','Noto Sans KR',serif;
+    font-size:42px;
+    line-height:1.3;
+    color:var(--navy);
+    margin:0 0 12px;
+  }
+
+  .subtitle{
+    font-size:16px;
+    color:var(--sub);
+    margin-bottom:28px;
+  }
+
+  /* Origin Architecture Decision card */
+  .origin-card{
+    background:var(--navy);
+    color:var(--white);
+    border-radius:6px;
+    padding:22px 28px;
+    margin-bottom:36px;
+    display:flex;
+    align-items:center;
+    gap:20px;
+    flex-wrap:wrap;
+  }
+  .origin-card .origin-label{
+    font-family:'JetBrains Mono','Noto Sans KR',monospace;
+    font-size:12px;
+    color:#a9c2dc;
+    letter-spacing:0.04em;
+    display:block;
+    margin-bottom:6px;
+  }
+  .origin-chain{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    font-family:'JetBrains Mono','Noto Sans KR',monospace;
+    font-size:15px;
+    flex-wrap:wrap;
+  }
+  .origin-chain .from{color:#cfe0f0;}
+  .origin-chain .arrow{color:#7fa8cc;}
+  .origin-chain .to{
+    background:rgba(255,255,255,0.12);
+    padding:4px 12px;
+    border-radius:4px;
+    font-weight:700;
+  }
+
+  h2.section-title{
+    font-family:'DM Serif Display','Noto Sans KR',serif;
+    font-size:30px;
+    color:var(--navy);
+    margin:56px 0 20px;
+    display:flex;
+    align-items:baseline;
+    gap:12px;
+  }
+  h2.section-title .num{
+    font-family:'JetBrains Mono','Noto Sans KR',monospace;
+    font-size:16px;
+    color:var(--sub);
+    font-style:normal;
+  }
+
+  h3{
+    font-size:18px;
+    color:var(--ink);
+    margin:28px 0 12px;
+    font-weight:700;
+  }
+
+  p{margin:0 0 16px;}
+
+  .card{
+    background:var(--white);
+    border:1px solid var(--line);
+    border-radius:6px;
+    padding:24px 28px;
+    margin:20px 0;
+  }
+
+  .callout{
+    border-left:4px solid var(--navy);
+    background:var(--navy-10);
+    padding:20px 24px;
+    margin:24px 0;
+    border-radius:0 6px 6px 0;
+  }
+  .callout .label{margin-bottom:8px;display:block;}
+
+  .callout.warn{border-left-color:var(--warn);background:var(--warn-bg);}
+  .callout.warn .label{color:var(--warn);}
+  .callout.correct{border-left-color:var(--correct);background:var(--correct-bg);}
+  .callout.correct .label{color:var(--correct);}
+
+  /* format compare */
+  .format-compare{
+    display:grid;
+    grid-template-columns:1fr auto 1fr;
+    gap:16px;
+    align-items:center;
+    margin:20px 0;
+  }
+  .format-box{
+    background:var(--white);
+    border:1px solid var(--line);
+    border-radius:6px;
+    padding:18px 20px;
+    text-align:center;
+  }
+  .format-box .flabel{
+    font-family:'JetBrains Mono','Noto Sans KR',monospace;
+    font-size:12px;
+    color:var(--sub);
+    display:block;
+    margin-bottom:10px;
+  }
+  .format-box .fvalue{
+    font-family:'JetBrains Mono','Noto Sans KR',monospace;
+    font-size:22px;
+    color:var(--navy);
+    font-weight:700;
+  }
+  .format-mid{
+    text-align:center;
+    font-family:'JetBrains Mono','Noto Sans KR',monospace;
+    font-size:12px;
+    color:var(--sub);
+  }
+  .format-mid .arrow{font-size:20px;color:var(--navy);display:block;}
+  @media (max-width:560px){
+    .format-compare{grid-template-columns:1fr;}
+    .format-mid .arrow{transform:rotate(90deg);}
+  }
+
+  table.principle-table{
+    width:100%;
+    border-collapse:collapse;
+    margin:20px 0;
+    background:var(--white);
+    border:1px solid var(--line);
+  }
+  table.principle-table th{
+    font-family:'JetBrains Mono','Noto Sans KR',monospace;
+    font-size:13px;
+    text-align:left;
+    color:var(--white);
+    background:var(--navy);
+    padding:12px 18px;
+    font-weight:500;
+  }
+  table.principle-table td{
+    padding:14px 18px;
+    border-bottom:1px solid var(--line);
+    vertical-align:top;
+    font-size:14px;
+  }
+  table.principle-table tr:last-child td{border-bottom:none;}
+  table.principle-table td.decision-col{font-weight:700;color:var(--navy);}
+
+  code.inline{
+    font-family:'JetBrains Mono','Noto Sans KR',monospace;
+    background:var(--navy-10);
+    color:var(--navy);
+    padding:2px 6px;
+    border-radius:3px;
+    font-size:13.5px;
+  }
+
+  pre.code-block{
+    font-family:'JetBrains Mono','Noto Sans KR',monospace;
+    font-size:13px;
+    background:#0d1b2a;
+    color:#dce8f5;
+    padding:18px 22px;
+    border-radius:6px;
+    overflow-x:auto;
+    line-height:1.6;
+    margin:16px 0;
+  }
+  pre.code-block .cm{color:#7fa8cc;}
+
+  ul.plain{margin:0 0 16px;padding-left:20px;}
+  ul.plain li{margin-bottom:8px;}
+
+  .takeaway{
+    margin-top:56px;
+    padding:28px 32px;
+    background:var(--navy);
+    color:var(--white);
+    border-radius:6px;
+  }
+  .takeaway .label{color:#a9c2dc;margin-bottom:10px;display:block;}
+  .takeaway .sentence{
+    font-family:'DM Serif Display','Noto Sans KR',serif;
+    font-size:22px;
+    line-height:1.5;
+  }
+
+  .nav-footer{
+    display:flex;
+    justify-content:space-between;
+    margin-top:48px;
+    padding-top:24px;
+    border-top:1px solid var(--line);
+    font-family:'JetBrains Mono','Noto Sans KR',monospace;
+    font-size:13px;
+    color:var(--sub);
+  }
+
+  @media (max-width:480px){
+    header.top{padding:12px 20px;}
+    .wrap{padding:40px 20px 72px;}
+    h1{font-size:30px;}
+    h2.section-title{font-size:22px;}
+    .card, .callout, .takeaway, .origin-card{padding:18px 20px;}
+  }
+
+  .nav-footer a{color:var(--sub);text-decoration:none;}
+  .nav-footer a:hover{color:var(--navy);text-decoration:underline;}
+  .nav-footer .nav-index{font-weight:700;color:var(--navy);}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="series-tag">SAP Legacy Architecture Evolution &nbsp;·&nbsp; <b>LA02</b></div>
+  <nav>PART 2 — Chapter 2 / 8</nav>
+</header>
+
+<div class="wrap">
+
+  <div class="eyebrow">PART 2. 데이터 Representation의 역사와 한계</div>
+  <h1>Leading Zero (ALPHA Conversion)</h1>
+  <div class="subtitle">
+    Storage가 절대적으로 비쌌던 시대, SAP는 Key를 고정 길이 숫자 문자열로 저장하는 방식을 선택했다.
+    이 챕터는 그 선택이 오늘날 왜 Integration Debt가 되었는지를 다룬다.
+  </div>
+
+  <div class="origin-card">
+    <div>
+      <span class="origin-label">Origin Architecture Decision (LA01 연결)</span>
+      <div class="origin-chain">
+        <span class="from">Storage Optimization</span>
+        <span class="arrow">→</span>
+        <span class="to">Leading Zero</span>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="section-title"><span class="num">2.1</span> Legacy Origin — 왜 Leading Zero가 필요했는가</h2>
+
+  <p>과거 Database Index 구조는 가변 길이 Key를 다루는 데 취약했다. Leading Zero의 핵심 목적은
+  "Storage를 아끼는 것" 자체가 아니라, <b>고정 길이 Character Key 구조를 유지하면서 Sorting, Indexing,
+  Comparison 처리를 단순화</b>하는 데 있었다.</p>
+
+  <ul class="plain">
+    <li><b>Fixed Length Key</b> — 가변 길이 처리 로직 없이 Key를 다룰 수 있음</li>
+    <li><b>Lexical Sorting</b> — 문자열 정렬만으로 숫자 순서가 그대로 보장됨</li>
+    <li><b>Consistent Comparison</b> — Key 비교 시 길이·타입 보정 로직이 불필요</li>
+  </ul>
+
+  <p>즉 <code class="inline">12345</code>를 저장 공간 때문에 <code class="inline">0000012345</code>로 만든 것이
+  아니라, SAP 내부 Key 체계에서 Fixed Length Key + Lexical Sorting + Consistent Comparison을 동시에
+  확보하기 위한 설계였다. Leading Zero는 "숫자를 예쁘게 보이기 위한 표시 규칙"이 아니라, Database Layer의
+  물리적 제약에 대한 Application Layer의 대응이었다.</p>
+
+  <h2 class="section-title"><span class="num">2.2</span> Internal / External Format — SAP Key Representation 구조</h2>
+
+  <p>이 대응은 SAP ABAP Dictionary에 "하나의 값이 두 가지 표현을 가진다"는 구조로 남았다. 사용자가 화면에서
+  보는 값(External)과 Database에 저장되는 값(Internal)이 분리된다.</p>
+
+  <div class="format-compare">
+    <div class="format-box">
+      <span class="flabel">External Format (화면 / 입력)</span>
+      <span class="fvalue">12345</span>
+    </div>
+    <div class="format-mid">
+      <span class="arrow">↔</span>
+      ALPHA Routine
+    </div>
+    <div class="format-box">
+      <span class="flabel">Internal Format (Database 저장)</span>
+      <span class="fvalue">0000012345</span>
+    </div>
+  </div>
+
+  <div class="callout">
+    <span class="label">Important Concept</span>
+    SAP Database는 "사용자가 보는 값"이 아니라 "SAP Internal Format"을 기준으로 Key를 관리한다.
+    이 원리는 Customer 하나에 국한되지 않고, Material Number, Vendor, GL Account, WBS Element 등
+    NUMC/CHAR 계열 Key 전반에 동일하게 적용되는 공통 원리다.
+  </div>
+
+  <p>이 변환은 임의로 발생하지 않는다. 해당 필드가 참조하는 Domain(예: 고객 번호 Domain)에 <b>ALPHA</b>라는
+  Conversion Routine이 지정되어 있을 때만 작동한다. Domain의 Data Type이 <code class="inline">CHAR</code> 또는
+  <code class="inline">NUMC</code>이고 Conversion Routine이 붙어 있는 필드에서, 값의 입출력 시점마다
+  자동으로 이 변환이 개입한다.</p>
+
+  <h2 class="section-title"><span class="num">2.3</span> CONVERSION_EXIT_ALPHA 메커니즘</h2>
+
+  <p>이 변환을 실제로 수행하는 것은 Function Module 쌍이다.</p>
+
+  <pre class="code-block"><span class="cm">" 화면 입력 → Database 저장 (외부 → 내부)</span>
+CALL FUNCTION 'CONVERSION_EXIT_ALPHA_INPUT'
+  EXPORTING
+    input  = '12345'
+  IMPORTING
+    output = lv_internal.       <span class="cm">" '0000012345'</span>
+
+<span class="cm">" Database 조회 → 화면 표시 (내부 → 외부)</span>
+CALL FUNCTION 'CONVERSION_EXIT_ALPHA_OUTPUT'
+  EXPORTING
+    input  = '0000012345'
+  IMPORTING
+    output = lv_external.       <span class="cm">" '12345'</span></pre>
+
+  <table class="principle-table">
+    <tr>
+      <th>Routine</th>
+      <th>목적</th>
+    </tr>
+    <tr>
+      <td class="decision-col">CONVERSION_EXIT_ALPHA_INPUT</td>
+      <td>External → Internal 변환</td>
+    </tr>
+    <tr>
+      <td class="decision-col">CONVERSION_EXIT_ALPHA_OUTPUT</td>
+      <td>Internal → External 변환</td>
+    </tr>
+  </table>
+
+  <p>Dynpro 화면, Standard Report, 그리고 대부분의 표준 ABAP 개발 패턴에서는 이 변환이 Framework 차원에서
+  자동으로 호출된다. 다만 <b>Conversion Exit는 Database Trigger가 아니라 SAP Application Layer의
+  Formatting Rule</b>이라는 점이 핵심이다 — 즉 이 관례를 거치지 않고 Database에 직접 접근하는 모든 경로에서는
+  변환이 보장되지 않는다.</p>
+
+  <h2 class="section-title"><span class="num">2.4</span> 현대 Integration 시대의 문제</h2>
+
+  <p>ALPHA Conversion은 SAP GUI와 표준 ABAP 실행 경로 안에서는 문제없이 작동했다. 문제는 시스템이
+  API, BI Tool, 외부 Interface와 직접 연결되기 시작하면서 드러났다.</p>
+
+  <table class="principle-table">
+    <tr>
+      <th>연결 경로</th>
+      <th>변환 책임이 SAP 밖으로 노출될 때의 영향</th>
+    </tr>
+    <tr>
+      <td>외부 API ↔ SAP</td>
+      <td>External API가 <code class="inline">12345</code>를 그대로 전달할 경우, 수신 측에서 Internal
+      Format(<code class="inline">0000012345</code>)과의 값 해석 차이를 별도로 처리해야 함</td>
+    </tr>
+    <tr>
+      <td>BI / Reporting Tool</td>
+      <td>Raw Table을 직접 조회할 경우 Leading Zero가 그대로 노출되어 데이터 해석 비용이 늘어남</td>
+    </tr>
+    <tr>
+      <td>SQL 직접 조회</td>
+      <td><code class="inline">WHERE kunnr = '12345'</code>는 Internal Format 기준으로 재작성해야
+      의도한 결과를 얻을 수 있음</td>
+    </tr>
+    <tr>
+      <td>개발자 작업 부담</td>
+      <td>Interface·Migration 개발마다 ALPHA 변환 로직을 수동으로 다시 구현해야 함</td>
+    </tr>
+  </table>
+
+  <p>여기서 핵심 문제는 ALPHA Conversion 자체가 아니다. SAP 표준 API/OData 경로에서는 이미 Conversion이
+  처리되는 경우가 많다. 진짜 문제는 <b>SAP 내부의 Semantic Rule이 Integration Boundary 밖으로 나가는 순간
+  사라지는 현상</b>이다.</p>
+
+  <div class="callout warn">
+    <span class="label">Architecture Misconception Warning</span>
+    Leading Zero 자체는 Legacy Debt가 아니다. ALPHA Conversion은 SAP GUI/ABAP 표준 경로 안에서는 지금도
+    정상적으로 동작한다. 진짜 문제는 SAP 내부 Key Representation Rule이 외부 Integration Boundary까지
+    동일한 Semantic Model로 전달되지 못했던 <b>Architecture Gap</b>이다.
+  </div>
+
+  <h2 class="section-title"><span class="num">2.5</span> S/4HANA / API 시대 대응 방향</h2>
+
+  <p>S/4HANA와 CDS 기반 개발에서도 ALPHA Conversion Routine 자체는 여전히 존재한다. 다만 대응 방향은
+  "규칙을 없애는 것"이 아니라 "규칙을 Application Layer 관례에서 Semantic Layer(CDS)로 끌어올려 일관되게
+  적용되도록 만드는 것"에 가깝다.</p>
+
+  <div class="flow-compare-note">
+    <pre class="code-block">Legacy Table Access
+        ↓
+Semantic Layer
+        ↓
+CDS View
+        ↓
+API Consumer</pre>
+  </div>
+
+  <ul class="plain">
+    <li>CDS View 및 OData 서비스 단에서 Conversion Routine을 명시적으로 적용해 외부로 노출되는 값의
+    일관성을 확보하는 방향으로 설계</li>
+    <li>API 설계 시 "Internal Key 그대로 노출" vs "External Format 변환 후 노출"을 아키텍처 결정 사항으로
+    명시하는 것이 실무 원칙 — 이 판단을 누락하면 동일한 문제가 API 계층에서 재발한다</li>
+  </ul>
+
+  <p>다만 여기서 과장하지 말아야 할 지점이 있다: CDS가 Leading Zero 문제를 "완전히 해결"하는 것은 아니다.
+  현대 SAP Architecture의 방향은 <b>Conversion Logic을 제거하는 것이 아니라, Semantic Layer에서
+  일관되게 관리</b>하는 쪽에 가깝다.</p>
+
+  <div class="callout correct">
+    <span class="label">Architecture Reading Point</span>
+    LA02는 LA01에서 정의한 <b>Storage Optimization → Leading Zero</b> Decision의 첫 번째 실사례다.
+    같은 Storage/Data Representation 축의 다음 사례는 LA03(Currency Decimal Shift)이며, Isolation 축의
+    사례는 LA04(MANDT Client)로 이어진다.
+  </div>
+
+  <div class="takeaway">
+    <span class="label">One Sentence Takeaway</span>
+    <div class="sentence">
+      Legacy Data Format은 문제가 아니라, 과거 최적화 규칙을 현재 Architecture Boundary 안에서
+      어떻게 계승할 것인가가 핵심이다.
+    </div>
+  </div>
+
+  <div class="nav-footer">
+    <a href="LA01.html">◀ LA01 — 왜 SAP는 이렇게 설계되었는가?</a>
+    <a href="La_Index.html" class="nav-index">목차</a>
+    <a href="LA03.html">LA03 — Currency Decimal Shift ▶</a>
+  </div>
+
+</div>
+
+</body>
+</html>

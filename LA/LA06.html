@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LA06. Batch Processing 중심 운영 | SAP Legacy Architecture Evolution</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Noto+Sans+KR:wght@400;500;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#003366; --navy-10:#e6ecf3; --bg:#f0f3f8; --ink:#1a1a1a; --sub:#5a6472; --line:#d7deea;
+    --white:#ffffff; --warn:#8a5a00; --warn-bg:#fdf3e3; --correct:#0f5c33; --correct-bg:#e7f5ec;
+  }
+  *{box-sizing:border-box;}
+  html,body{overflow-x:clip;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:'Noto Sans KR', sans-serif;font-size:15px;line-height:1.7;word-break:keep-all;overflow-wrap:break-word;}
+  .label{font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:13px;letter-spacing:0.04em;color:var(--navy);text-transform:uppercase;}
+  header.top{position:sticky;top:0;z-index:20;background:var(--white);border-bottom:1px solid var(--line);padding:14px 40px;display:flex;align-items:center;justify-content:space-between;}
+  header.top .series-tag{font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:13px;color:var(--sub);}
+  header.top .series-tag b{color:var(--navy);}
+  header.top nav{font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:13px;color:var(--sub);}
+  .wrap{max-width:880px;margin:0 auto;padding:56px 32px 96px;}
+  .eyebrow{font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:13px;color:var(--navy);letter-spacing:0.06em;margin-bottom:14px;}
+  h1{font-family:'DM Serif Display','Noto Sans KR',serif;font-size:42px;line-height:1.3;color:var(--navy);margin:0 0 12px;}
+  .subtitle{font-size:16px;color:var(--sub);margin-bottom:28px;}
+  .origin-card{background:var(--navy);color:var(--white);border-radius:6px;padding:22px 28px;margin-bottom:36px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;}
+  .origin-card .origin-label{font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:12px;color:#a9c2dc;letter-spacing:0.04em;display:block;margin-bottom:6px;}
+  .origin-chain{display:flex;align-items:center;gap:14px;font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:15px;flex-wrap:wrap;}
+  .origin-chain .from{color:#cfe0f0;}
+  .origin-chain .arrow{color:#7fa8cc;}
+  .origin-chain .to{background:rgba(255,255,255,0.12);padding:4px 12px;border-radius:4px;font-weight:700;}
+  h2.section-title{font-family:'DM Serif Display','Noto Sans KR',serif;font-size:30px;color:var(--navy);margin:56px 0 20px;display:flex;align-items:baseline;gap:12px;}
+  h2.section-title .num{font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:16px;color:var(--sub);font-style:normal;}
+  h3{font-size:18px;color:var(--ink);margin:28px 0 12px;font-weight:700;}
+  p{margin:0 0 16px;}
+  .card{background:var(--white);border:1px solid var(--line);border-radius:6px;padding:24px 28px;margin:20px 0;}
+  .callout{border-left:4px solid var(--navy);background:var(--navy-10);padding:20px 24px;margin:24px 0;border-radius:0 6px 6px 0;}
+  .callout .label{margin-bottom:8px;display:block;}
+  .callout.warn{border-left-color:var(--warn);background:var(--warn-bg);}
+  .callout.warn .label{color:var(--warn);}
+  .callout.correct{border-left-color:var(--correct);background:var(--correct-bg);}
+  .callout.correct .label{color:var(--correct);}
+  table.principle-table{width:100%;border-collapse:collapse;margin:20px 0;background:var(--white);border:1px solid var(--line);}
+  table.principle-table th{font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:13px;text-align:left;color:var(--white);background:var(--navy);padding:12px 18px;font-weight:500;}
+  table.principle-table td{padding:14px 18px;border-bottom:1px solid var(--line);vertical-align:top;font-size:14px;}
+  table.principle-table tr:last-child td{border-bottom:none;}
+  table.principle-table td.decision-col{font-weight:700;color:var(--navy);}
+  code.inline{font-family:'JetBrains Mono','Noto Sans KR',monospace;background:var(--navy-10);color:var(--navy);padding:2px 6px;border-radius:3px;font-size:13.5px;}
+  pre.code-block{font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:13px;background:#0d1b2a;color:#dce8f5;padding:18px 22px;border-radius:6px;overflow-x:auto;line-height:1.6;margin:16px 0;}
+  pre.code-block .cm{color:#7fa8cc;}
+  ul.plain{margin:0 0 16px;padding-left:20px;}
+  ul.plain li{margin-bottom:8px;}
+
+  /* timeline diagram */
+  .timeline{background:var(--white);border:1px solid var(--line);border-radius:6px;padding:24px;margin:20px 0;}
+  .timeline-row{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:10px;align-items:center;text-align:center;}
+  .timeline-box{background:var(--navy-10);border:1px solid var(--navy);border-radius:6px;padding:12px 10px;font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:13px;color:var(--navy);font-weight:700;}
+  .timeline-box span{display:block;font-weight:400;color:var(--sub);font-size:11.5px;margin-top:4px;}
+  .timeline-arrow{color:var(--sub);font-size:16px;}
+  @media (max-width:640px){.timeline-row{grid-template-columns:1fr;} .timeline-arrow{transform:rotate(90deg);}}
+
+  /* foundation chain footer */
+  .foundation-map{background:var(--white);border:1px solid var(--line);border-radius:6px;padding:24px;margin:20px 0;font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:13px;color:var(--ink);line-height:1.9;}
+  .foundation-map .fm-root{color:var(--navy);font-weight:700;}
+  .foundation-map .fm-node{color:var(--sub);}
+  .foundation-map .fm-done{color:var(--correct);font-weight:700;}
+
+  .takeaway{margin-top:56px;padding:28px 32px;background:var(--navy);color:var(--white);border-radius:6px;}
+  .takeaway .label{color:#a9c2dc;margin-bottom:10px;display:block;}
+  .takeaway .sentence{font-family:'DM Serif Display','Noto Sans KR',serif;font-size:22px;line-height:1.5;}
+  .nav-footer{display:flex;justify-content:space-between;margin-top:48px;padding-top:24px;border-top:1px solid var(--line);font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:13px;color:var(--sub);}
+  @media (max-width:480px){
+    header.top{padding:12px 20px;}
+    .wrap{padding:40px 20px 72px;}
+    h1{font-size:30px;}
+    h2.section-title{font-size:22px;}
+    .card, .callout, .takeaway, .origin-card, .timeline, .foundation-map{padding:18px 20px;}
+  }
+
+  .nav-footer a{color:var(--sub);text-decoration:none;}
+  .nav-footer a:hover{color:var(--navy);text-decoration:underline;}
+  .nav-footer .nav-index{font-weight:700;color:var(--navy);}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="series-tag">SAP Legacy Architecture Evolution &nbsp;·&nbsp; <b>LA06</b></div>
+  <nav>PART 3 — Chapter 6 / 8</nav>
+</header>
+
+<div class="wrap">
+
+  <div class="eyebrow">PART 3. Database Architecture Legacy</div>
+  <h1>Batch Processing 중심 운영</h1>
+  <div class="subtitle">
+    LA05가 "무엇을 어떻게 나눠 저장했는가"의 문제였다면, LA06은 "언제 계산했는가"의 문제다. Batch는 낡은
+    방식이 아니라, 제한된 Computing Resource 시대의 합리적인 Scheduling Strategy였다.
+  </div>
+
+  <div class="origin-card">
+    <div>
+      <span class="origin-label">Origin Architecture Decision (LA01 연결)</span>
+      <div class="origin-chain">
+        <span class="from">Resource Constraint Management</span>
+        <span class="arrow">→</span>
+        <span class="to">Batch Processing Model</span>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="section-title"><span class="num">6.1</span> Legacy Origin — 왜 Batch 중심 운영이 필요했는가</h2>
+
+  <p>LA05에서 본 Header-Item 구조는 대량의 Line Item을 실시간으로 집계하는 데 근본적인 비용을 수반한다.
+  과거 Computing Resource(CPU, Memory, 동시 처리 능력)로는 업무 시간 중 전체 데이터에 대한 실시간
+  집계·계산을 감당할 수 없었다. SAP의 해법은 <b>무거운 계산 작업을 업무 외 시간(야간, 주말)에 몰아서
+  처리</b>하는 것이었다 — Batch Window라는 개념이다.</p>
+
+  <div class="timeline">
+    <div class="timeline-row">
+      <div class="timeline-box">주간 업무 시간<span>Transaction 입력 집중</span></div>
+      <div class="timeline-arrow">→</div>
+      <div class="timeline-box">야간 Batch Window<span>집계·마감·평가 Job 실행</span></div>
+      <div class="timeline-arrow">→</div>
+      <div class="timeline-box">익일 Report<span>전일 마감 데이터 기준</span></div>
+    </div>
+  </div>
+
+  <h2 class="section-title"><span class="num">6.2</span> Technical Mechanism — Background Processing 구조</h2>
+
+  <p>SAP는 이 Scheduling 전략을 Background Job이라는 개념으로 구현했다. Job은 정해진 시각 또는 이벤트에
+  맞춰 실행되도록 예약(Variant + Schedule)되고, 실행 결과는 Spool/Log로 남는다.</p>
+
+  <ul class="plain">
+    <li>기간말 마감(Period-end Closing) Program — 감가상각, 원가배부, 외화평가 등</li>
+    <li>Currency Valuation Run — 결산 시점의 환율 재평가</li>
+    <li>Allocation Run — Cost Center/Profit Center 간 배부</li>
+    <li>Summary/Aggregate Table 갱신 — 다음 날 Report가 참조할 집계 Table을 야간에 미리 계산</li>
+  </ul>
+
+  <p>Background Job은 단순 자동 실행 기능이 아니다. 제한된 Resource 환경에서 <b>Processing Order와
+  Business Control(마감 순서, 계산 선후관계, 실행 결과 검증)을 관리하기 위한 Operational Architecture</b>였다.</p>
+
+  <h2 class="section-title"><span class="num">6.3</span> Data Availability Model — Batch Window와 Data Freshness</h2>
+
+  <p>이 구조에서는 Report가 참조하는 데이터가 항상 "어제 밤 마감 시점"을 기준으로 한다. 실시간 Raw
+  Transaction Table을 직접 조회할 수는 있지만, 집계·평가가 반영된 Reporting용 데이터는 Batch가
+  완료되어야 비로소 이용 가능하다. 이는 <b>일관된 시점 스냅샷(Point-in-Time Consistency)</b>과
+  <b>실시간성(Freshness)</b> 사이의 Trade-off였다 — 당시 환경에서는 전자를 우선한 것이 합리적이었다.</p>
+
+  <h2 class="section-title"><span class="num">6.4</span> Modern Challenge — Real-time Decision 요구와의 충돌</h2>
+
+  <table class="principle-table">
+    <tr><th>영역</th><th>충돌 지점</th></tr>
+    <tr>
+      <td>Intra-day Visibility</td>
+      <td>경영진이 당일 실시간 수치를 요구하지만, Batch 모델은 익일 데이터만 제공</td>
+    </tr>
+    <tr>
+      <td>24/7 Global 운영</td>
+      <td>여러 시간대에서 동시에 운영되는 기업은 "업무 외 시간"이라는 개념 자체가 성립하기 어려움</td>
+    </tr>
+    <tr>
+      <td>Job Dependency Fragility</td>
+      <td>Batch Job이 순차적으로 연결된 경우, 하나가 실패하면 이후 Job 전체가 지연됨</td>
+    </tr>
+  </table>
+
+  <div class="callout warn">
+    <span class="label">Architecture Misconception Warning</span>
+    Batch Processing은 낡거나 열등한 처리 방식이 아니다. 제한된 Computing Resource 아래 대규모 마감·평가
+    작업을 안정적으로 처리하기 위한 합리적인 Scheduling Strategy였다. 문제는 Batch 모델 자체의 결함이
+    아니라, <b>24/7 Real-time Enterprise 요구가 "업무 외 시간"이라는 전제를 무너뜨렸다</b>는 점이다.
+  </div>
+
+  <h2 class="section-title"><span class="num">6.5</span> S/4HANA Evolution — In-Memory Real-time Calculation</h2>
+
+  <p>HANA의 Columnar In-Memory 구조는 많은 집계 작업을 야간 Batch 없이 조회 시점에 즉시 계산할 수 있게
+  했다. 이로 인해 과거 Batch로 미리 계산해 두던 일부 Summary/Aggregate Table 갱신 Job은 더 이상
+  필요하지 않게 되었다.</p>
+
+  <p>다만 이것이 "Batch의 완전한 소멸"을 의미하지는 않는다. 법적·회계적으로 특정 시점에 확정되어야 하는
+  기간말 마감(Period-end Closing) 절차나, 대량 데이터의 일괄 처리가 더 효율적인 영역은 여전히 Batch/
+  Scheduled Job으로 운영된다. 변화의 핵심은 <b>"계산을 미리 해둘 필요가 있는 영역"과 "지금 바로 계산해도
+  되는 영역"을 구분해서, 후자를 실시간으로 옮긴 것</b>이다.</p>
+
+  <div class="callout correct">
+    <span class="label">Architecture Reading Point</span>
+    LA06으로 Data Representation(LA02·LA03) → Logical Isolation(LA04) → Database Architecture(LA05·LA06)
+    로 이어지는 LA Series Foundation Chain이 일단락된다.
+  </div>
+
+  <div class="foundation-map">
+    <span class="fm-root">LA01 Architecture Decisions</span><br>
+    ├─ Data Representation <span class="fm-done">✓ LA02 · LA03</span><br>
+    ├─ Logical Isolation <span class="fm-done">✓ LA04</span><br>
+    └─ Database / Processing Architecture <span class="fm-done">✓ LA05 · LA06</span><br><br>
+    <span class="fm-node">다음: PART 4 — Programming Paradigm 축 (ABAP 개발 패턴의 진화)</span>
+  </div>
+
+  <div class="takeaway">
+    <span class="label">One Sentence Takeaway</span>
+    <div class="sentence">
+      Enterprise Architecture의 진화는 과거 방식을 폐기하는 과정이 아니라, 변화한 Resource와 Business
+      Expectation에 맞게 Processing Model을 재정의하는 과정이다.
+    </div>
+  </div>
+
+  <div class="nav-footer">
+    <a href="LA05.html">◀ LA05 — Header-Item Data Model</a>
+    <a href="La_Index.html" class="nav-index">목차</a>
+    <a href="LA07.html">LA07 — Function Group & Global Variable ▶</a>
+  </div>
+
+</div>
+
+</body>
+</html>

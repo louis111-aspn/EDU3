@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LA08. Internal Table Header Line | SAP Legacy Architecture Evolution</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Noto+Sans+KR:wght@400;500;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#003366; --navy-10:#e6ecf3; --bg:#f0f3f8; --ink:#1a1a1a; --sub:#5a6472; --line:#d7deea;
+    --white:#ffffff; --warn:#8a5a00; --warn-bg:#fdf3e3; --correct:#0f5c33; --correct-bg:#e7f5ec;
+  }
+  *{box-sizing:border-box;}
+  html,body{overflow-x:clip;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:'Noto Sans KR', sans-serif;font-size:15px;line-height:1.7;word-break:keep-all;overflow-wrap:break-word;}
+  .label{font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:13px;letter-spacing:0.04em;color:var(--navy);text-transform:uppercase;}
+  header.top{position:sticky;top:0;z-index:20;background:var(--white);border-bottom:1px solid var(--line);padding:14px 40px;display:flex;align-items:center;justify-content:space-between;}
+  header.top .series-tag{font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:13px;color:var(--sub);}
+  header.top .series-tag b{color:var(--navy);}
+  header.top nav{font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:13px;color:var(--sub);}
+  .wrap{max-width:880px;margin:0 auto;padding:56px 32px 96px;}
+  .eyebrow{font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:13px;color:var(--navy);letter-spacing:0.06em;margin-bottom:14px;}
+  h1{font-family:'DM Serif Display','Noto Sans KR',serif;font-size:42px;line-height:1.3;color:var(--navy);margin:0 0 12px;}
+  .subtitle{font-size:16px;color:var(--sub);margin-bottom:28px;}
+  .origin-card{background:var(--navy);color:var(--white);border-radius:6px;padding:22px 28px;margin-bottom:36px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;}
+  .origin-card .origin-label{font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:12px;color:#a9c2dc;letter-spacing:0.04em;display:block;margin-bottom:6px;}
+  .origin-chain{display:flex;align-items:center;gap:14px;font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:15px;flex-wrap:wrap;}
+  .origin-chain .from{color:#cfe0f0;}
+  .origin-chain .arrow{color:#7fa8cc;}
+  .origin-chain .to{background:rgba(255,255,255,0.12);padding:4px 12px;border-radius:4px;font-weight:700;}
+  h2.section-title{font-family:'DM Serif Display','Noto Sans KR',serif;font-size:30px;color:var(--navy);margin:56px 0 20px;display:flex;align-items:baseline;gap:12px;}
+  h2.section-title .num{font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:16px;color:var(--sub);font-style:normal;}
+  h3{font-size:18px;color:var(--ink);margin:28px 0 12px;font-weight:700;}
+  p{margin:0 0 16px;}
+  .card{background:var(--white);border:1px solid var(--line);border-radius:6px;padding:24px 28px;margin:20px 0;}
+  .callout{border-left:4px solid var(--navy);background:var(--navy-10);padding:20px 24px;margin:24px 0;border-radius:0 6px 6px 0;}
+  .callout .label{margin-bottom:8px;display:block;}
+  .callout.warn{border-left-color:var(--warn);background:var(--warn-bg);}
+  .callout.warn .label{color:var(--warn);}
+  .callout.correct{border-left-color:var(--correct);background:var(--correct-bg);}
+  .callout.correct .label{color:var(--correct);}
+  table.principle-table{width:100%;border-collapse:collapse;margin:20px 0;background:var(--white);border:1px solid var(--line);}
+  table.principle-table th{font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:13px;text-align:left;color:var(--white);background:var(--navy);padding:12px 18px;font-weight:500;}
+  table.principle-table td{padding:14px 18px;border-bottom:1px solid var(--line);vertical-align:top;font-size:14px;}
+  table.principle-table tr:last-child td{border-bottom:none;}
+  table.principle-table td.decision-col{font-weight:700;color:var(--navy);}
+  code.inline{font-family:'JetBrains Mono','Noto Sans KR',monospace;background:var(--navy-10);color:var(--navy);padding:2px 6px;border-radius:3px;font-size:13.5px;}
+  pre.code-block{font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:13px;background:#0d1b2a;color:#dce8f5;padding:18px 22px;border-radius:6px;overflow-x:auto;line-height:1.6;margin:16px 0;}
+  pre.code-block .cm{color:#7fa8cc;}
+  ul.plain{margin:0 0 16px;padding-left:20px;}
+  ul.plain li{margin-bottom:8px;}
+
+  .foundation-map{background:var(--white);border:1px solid var(--line);border-radius:6px;padding:24px;margin:20px 0;font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:13px;color:var(--ink);line-height:1.9;}
+  .foundation-map .fm-root{color:var(--navy);font-weight:700;}
+  .foundation-map .fm-node{color:var(--sub);}
+
+  .takeaway{margin-top:56px;padding:28px 32px;background:var(--navy);color:var(--white);border-radius:6px;}
+  .takeaway .label{color:#a9c2dc;margin-bottom:10px;display:block;}
+  .takeaway .sentence{font-family:'DM Serif Display','Noto Sans KR',serif;font-size:22px;line-height:1.5;}
+  .nav-footer{display:flex;justify-content:space-between;margin-top:48px;padding-top:24px;border-top:1px solid var(--line);font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:13px;color:var(--sub);}
+  @media (max-width:480px){
+    header.top{padding:12px 20px;}
+    .wrap{padding:40px 20px 72px;}
+    h1{font-size:30px;}
+    h2.section-title{font-size:22px;}
+    .card, .callout, .takeaway, .origin-card, .foundation-map{padding:18px 20px;}
+  }
+
+  .nav-footer a{color:var(--sub);text-decoration:none;}
+  .nav-footer a:hover{color:var(--navy);text-decoration:underline;}
+  .nav-footer .nav-index{font-weight:700;color:var(--navy);}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="series-tag">SAP Legacy Architecture Evolution &nbsp;·&nbsp; <b>LA08</b></div>
+  <nav>PART 4 — Chapter 8 / 12</nav>
+</header>
+
+<div class="wrap">
+
+  <div class="eyebrow">PART 4. ABAP Programming Legacy — Programming Paradigm Axis</div>
+  <h1>Internal Table Header Line</h1>
+  <div class="subtitle">
+    LA07이 "상태(State)를 어떻게 관리했는가"였다면, LA08은 "데이터 구조와 반복 처리를 어떻게
+    단순화하려 했는가"다. 변수 선언을 줄이는 편의성이 어떻게 유지보수 비용으로 전환되었는지를 다룬다.
+  </div>
+
+  <div class="origin-card">
+    <div>
+      <span class="origin-label">Origin Architecture Decision</span>
+      <div class="origin-chain">
+        <span class="from">Memory Simplification</span>
+        <span class="arrow">→</span>
+        <span class="to">Implicit Data Container Pattern</span>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="section-title"><span class="num">8.1</span> Legacy Origin — 선언을 줄이기 위한 설계</h2>
+
+  <p>Internal Table(반복 데이터를 담는 ABAP 자료구조)을 다루려면 원래 두 개의 객체가 필요하다 —
+  전체 데이터를 담는 <b>Table Body</b>와, 한 줄(Row)을 담는 <b>Work Area</b>다. 초기 ABAP은 이 둘을
+  하나의 선언으로 합칠 수 있는 <code class="inline">WITH HEADER LINE</code> 구문을 제공했다. 하나의
+  식별자가 Table 전체와 그 안의 한 행을 동시에 가리키게 함으로써, 개발자가 매번 별도의 Work Area 변수를
+  선언하지 않아도 되게 만든 것이다.</p>
+
+  <h2 class="section-title"><span class="num">8.2</span> Technical Mechanism — WITH HEADER LINE / OCCURS</h2>
+
+  <pre class="code-block"><span class="cm">" Legacy 선언 — 하나의 이름이 Table과 Row를 동시에 가리킴</span>
+DATA: it_data OCCURS 0 WITH HEADER LINE.
+
+it_data-field1 = 'A'.     <span class="cm">" Header Line(현재 행)에 값 대입</span>
+APPEND it_data.           <span class="cm">" Header Line 내용을 Table Body에 추가</span>
+
+LOOP AT it_data.          <span class="cm">" 별도 INTO 절 없이 Header Line에 자동으로 채워짐</span>
+  WRITE it_data-field1.
+ENDLOOP.</pre>
+
+  <p><code class="inline">OCCURS n</code>과 <code class="inline">WITH HEADER LINE</code>은 역사적으로
+  함께 쓰였지만 개념적으로는 서로 다른 것이다. <code class="inline">OCCURS</code>는 Table의 초기 Memory
+  확보 크기를 지정하던 <b>구형 Internal Table 선언 방식</b>이고, <code class="inline">WITH HEADER LINE</code>은
+  Table과 Row를 하나의 이름으로 묶는 <b>Implicit Work Area 기능</b>이다. 둘 다 구형 선언 패턴에 속하지만
+  서로 다른 목적을 가진 구문이 함께 관례적으로 사용된 것이다. <code class="inline">it_data</code>라는
+  하나의 이름이 문맥에 따라 "Table 전체"를 의미하기도 하고 "지금 이 한 행"을 의미하기도 한다.</p>
+
+  <h2 class="section-title"><span class="num">8.3</span> Why It Worked — 화면 필드 바인딩과의 궁합</h2>
+
+  <p>당시 Dynpro 화면 개발에서는 화면 필드와 ABAP 변수 이름이 직접 대응되는 경우가 많았다. Table과
+  Row를 하나의 이름으로 합쳐두면, 화면 로직·반복 처리·조회 로직 전반에서 선언해야 할 이름의 수가
+  줄어들고 코드가 짧아졌다. 제한된 개발 생산성 환경에서 "선언을 줄이는 것"은 실질적인 이점이었다.</p>
+
+  <h2 class="section-title"><span class="num">8.4</span> Modern Debt — 모호성과 유지보수 비용</h2>
+
+  <table class="principle-table">
+    <tr><th>영역</th><th>문제</th></tr>
+    <tr>
+      <td>Semantic Ambiguity</td>
+      <td><code class="inline">it_data</code>가 코드 위치에 따라 "전체 Table"인지 "현재 한 행"인지
+      한눈에 구분되지 않음</td>
+    </tr>
+    <tr>
+      <td>Implicit Data Flow</td>
+      <td><code class="inline">LOOP AT it_data.</code>처럼 INTO 절이 생략되면, 데이터가 어디로
+      채워지는지 코드만 보고는 알기 어려움</td>
+    </tr>
+    <tr>
+      <td>Modularization 제약</td>
+      <td>Header Line은 선언과 강하게 결합되어 있어, Row 하나만 독립적으로 함수에 전달하거나 재사용하기
+      어려움</td>
+    </tr>
+  </table>
+
+  <div class="callout warn">
+    <span class="label">Architecture Misconception Warning</span>
+    Internal Table Header Line은 개발자가 편의를 위해 만든 비정상적 사용 방식이 아니다. 초기 ABAP
+    Programming Model에서 선언 복잡도를 줄이기 위한 합리적인 선택이었다. 문제는 명시적인 Data Model과
+    Modular Design이 중요해진 시대에 같은 패턴을 그대로 유지하면서 발생했다.
+  </div>
+
+  <h2 class="section-title"><span class="num">8.5</span> Modern Evolution — Explicit Work Area / Field Symbol / Inline Declaration</h2>
+
+  <pre class="code-block"><span class="cm">" Modern ABAP — Table과 Work Area를 명시적으로 분리</span>
+DATA: lt_data TYPE STANDARD TABLE OF ty_data,
+      ls_data TYPE ty_data.
+
+LOOP AT lt_data INTO ls_data.
+  ...
+ENDLOOP.
+
+<span class="cm">" Field Symbol — Copy 없이 참조 (성능 이점)</span>
+LOOP AT lt_data ASSIGNING FIELD-SYMBOL(<fs_data>).
+  <fs_data>-field1 = 'A'.
+ENDLOOP.
+
+<span class="cm">" Constructor Expression — 선언과 동시에 값 채움</span>
+DATA(lt_result) = VALUE ty_table( ( field1 = 'A' ) ( field1 = 'B' ) ).</pre>
+
+  <p>Explicit Work Area는 Table과 Row를 분리해 모호성을 없애고, Field Symbol은 Copy 없는 참조로
+  성능과 명시성을 동시에 확보한다. Inline Declaration과 Constructor Expression(<code class="inline">VALUE</code>)은
+  선언과 데이터 구성을 한 문장으로 명확하게 표현한다 — 선언을 줄이려던 원래 목적은 유지하되, 모호성 없이
+  달성하는 방향이다.</p>
+
+  <div class="callout correct">
+    <span class="label">Architecture Reading Point</span>
+    LA08은 Programming Paradigm 축에서 "Code Structure" 사례다. 다음 챕터인 LA09(Dynpro Coupling)는
+    같은 축에서 화면과 로직이 왜 강하게 결합되었는지를 다룬다.
+  </div>
+
+  <div class="foundation-map">
+    <span class="fm-root">PART 4 — Development Architecture Decisions</span><br>
+    LA07 Programming Model → LA08 Code Structure <span class="fm-node">(현재)</span><br>
+    → LA09 UI Coupling → LA10 User Interaction<br>
+    → LA11 Customization Culture → LA12 Delivery Model
+  </div>
+
+  <div class="takeaway">
+    <span class="label">One Sentence Takeaway</span>
+    <div class="sentence">
+      Internal Table Header Line은 초기 ABAP 환경에서 Data Declaration과 Processing Context를
+      단순화하기 위한 Programming Model이었다. 현대 ABAP Architecture는 같은 생산성을 유지하면서도
+      Explicit Data Structure와 Predictable Behavior를 중심으로 진화하였다.
+    </div>
+  </div>
+
+  <div class="nav-footer">
+    <a href="LA07.html">◀ LA07 — Function Group & Global Variable</a>
+    <a href="La_Index.html" class="nav-index">목차</a>
+    <a href="LA09.html">LA09 — Dynpro Coupling ▶</a>
+  </div>
+
+</div>
+
+</body>
+</html>

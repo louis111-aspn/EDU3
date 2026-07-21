@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LA11. Modification Culture | SAP Legacy Architecture Evolution</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Noto+Sans+KR:wght@400;500;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#003366; --navy-10:#e6ecf3; --bg:#f0f3f8; --ink:#1a1a1a; --sub:#5a6472; --line:#d7deea;
+    --white:#ffffff; --warn:#8a5a00; --warn-bg:#fdf3e3; --correct:#0f5c33; --correct-bg:#e7f5ec;
+  }
+  *{box-sizing:border-box;}
+  html,body{overflow-x:clip;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:'Noto Sans KR', sans-serif;font-size:15px;line-height:1.7;word-break:keep-all;overflow-wrap:break-word;}
+  .label{font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:13px;letter-spacing:0.04em;color:var(--navy);text-transform:uppercase;}
+  header.top{position:sticky;top:0;z-index:20;background:var(--white);border-bottom:1px solid var(--line);padding:14px 40px;display:flex;align-items:center;justify-content:space-between;}
+  header.top .series-tag{font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:13px;color:var(--sub);}
+  header.top .series-tag b{color:var(--navy);}
+  header.top nav{font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:13px;color:var(--sub);}
+  .wrap{max-width:880px;margin:0 auto;padding:56px 32px 96px;}
+  .eyebrow{font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:13px;color:var(--navy);letter-spacing:0.06em;margin-bottom:14px;}
+  h1{font-family:'DM Serif Display','Noto Sans KR',serif;font-size:42px;line-height:1.3;color:var(--navy);margin:0 0 12px;}
+  .subtitle{font-size:16px;color:var(--sub);margin-bottom:28px;}
+  .origin-card{background:var(--navy);color:var(--white);border-radius:6px;padding:22px 28px;margin-bottom:36px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;}
+  .origin-card .origin-label{font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:12px;color:#a9c2dc;letter-spacing:0.04em;display:block;margin-bottom:6px;}
+  .origin-chain{display:flex;align-items:center;gap:14px;font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:15px;flex-wrap:wrap;}
+  .origin-chain .from{color:#cfe0f0;}
+  .origin-chain .arrow{color:#7fa8cc;}
+  .origin-chain .to{background:rgba(255,255,255,0.12);padding:4px 12px;border-radius:4px;font-weight:700;}
+  h2.section-title{font-family:'DM Serif Display','Noto Sans KR',serif;font-size:30px;color:var(--navy);margin:56px 0 20px;display:flex;align-items:baseline;gap:12px;}
+  h2.section-title .num{font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:16px;color:var(--sub);font-style:normal;}
+  h3{font-size:18px;color:var(--ink);margin:28px 0 12px;font-weight:700;}
+  p{margin:0 0 16px;}
+  .card{background:var(--white);border:1px solid var(--line);border-radius:6px;padding:24px 28px;margin:20px 0;}
+  .callout{border-left:4px solid var(--navy);background:var(--navy-10);padding:20px 24px;margin:24px 0;border-radius:0 6px 6px 0;}
+  .callout .label{margin-bottom:8px;display:block;}
+  .callout.warn{border-left-color:var(--warn);background:var(--warn-bg);}
+  .callout.warn .label{color:var(--warn);}
+  .callout.correct{border-left-color:var(--correct);background:var(--correct-bg);}
+  .callout.correct .label{color:var(--correct);}
+  table.principle-table{width:100%;border-collapse:collapse;margin:20px 0;background:var(--white);border:1px solid var(--line);}
+  table.principle-table th{font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:13px;text-align:left;color:var(--white);background:var(--navy);padding:12px 18px;font-weight:500;}
+  table.principle-table td{padding:14px 18px;border-bottom:1px solid var(--line);vertical-align:top;font-size:14px;}
+  table.principle-table tr:last-child td{border-bottom:none;}
+  table.principle-table td.decision-col{font-weight:700;color:var(--navy);}
+  code.inline{font-family:'JetBrains Mono','Noto Sans KR',monospace;background:var(--navy-10);color:var(--navy);padding:2px 6px;border-radius:3px;font-size:13.5px;}
+  pre.code-block{font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:13px;background:#0d1b2a;color:#dce8f5;padding:18px 22px;border-radius:6px;overflow-x:auto;line-height:1.6;margin:16px 0;}
+  pre.code-block .cm{color:#7fa8cc;}
+  ul.plain{margin:0 0 16px;padding-left:20px;}
+  ul.plain li{margin-bottom:8px;}
+
+  /* evolution ladder */
+  .ladder{background:var(--white);border:1px solid var(--line);border-radius:6px;padding:24px;margin:20px 0;}
+  .ladder-step{display:flex;align-items:center;gap:14px;margin-bottom:10px;}
+  .ladder-step:last-child{margin-bottom:0;}
+  .ladder-badge{font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:12px;font-weight:700;color:var(--white);background:var(--navy);border-radius:4px;padding:6px 12px;min-width:150px;text-align:center;}
+  .ladder-step:last-child .ladder-badge{background:var(--correct);}
+  .ladder-desc{font-size:13.5px;color:var(--ink);}
+  .ladder-arrow{text-align:center;color:var(--sub);font-size:14px;margin:2px 0 2px 74px;}
+
+  .foundation-map{background:var(--white);border:1px solid var(--line);border-radius:6px;padding:24px;margin:20px 0;font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:13px;color:var(--ink);line-height:1.9;}
+  .foundation-map .fm-root{color:var(--navy);font-weight:700;}
+  .foundation-map .fm-node{color:var(--sub);}
+
+  .takeaway{margin-top:56px;padding:28px 32px;background:var(--navy);color:var(--white);border-radius:6px;}
+  .takeaway .label{color:#a9c2dc;margin-bottom:10px;display:block;}
+  .takeaway .sentence{font-family:'DM Serif Display','Noto Sans KR',serif;font-size:22px;line-height:1.5;}
+  .nav-footer{display:flex;justify-content:space-between;margin-top:48px;padding-top:24px;border-top:1px solid var(--line);font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:13px;color:var(--sub);}
+  @media (max-width:480px){
+    header.top{padding:12px 20px;}
+    .wrap{padding:40px 20px 72px;}
+    h1{font-size:30px;}
+    h2.section-title{font-size:22px;}
+    .card, .callout, .takeaway, .origin-card, .ladder, .foundation-map{padding:18px 20px;}
+    .ladder-arrow{margin-left:0;}
+  }
+
+  .nav-footer a{color:var(--sub);text-decoration:none;}
+  .nav-footer a:hover{color:var(--navy);text-decoration:underline;}
+  .nav-footer .nav-index{font-weight:700;color:var(--navy);}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="series-tag">SAP Legacy Architecture Evolution &nbsp;·&nbsp; <b>LA11</b></div>
+  <nav>PART 6 — Chapter 11 / 12</nav>
+</header>
+
+<div class="wrap">
+
+  <div class="eyebrow">PART 4. ABAP Programming Legacy — Extension Model Axis</div>
+  <h1>Modification Culture</h1>
+  <div class="subtitle">
+    LA07~LA10이 SAP 내부 설계의 흔적이었다면, LA11은 그 설계 위에서 기업이 시스템을 확장하면서 축적한
+    Organizational Technical Debt를 다룬다 — SAP Technical Debt의 가장 큰 원인이다.
+  </div>
+
+  <div class="origin-card">
+    <div>
+      <span class="origin-label">Origin Architecture Decision</span>
+      <div class="origin-chain">
+        <span class="from">Limited Extension Framework</span>
+        <span class="arrow">→</span>
+        <span class="to">Direct Modification Culture</span>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="section-title"><span class="num">11.1</span> Legacy Origin — 왜 직접 수정이 유일한 방법이었는가</h2>
+
+  <p>초기 SAP 시스템은 대부분의 ABAP Source Code를 고객이 직접 열람하고 편집할 수 있는 형태로 제공했다.
+  Black-box로 컴파일된 소프트웨어와 달리, 표준 로직이 기업 요구사항과 맞지 않을 때 개발자가 취할 수
+  있는 선택지는 단 하나 — <b>표준 Program/Include를 직접 여는 것</b>이었다. 아직 구조화된 Extension
+  Framework(사전에 정의된 확장 지점)가 존재하지 않았기 때문이다.</p>
+
+  <h2 class="section-title"><span class="num">11.2</span> Technical Mechanism — Direct Modification</h2>
+
+  <p>개발자는 SE38/SE80 같은 도구로 SAP 표준 Program을 직접 열어 로직을 수정했다. 이후 SAP가 새
+  버전을 출시할 때, 이 수정 내역은 표준 Object와 충돌한다 — 업그레이드 시마다 개발자가 자신이 수정한
+  부분을 새 표준 코드에 수동으로 다시 반영해야 했다(Modification Adjustment, 이후
+  <code class="inline">SPDD</code>/<code class="inline">SPAU</code> Transaction으로 도구화됨).</p>
+
+  <h2 class="section-title"><span class="num">11.3</span> Why It Worked — 단기적 합리성</h2>
+
+  <p>Direct Modification은 표준 기능과 실제 업무 요구 사이의 격차를 <b>가장 빠르게</b> 메우는 방법이었다.
+  SAP가 별도 Enhancement를 내놓을 때까지 기다릴 필요 없이, Source가 열려 있다는 조건 위에서 원하는
+  어떤 로직이든 즉시 구현할 수 있었다. 당시 Extension Framework 자체가 존재하지 않았다는 점을 고려하면,
+  이는 개발자의 나쁜 습관이 아니라 <b>유일하게 가능했던 Business Choice</b>였다.</p>
+
+  <h2 class="section-title"><span class="num">11.4</span> Modern Debt — Upgrade Risk의 누적</h2>
+
+  <table class="principle-table">
+    <tr><th>영역</th><th>문제</th></tr>
+    <tr>
+      <td>Upgrade Risk</td>
+      <td>매 Release마다 수정된 Object를 수동으로 재조정(SPAU)해야 함 — Object 수가 늘어날수록
+      작업량이 누적됨</td>
+    </tr>
+    <tr>
+      <td>Regression 부담</td>
+      <td>수정 범위가 넓어질수록 Upgrade 시 Test 범위도 함께 늘어남</td>
+    </tr>
+    <tr>
+      <td>Core/Custom 경계 불명확</td>
+      <td>어디까지가 SAP 표준이고 어디부터가 자사 수정분인지 구분이 흐려져, "무엇을 건드려도 안전한지"
+      판단이 어려워짐</td>
+    </tr>
+  </table>
+
+  <div class="callout warn">
+    <span class="label">Architecture Misconception Warning</span>
+    Modification은 개발자의 잘못이 아니다. 당시 Extension Mechanism의 한계를 보완하기 위한
+    <b>Business Choice</b>였다. 문제는 이 방식이 누적되면서 SAP 표준 Core와 기업 고유 로직의 경계가
+    흐려졌다는 점이다.
+  </div>
+
+  <h2 class="section-title"><span class="num">11.5</span> Evolution — User Exit → BAdI → Side-by-side → Clean Core</h2>
+
+  <div class="ladder">
+    <div class="ladder-step">
+      <span class="ladder-badge">Modification</span>
+      <span class="ladder-desc">표준 Program을 직접 수정</span>
+    </div>
+    <div class="ladder-arrow">↓</div>
+    <div class="ladder-step">
+      <span class="ladder-badge">User Exit</span>
+      <span class="ladder-desc">표준 코드 안에 미리 준비된 빈 Subroutine(CMOD/SMOD)에 로직 삽입 —
+      표준 자체는 건드리지 않음</span>
+    </div>
+    <div class="ladder-arrow">↓</div>
+    <div class="ladder-step">
+      <span class="ladder-badge">BAdI</span>
+      <span class="ladder-desc">Object 기반 확장 — 여러 Implementation과 Filter 조건 지원</span>
+    </div>
+    <div class="ladder-arrow">↓</div>
+    <div class="ladder-step">
+      <span class="ladder-badge">Enhancement Framework</span>
+      <span class="ladder-desc">Explicit/Implicit Enhancement Point로 확장 지점을 표준화</span>
+    </div>
+    <div class="ladder-arrow">↓</div>
+    <div class="ladder-step">
+      <span class="ladder-badge">Side-by-side Extension</span>
+      <span class="ladder-desc">BTP 등 Core 시스템 밖에서 API로 연결되는 확장 — Core 자체는
+      전혀 건드리지 않음</span>
+    </div>
+    <div class="ladder-arrow">↓</div>
+    <div class="ladder-step">
+      <span class="ladder-badge">Clean Core</span>
+      <span class="ladder-desc">Core ERP는 수정하지 않고, 모든 Custom Logic을 Extension Layer로
+      분리하는 전략 원칙 — Customization을 없애는 것이 아니라, Custom Capability가 SAP Core의
+      Lifecycle(Upgrade 등)을 방해하지 않도록 Boundary를 관리하는 전략이다</span>
+    </div>
+  </div>
+
+  <p>이 흐름은 "확장을 점점 어렵게 만든 것"이 아니라, <b>확장 지점을 Core로부터 점진적으로 분리해
+  Upgrade Risk를 줄여온 과정</b>이다.</p>
+
+  <div class="callout correct">
+    <span class="label">Architecture Reading Point</span>
+    LA11은 Extension Model 축의 핵심 사례이자 Part 6의 중심이다. 다음 챕터인 LA12(Transport-based
+    Delivery)는 이 Modification/Extension 이력이 어떻게 System 간에 이동·배포되었는지, 그리고 이것이
+    Git 중심 현대 개발 방식과 왜 달랐는지를 다룬다.
+  </div>
+
+  <div class="foundation-map">
+    <span class="fm-root">PART 4~6 — Development & Customization Architecture</span><br>
+    LA07 Programming Model → LA08 Code Structure → LA09 UI Coupling → LA10 User Interaction<br>
+    → LA11 Extension/Customization Culture <span class="fm-node">(현재)</span> → LA12 Delivery Model
+  </div>
+
+  <div class="takeaway">
+    <span class="label">One Sentence Takeaway</span>
+    <div class="sentence">
+      Modification Culture는 Extension Framework가 성숙하지 않았던 시대에 Business Requirement를
+      충족하기 위한 현실적인 선택이었다. SAP Architecture는 Modification을 부정하는 것이 아니라,
+      Core와 Extension의 Boundary를 분리하는 방향으로 진화해왔다.
+    </div>
+  </div>
+
+  <div class="nav-footer">
+    <a href="LA10.html">◀ LA10 — T-Code 중심 UX</a>
+    <a href="La_Index.html" class="nav-index">목차</a>
+    <a href="LA12.html">LA12 — Transport-based Delivery ▶</a>
+  </div>
+
+</div>
+
+</body>
+</html>

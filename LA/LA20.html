@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LA20. Legacy Reinterpreted | SAP Legacy Architecture Evolution</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Noto+Sans+KR:wght@400;500;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#003366; --navy-10:#e6ecf3; --bg:#f0f3f8; --ink:#1a1a1a; --sub:#5a6472; --line:#d7deea;
+    --white:#ffffff; --warn:#8a5a00; --warn-bg:#fdf3e3; --correct:#0f5c33; --correct-bg:#e7f5ec;
+  }
+  *{box-sizing:border-box;}
+  html,body{overflow-x:clip;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:'Noto Sans KR', sans-serif;font-size:15px;line-height:1.7;word-break:keep-all;overflow-wrap:break-word;}
+  .label{font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:13px;letter-spacing:0.04em;color:var(--navy);text-transform:uppercase;}
+  header.top{position:sticky;top:0;z-index:20;background:var(--white);border-bottom:1px solid var(--line);padding:14px 40px;display:flex;align-items:center;justify-content:space-between;}
+  header.top .series-tag{font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:13px;color:var(--sub);}
+  header.top .series-tag b{color:var(--navy);}
+  header.top nav{font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:13px;color:var(--sub);}
+  .wrap{max-width:880px;margin:0 auto;padding:56px 32px 96px;}
+  .eyebrow{font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:13px;color:var(--navy);letter-spacing:0.06em;margin-bottom:14px;}
+  h1{font-family:'DM Serif Display','Noto Sans KR',serif;font-size:42px;line-height:1.3;color:var(--navy);margin:0 0 4px;}
+  .subtitle-tag{font-family:'DM Serif Display','Noto Sans KR',serif;font-style:italic;font-size:19px;color:var(--sub);margin-bottom:20px;}
+  .subtitle{font-size:16px;color:var(--sub);margin-bottom:20px;}
+
+  .meta-nav{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:28px;}
+  .meta-tag{font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:11px;padding:4px 10px;border-radius:12px;background:var(--bg);color:var(--sub);border:1px solid var(--line);}
+  .meta-tag.done{background:var(--correct-bg);color:var(--correct);border-color:var(--correct);}
+  .meta-tag.current{background:var(--navy);color:var(--white);border-color:var(--navy);font-weight:700;}
+
+  .origin-card{background:var(--navy);color:var(--white);border-radius:6px;padding:22px 28px;margin-bottom:8px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;}
+  .origin-card .origin-label{font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:12px;color:#a9c2dc;letter-spacing:0.04em;display:block;margin-bottom:6px;}
+  .origin-chain{display:flex;align-items:center;gap:14px;font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:15px;flex-wrap:wrap;}
+  .origin-chain .from{color:#cfe0f0;}
+  .origin-chain .arrow{color:#7fa8cc;}
+  .origin-chain .to{background:rgba(255,255,255,0.12);padding:4px 12px;border-radius:4px;font-weight:700;}
+  h2.section-title{font-family:'DM Serif Display','Noto Sans KR',serif;font-size:30px;color:var(--navy);margin:56px 0 20px;display:flex;align-items:baseline;gap:12px;}
+  h2.section-title .num{font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:16px;color:var(--sub);font-style:normal;}
+  h3{font-size:18px;color:var(--ink);margin:28px 0 12px;font-weight:700;}
+  p{margin:0 0 16px;}
+  .card{background:var(--white);border:1px solid var(--line);border-radius:6px;padding:24px 28px;margin:20px 0;}
+  .callout{border-left:4px solid var(--navy);background:var(--navy-10);padding:20px 24px;margin:24px 0;border-radius:0 6px 6px 0;}
+  .callout .label{margin-bottom:8px;display:block;}
+  .callout.warn{border-left-color:var(--warn);background:var(--warn-bg);}
+  .callout.warn .label{color:var(--warn);}
+  .callout.correct{border-left-color:var(--correct);background:var(--correct-bg);}
+  .callout.correct .label{color:var(--correct);}
+  table.principle-table{width:100%;border-collapse:collapse;margin:20px 0;background:var(--white);border:1px solid var(--line);}
+  table.principle-table th{font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:13px;text-align:left;color:var(--white);background:var(--navy);padding:12px 18px;font-weight:500;}
+  table.principle-table td{padding:14px 18px;border-bottom:1px solid var(--line);vertical-align:top;font-size:14px;}
+  table.principle-table tr:last-child td{border-bottom:none;}
+  table.principle-table td.decision-col{font-weight:700;color:var(--navy);}
+  code.inline{font-family:'JetBrains Mono','Noto Sans KR',monospace;background:var(--navy-10);color:var(--navy);padding:2px 6px;border-radius:3px;font-size:13.5px;}
+  pre.code-block{font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:13px;background:#0d1b2a;color:#dce8f5;padding:18px 22px;border-radius:6px;overflow-x:auto;line-height:1.6;margin:16px 0;}
+  pre.code-block .cm{color:#7fa8cc;}
+  ul.plain{margin:0 0 16px;padding-left:20px;}
+  ul.plain li{margin-bottom:8px;}
+
+  .foundation-map{background:var(--white);border:1px solid var(--line);border-radius:6px;padding:24px;margin:20px 0;font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:13px;color:var(--ink);line-height:1.9;}
+  .foundation-map .fm-root{color:var(--navy);font-weight:700;}
+  .foundation-map .fm-node{color:var(--sub);}
+
+  .related-reading{margin-top:24px;padding:14px 18px;border:1px dashed var(--line);border-radius:6px;font-size:13px;color:var(--sub);}
+  .related-reading b{color:var(--navy);}
+
+  .takeaway{margin-top:56px;padding:28px 32px;background:var(--navy);color:var(--white);border-radius:6px;}
+  .takeaway .label{color:#a9c2dc;margin-bottom:10px;display:block;}
+  .takeaway .sentence{font-family:'DM Serif Display','Noto Sans KR',serif;font-size:22px;line-height:1.5;}
+  .design-law{margin-top:16px;padding-top:16px;border-top:1px solid rgba(255,255,255,0.2);}
+  .design-law .dl-label{font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:11px;color:#7fa8cc;letter-spacing:0.06em;display:block;margin-bottom:8px;}
+  .design-law .dl-text{font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:14px;color:#dce8f5;font-style:italic;line-height:1.6;}
+  .looking-ahead{margin-top:16px;padding-top:16px;border-top:1px solid rgba(255,255,255,0.2);}
+  .looking-ahead .la-label{font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:11px;color:#7fa8cc;letter-spacing:0.06em;display:block;margin-bottom:8px;}
+  .looking-ahead .la-text{font-size:14px;color:#dce8f5;line-height:1.6;font-style:italic;}
+
+  .nav-footer{display:flex;justify-content:space-between;margin-top:48px;padding-top:24px;border-top:1px solid var(--line);font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:13px;color:var(--sub);}
+  @media (max-width:480px){
+    header.top{padding:12px 20px;}
+    .wrap{padding:40px 20px 72px;}
+    h1{font-size:30px;}
+    h2.section-title{font-size:22px;}
+    .card, .callout, .takeaway, .origin-card, .foundation-map{padding:18px 20px;}
+  }
+
+  .nav-footer a{color:var(--sub);text-decoration:none;}
+  .nav-footer a:hover{color:var(--navy);text-decoration:underline;}
+  .nav-footer .nav-index{font-weight:700;color:var(--navy);}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="series-tag">SAP Legacy Architecture Evolution &nbsp;·&nbsp; <b>LA20</b></div>
+  <nav>PART 5 — Chapter 20 / 20</nav>
+</header>
+
+<div class="wrap">
+
+  <div class="eyebrow">PART 5. Modern Enterprise Architecture — Series Finale</div>
+  <h1>Legacy Reinterpreted</h1>
+  <div class="subtitle-tag">From Technologies to Principles</div>
+  <div class="subtitle">
+    이 장은 가장 적게 설명하고 가장 많이 성찰해야 하는 장이다. 질문은 하나다 — 기술이 계속 바뀐다면,
+    Architect는 무엇을 지켜야 하는가?
+  </div>
+
+  <div class="meta-nav">
+    <span class="meta-tag done">Data</span>
+    <span class="meta-tag done">Boundary</span>
+    <span class="meta-tag done">Contract</span>
+    <span class="meta-tag done">Object</span>
+    <span class="meta-tag done">Event</span>
+    <span class="meta-tag done">Platform</span>
+    <span class="meta-tag done">Enterprise</span>
+    <span class="meta-tag current">Principle</span>
+  </div>
+
+  <div class="origin-card">
+    <div>
+      <span class="origin-label">Origin Decision (사고방식의 전환)</span>
+      <div class="origin-chain">
+        <span class="from">Implementation Thinking</span>
+        <span class="arrow">→</span>
+        <span class="to">Architectural Principles</span>
+      </div>
+    </div>
+  </div>
+
+  <p style="font-style:italic;color:var(--sub);margin-top:-4px;margin-bottom:32px;">
+    "Technologies evolve. Principles endure."
+  </p>
+
+  <h2 class="section-title"><span class="num">20.1</span> Eight Principles, One Loop</h2>
+
+  <p>LA13~LA19는 여덟 개의 개별 개념이 아니라 하나의 순환이다. Principle에 도달한 뒤에도 여정은
+  끝나지 않는다 — 새로운 기술이 등장하면, 그 기술은 다시 Data를 어떻게 다룰 것인가라는 질문에서
+  출발한다.</p>
+
+  <pre class="code-block">Data → Boundary → Contract → Object → Event → Platform → Enterprise → Principle
+                                                                            ↓
+                                                                   (new Technology)
+                                                                            ↓
+                                                                          Data …</pre>
+
+  <h2 class="section-title"><span class="num">20.2</span> Why It Solves — LA01으로 돌아가기</h2>
+
+  <p>이 시리즈는 R/3에서 시작했다. 그 여정을 한 줄로 그리면 다음과 같다.</p>
+
+  <pre class="code-block">R/3
+  ↓
+Function Group → Header Line → Dynpro → Modification → Transport
+  ↓
+Clean Core → Contract → Business Object → Enterprise</pre>
+
+  <p>Function Group의 Global Variable도, Dynpro의 Screen-Logic 결합도, Modification 문화도 —
+  그 어느 것도 실수가 아니었다. <b>None of these were mistakes. They were architectural responses
+  to different constraints.</b> Clean Core, Contract, Business Object, Enterprise 역시 마찬가지다
+  — 이들도 오늘의 제약에 대한 Architectural Response일 뿐이다.</p>
+
+  <h2 class="section-title"><span class="num">20.3</span> Architectural Judgment — Trade-off가 아니라 판단</h2>
+
+  <ul class="plain">
+    <li><b>No universal architecture</b> — 모든 상황에 맞는 단 하나의 정답은 없다</li>
+    <li><b>Constraints always change</b> — 제약은 항상 변하고, 그에 따라 설계도 변해야 한다</li>
+    <li><b>Principles outlive implementations</b> — 구현은 낡지만 원칙은 남는다</li>
+    <li><b>Context determines design</b> — 같은 원칙도 맥락에 따라 다른 구현으로 나타난다</li>
+  </ul>
+
+  <div class="callout warn">
+    <span class="label">Architecture Misconception Warning</span>
+    Legacy is not obsolete architecture.
+    <br><br>
+    It is architecture shaped by yesterday's constraints.
+    <br><br>
+    <b>Modern architecture succeeds only when it understands why legacy existed.</b>
+  </div>
+
+  <div class="callout correct">
+    <span class="label">Architecture Reading Point</span>
+    LA01("왜 SAP는 이렇게 설계되었는가")부터 LA19("무엇이 여전히 하나의 Enterprise로 만드는가")까지,
+    시리즈 전체는 하나의 질문을 반복해서 던져왔다 — 이 설계는 어떤 제약에 대한 응답이었는가. LA20은
+    그 반복 자체가 답이라는 것을 보여준다.
+  </div>
+
+  <table class="principle-table">
+    <tr><th>Architecture Shift — Before (전체 시리즈)</th><th>After</th></tr>
+    <tr><td>Technology</td><td class="decision-col">Principle</td></tr>
+    <tr><td>Implementation</td><td class="decision-col">Architecture</td></tr>
+    <tr><td>System</td><td class="decision-col">Enterprise</td></tr>
+    <tr><td>Solution</td><td class="decision-col">Constraint</td></tr>
+  </table>
+
+  <table class="principle-table">
+    <tr><th>Constraint Evolution — Yesterday</th><th>Today</th></tr>
+    <tr><td>Technology defines architecture.</td><td class="decision-col">Constraints define architecture.</td></tr>
+  </table>
+
+  <table class="principle-table">
+    <tr><th>Architectural Vocabulary — Earlier View</th><th>Architectural View</th></tr>
+    <tr><td>Legacy</td><td class="decision-col">Context</td></tr>
+    <tr><td>Modern</td><td class="decision-col">Evolution</td></tr>
+    <tr><td>Upgrade</td><td class="decision-col">Reinterpretation</td></tr>
+    <tr><td>Technology</td><td class="decision-col">Principle</td></tr>
+  </table>
+
+  <div class="foundation-map">
+    <span class="fm-root">PART 5 — Modern Enterprise Architecture — Complete</span><br>
+    LA13 Data → LA14 Boundary → LA15 Contract → LA16 Object → LA17 Event → LA18 Platform →
+    LA19 Enterprise → LA20 Principle <span class="fm-node">(현재 — 시리즈 완결)</span>
+  </div>
+
+  <div class="takeaway">
+    <span class="label">Architectural Principle</span>
+    <div class="sentence">
+      Modern SAP Architecture is not defined by Data, Contracts, Events, or Platforms
+      individually. It emerges from the consistent application of all eight architectural
+      principles.
+    </div>
+    <div class="design-law">
+      <span class="dl-label">Design Law</span>
+      <div class="dl-text">Architecture evolves by preserving principles, not implementations.</div>
+    </div>
+    <div class="looking-ahead">
+      <span class="la-label">Closing Declaration</span>
+      <div class="la-text">The next architecture will be different. The next principles should
+      not be.</div>
+    </div>
+  </div>
+
+  <div class="nav-footer">
+    <a href="LA19.html">◀ LA19 — Digital Enterprise Architecture</a>
+    <a href="La_Index.html" class="nav-index">목차</a>
+    <a href="Epilogue.html">Epilogue — Thirty Years of Architectural Evolution ▶</a>
+  </div>
+
+</div>
+
+</body>
+</html>

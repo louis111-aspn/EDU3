@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LA12. Transport-based Delivery | SAP Legacy Architecture Evolution</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Noto+Sans+KR:wght@400;500;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#003366; --navy-10:#e6ecf3; --bg:#f0f3f8; --ink:#1a1a1a; --sub:#5a6472; --line:#d7deea;
+    --white:#ffffff; --warn:#8a5a00; --warn-bg:#fdf3e3; --correct:#0f5c33; --correct-bg:#e7f5ec;
+  }
+  *{box-sizing:border-box;}
+  html,body{overflow-x:clip;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:'Noto Sans KR', sans-serif;font-size:15px;line-height:1.7;word-break:keep-all;overflow-wrap:break-word;}
+  .label{font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:13px;letter-spacing:0.04em;color:var(--navy);text-transform:uppercase;}
+  header.top{position:sticky;top:0;z-index:20;background:var(--white);border-bottom:1px solid var(--line);padding:14px 40px;display:flex;align-items:center;justify-content:space-between;}
+  header.top .series-tag{font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:13px;color:var(--sub);}
+  header.top .series-tag b{color:var(--navy);}
+  header.top nav{font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:13px;color:var(--sub);}
+  .wrap{max-width:880px;margin:0 auto;padding:56px 32px 96px;}
+  .eyebrow{font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:13px;color:var(--navy);letter-spacing:0.06em;margin-bottom:14px;}
+  h1{font-family:'DM Serif Display','Noto Sans KR',serif;font-size:42px;line-height:1.3;color:var(--navy);margin:0 0 12px;}
+  .subtitle{font-size:16px;color:var(--sub);margin-bottom:28px;}
+  .origin-card{background:var(--navy);color:var(--white);border-radius:6px;padding:22px 28px;margin-bottom:36px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;}
+  .origin-card .origin-label{font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:12px;color:#a9c2dc;letter-spacing:0.04em;display:block;margin-bottom:6px;}
+  .origin-chain{display:flex;align-items:center;gap:14px;font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:15px;flex-wrap:wrap;}
+  .origin-chain .from{color:#cfe0f0;}
+  .origin-chain .arrow{color:#7fa8cc;}
+  .origin-chain .to{background:rgba(255,255,255,0.12);padding:4px 12px;border-radius:4px;font-weight:700;}
+  h2.section-title{font-family:'DM Serif Display','Noto Sans KR',serif;font-size:30px;color:var(--navy);margin:56px 0 20px;display:flex;align-items:baseline;gap:12px;}
+  h2.section-title .num{font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:16px;color:var(--sub);font-style:normal;}
+  h3{font-size:18px;color:var(--ink);margin:28px 0 12px;font-weight:700;}
+  p{margin:0 0 16px;}
+  .card{background:var(--white);border:1px solid var(--line);border-radius:6px;padding:24px 28px;margin:20px 0;}
+  .callout{border-left:4px solid var(--navy);background:var(--navy-10);padding:20px 24px;margin:24px 0;border-radius:0 6px 6px 0;}
+  .callout .label{margin-bottom:8px;display:block;}
+  .callout.warn{border-left-color:var(--warn);background:var(--warn-bg);}
+  .callout.warn .label{color:var(--warn);}
+  .callout.correct{border-left-color:var(--correct);background:var(--correct-bg);}
+  .callout.correct .label{color:var(--correct);}
+  table.principle-table{width:100%;border-collapse:collapse;margin:20px 0;background:var(--white);border:1px solid var(--line);}
+  table.principle-table th{font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:13px;text-align:left;color:var(--white);background:var(--navy);padding:12px 18px;font-weight:500;}
+  table.principle-table td{padding:14px 18px;border-bottom:1px solid var(--line);vertical-align:top;font-size:14px;}
+  table.principle-table tr:last-child td{border-bottom:none;}
+  table.principle-table td.decision-col{font-weight:700;color:var(--navy);}
+  code.inline{font-family:'JetBrains Mono','Noto Sans KR',monospace;background:var(--navy-10);color:var(--navy);padding:2px 6px;border-radius:3px;font-size:13.5px;}
+  pre.code-block{font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:13px;background:#0d1b2a;color:#dce8f5;padding:18px 22px;border-radius:6px;overflow-x:auto;line-height:1.6;margin:16px 0;}
+  pre.code-block .cm{color:#7fa8cc;}
+  ul.plain{margin:0 0 16px;padding-left:20px;}
+  ul.plain li{margin-bottom:8px;}
+
+  /* landscape diagram */
+  .landscape{background:var(--white);border:1px solid var(--line);border-radius:6px;padding:24px;margin:20px 0;}
+  .landscape-row{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:10px;align-items:center;text-align:center;}
+  .landscape-box{background:var(--navy-10);border:1px solid var(--navy);border-radius:6px;padding:14px 10px;font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:13px;color:var(--navy);font-weight:700;}
+  .landscape-box span{display:block;font-weight:400;color:var(--sub);font-size:11.5px;margin-top:4px;}
+  .landscape-arrow{color:var(--sub);font-size:16px;}
+  @media (max-width:640px){.landscape-row{grid-template-columns:1fr;} .landscape-arrow{transform:rotate(90deg);}}
+
+  .foundation-map{background:var(--white);border:1px solid var(--line);border-radius:6px;padding:24px;margin:20px 0;font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:13px;color:var(--ink);line-height:1.9;}
+  .foundation-map .fm-root{color:var(--navy);font-weight:700;}
+  .foundation-map .fm-node{color:var(--sub);}
+  .foundation-map .fm-done{color:var(--correct);font-weight:700;}
+
+  .takeaway{margin-top:56px;padding:28px 32px;background:var(--navy);color:var(--white);border-radius:6px;}
+  .takeaway .label{color:#a9c2dc;margin-bottom:10px;display:block;}
+  .takeaway .sentence{font-family:'DM Serif Display','Noto Sans KR',serif;font-size:22px;line-height:1.5;}
+  .nav-footer{display:flex;justify-content:space-between;margin-top:48px;padding-top:24px;border-top:1px solid var(--line);font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:13px;color:var(--sub);}
+  @media (max-width:480px){
+    header.top{padding:12px 20px;}
+    .wrap{padding:40px 20px 72px;}
+    h1{font-size:30px;}
+    h2.section-title{font-size:22px;}
+    .card, .callout, .takeaway, .origin-card, .landscape, .foundation-map{padding:18px 20px;}
+  }
+
+  .nav-footer a{color:var(--sub);text-decoration:none;}
+  .nav-footer a:hover{color:var(--navy);text-decoration:underline;}
+  .nav-footer .nav-index{font-weight:700;color:var(--navy);}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="series-tag">SAP Legacy Architecture Evolution &nbsp;·&nbsp; <b>LA12</b></div>
+  <nav>PART 6 — Chapter 12 / 12</nav>
+</header>
+
+<div class="wrap">
+
+  <div class="eyebrow">PART 4. ABAP Programming Legacy — Delivery Governance Axis</div>
+  <h1>Transport-based Delivery</h1>
+  <div class="subtitle">
+    LA11이 "무엇을 어떻게 확장했는가"였다면, LA12는 "그 변경을 어떻게 통제하고 운영했는가"다. 핵심 질문은
+    왜 SAP 개발 Lifecycle이 Git 중심 개발과 다른 방식으로 발전했는가다.
+  </div>
+
+  <div class="origin-card">
+    <div>
+      <span class="origin-label">Origin Architecture Decision</span>
+      <div class="origin-chain">
+        <span class="from">Centralized Enterprise Control</span>
+        <span class="arrow">→</span>
+        <span class="to">Transport Management Model</span>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="section-title"><span class="num">12.1</span> Legacy Origin — 왜 중앙 통제형 배포가 필요했는가</h2>
+
+  <p>LA04에서 본 MANDT Client 구조는 하나의 물리적 시스템 안에 여러 논리적 구역(DEV/QAS/PRD)을 두는
+  방식으로도 확장되었다. 문제는 이렇게 분리된 System/Client 사이에서 <b>개발된 변경 사항을 어떻게
+  안전하게, 순서대로, 감사 가능하게(Auditable) 옮길 것인가</b>였다. Enterprise ERP는 재무·법적 요구사항
+  때문에 임의의 직접 배포를 허용할 수 없었고, SAP는 이를 <b>중앙 통제형 Transport Management Model</b>로
+  해결했다.</p>
+
+  <div class="landscape">
+    <div class="landscape-row">
+      <div class="landscape-box">DEV<span>개발</span></div>
+      <div class="landscape-arrow">→</div>
+      <div class="landscape-box">QAS<span>테스트/검증</span></div>
+      <div class="landscape-arrow">→</div>
+      <div class="landscape-box">PRD<span>운영</span></div>
+    </div>
+  </div>
+
+  <h2 class="section-title"><span class="num">12.2</span> Technical Mechanism — CTS / Transport Request</h2>
+
+  <p>변경 사항은 <b>CTS(Change and Transport System)</b>를 통해 <code class="inline">Transport
+  Request</code> 단위로 관리된다. DEV에서 만들어진 Transport Request는 Task와 Object 목록을 담고
+  있으며, Release된 후 QAS → PRD 순서로 순차 Import된다. Object는 변경 내역(Diff)이 아니라 <b>전체
+  버전이 통째로 이동</b>하는 방식이다.</p>
+
+  <h2 class="section-title"><span class="num">12.3</span> Why It Worked — 규제된 환경에서의 거버넌스</h2>
+
+  <p>이 모델은 개발/테스트/운영 담당자가 분리되어야 하는 규제 요구사항(예: 직무 분리, SOX 통제)이 강한
+  Enterprise ERP 환경에 잘 맞았다. 하나의 System of Record를 통해 어떤 변경이 언제, 누구에 의해, 어떤
+  순서로 이동했는지 전체 이력이 명확하게 남는다는 점이 핵심 장점이었다.</p>
+
+  <h2 class="section-title"><span class="num">12.4</span> Modern Debt — Git과의 격차</h2>
+
+  <table class="principle-table">
+    <tr><th>영역</th><th>격차</th></tr>
+    <tr>
+      <td>Branching/Merging</td>
+      <td>Transport Request는 단일 순차 Chain으로 이동 — Git처럼 여러 Branch를 병렬로 개발하고
+      병합하는 모델을 기본 지원하지 않음</td>
+    </tr>
+    <tr>
+      <td>Version History</td>
+      <td>Object 단위 전체 교체 방식이라, 코드 레벨의 세밀한 변경 이력(Diff)을 표준적으로 추적하기
+      어려움</td>
+    </tr>
+    <tr>
+      <td>병렬 개발</td>
+      <td>여러 개발자가 같은 Object를 동시에 수정할 경우 Transport 순서와 충돌 관리에 수작업이 필요</td>
+    </tr>
+  </table>
+
+  <div class="callout warn">
+    <span class="label">Architecture Misconception Warning</span>
+    Transport 기반 개발은 실패한 DevOps가 아니다. 규제된 Enterprise ERP 환경에서 변경을 중앙 통제하고
+    감사 가능하게 만들기 위한 합리적인 <b>Governance Model</b>이었다. Git과 다르게 발전한 것은 열등해서가
+    아니라, 애초에 <b>다른 문제(분산 협업이 아니라 통제된 배포)</b>를 해결하도록 설계되었기 때문이다.
+  </div>
+
+  <h2 class="section-title"><span class="num">12.5</span> Modern Evolution — abapGit / CI/CD / Cloud ALM</h2>
+
+  <ul class="plain">
+    <li><b>abapGit</b> — ABAP Object를 Git 저장소로 직렬화해, Branch/Merge/Diff 등 Git 워크플로우를
+    ABAP 개발에 도입</li>
+    <li><b>CI/CD Pipeline 연동</b> — Transport 이동 단계를 자동화된 Pipeline(빌드·테스트·배포)에
+    통합</li>
+    <li><b>Cloud ALM</b> — S/4HANA Cloud 환경에서 Application Lifecycle을 통합 관리</li>
+  </ul>
+
+  <p>이 변화는 Transport 개념 자체를 제거한 것이 아니라, System 간 통제된 이동이라는 본래 목적을
+  유지하면서 그 위에 Git 스타일의 협업·이력 관리를 결합하는 방향이다.</p>
+
+  <h2 class="section-title"><span class="num">12.6</span> Part 4 Closing — Architecture Summary</h2>
+
+  <p>LA07~LA12는 각각 독립된 기술 주제가 아니라, 하나의 Development Lifecycle을 이룬다 — 개발 단위
+  (LA07) → 데이터 구조(LA08) → UI 결합(LA09) → 사용자 진입 방식(LA10) → 확장/수정 문화(LA11) → 배포
+  통제(LA12)로 이어지는 흐름이다.</p>
+
+  <table class="principle-table">
+    <tr><th>Chapter</th><th>Legacy Goal</th><th>Modern Evolution</th></tr>
+    <tr>
+      <td class="decision-col">LA07 — Function Group / Global Variable</td>
+      <td>Procedural Model 안에서의 Modularization</td>
+      <td>ABAP Objects / CDS / RAP</td>
+    </tr>
+    <tr>
+      <td class="decision-col">LA08 — Internal Table Header Line</td>
+      <td>선언 단순화(Declaration Simplification)</td>
+      <td>Explicit Work Area / Constructor Expression</td>
+    </tr>
+    <tr>
+      <td class="decision-col">LA09 — Dynpro Coupling</td>
+      <td>Round Trip 최소화</td>
+      <td>UI/API 분리 (Fiori / OData / RAP)</td>
+    </tr>
+    <tr>
+      <td class="decision-col">LA10 — T-Code 중심 UX</td>
+      <td>Command Efficiency</td>
+      <td>Role-based Fiori Experience</td>
+    </tr>
+    <tr>
+      <td class="decision-col">LA11 — Modification Culture</td>
+      <td>Extension Framework 부재 하의 Business Continuity</td>
+      <td>Clean Core / Extension-first</td>
+    </tr>
+    <tr>
+      <td class="decision-col">LA12 — Transport-based Delivery</td>
+      <td>중앙 통제형 Controlled Delivery</td>
+      <td>abapGit / CI-CD / Cloud ALM</td>
+    </tr>
+  </table>
+
+  <div class="callout correct">
+    <span class="label">Architecture Reading Point</span>
+    LA12로 Part 4(Development Architecture Decisions, LA07~LA12)가 완결된다. LA07이 State 관리에서
+    시작해 LA12의 Delivery Governance로 끝나는 하나의 완전한 축이다.
+  </div>
+
+  <div class="foundation-map">
+    <span class="fm-root">PART 4 — Development Architecture Decisions</span><br>
+    <span class="fm-done">✓ LA07 Programming Model</span><br>
+    <span class="fm-done">✓ LA08 Code Structure</span><br>
+    <span class="fm-done">✓ LA09 UI Coupling</span><br>
+    <span class="fm-done">✓ LA10 User Interaction</span><br>
+    <span class="fm-done">✓ LA11 Extension Culture</span><br>
+    <span class="fm-done">✓ LA12 Delivery Governance</span><br><br>
+    <span class="fm-node">LA01~LA06 System Architecture Decisions + LA07~LA12 Development
+    Architecture Decisions — Part 4까지 Foundation 완료</span>
+  </div>
+
+  <div class="takeaway">
+    <span class="label">Part 4 Closing Statement</span>
+    <div class="sentence">
+      Part 4에서 살펴본 Programming Model, Data Structure, UI Coupling, User Interaction, Modification
+      Culture, Transport Delivery는 각각 독립적인 기술이 아니다. 이들은 모두 중앙 통제와 업그레이드
+      안정성을 목표로 설계된 하나의 Development Architecture를 구성한다. 현대 SAP는 이 원칙을 버리는
+      것이 아니라 Git 기반 협업과 클라우드 운영 모델에 맞게 진화시키고 있다.
+    </div>
+  </div>
+
+  <div class="nav-footer">
+    <a href="LA11.html">◀ LA11 — Modification Culture</a>
+    <a href="La_Index.html" class="nav-index">목차</a>
+    <a href="LA13.html">LA13 — S/4HANA ABAP ▶</a>
+  </div>
+
+</div>
+
+</body>
+</html>

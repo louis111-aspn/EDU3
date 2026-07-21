@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LA07. Function Group & Global Variable | SAP Legacy Architecture Evolution</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Noto+Sans+KR:wght@400;500;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#003366; --navy-10:#e6ecf3; --bg:#f0f3f8; --ink:#1a1a1a; --sub:#5a6472; --line:#d7deea;
+    --white:#ffffff; --warn:#8a5a00; --warn-bg:#fdf3e3; --correct:#0f5c33; --correct-bg:#e7f5ec;
+  }
+  *{box-sizing:border-box;}
+  html,body{overflow-x:clip;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:'Noto Sans KR', sans-serif;font-size:15px;line-height:1.7;word-break:keep-all;overflow-wrap:break-word;}
+  .label{font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:13px;letter-spacing:0.04em;color:var(--navy);text-transform:uppercase;}
+  header.top{position:sticky;top:0;z-index:20;background:var(--white);border-bottom:1px solid var(--line);padding:14px 40px;display:flex;align-items:center;justify-content:space-between;}
+  header.top .series-tag{font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:13px;color:var(--sub);}
+  header.top .series-tag b{color:var(--navy);}
+  header.top nav{font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:13px;color:var(--sub);}
+  .wrap{max-width:880px;margin:0 auto;padding:56px 32px 96px;}
+  .eyebrow{font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:13px;color:var(--navy);letter-spacing:0.06em;margin-bottom:14px;}
+  h1{font-family:'DM Serif Display','Noto Sans KR',serif;font-size:42px;line-height:1.3;color:var(--navy);margin:0 0 12px;}
+  .subtitle{font-size:16px;color:var(--sub);margin-bottom:28px;}
+  .origin-card{background:var(--navy);color:var(--white);border-radius:6px;padding:22px 28px;margin-bottom:36px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;}
+  .origin-card .origin-label{font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:12px;color:#a9c2dc;letter-spacing:0.04em;display:block;margin-bottom:6px;}
+  .origin-chain{display:flex;align-items:center;gap:14px;font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:15px;flex-wrap:wrap;}
+  .origin-chain .from{color:#cfe0f0;}
+  .origin-chain .arrow{color:#7fa8cc;}
+  .origin-chain .to{background:rgba(255,255,255,0.12);padding:4px 12px;border-radius:4px;font-weight:700;}
+  h2.section-title{font-family:'DM Serif Display','Noto Sans KR',serif;font-size:30px;color:var(--navy);margin:56px 0 20px;display:flex;align-items:baseline;gap:12px;}
+  h2.section-title .num{font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:16px;color:var(--sub);font-style:normal;}
+  h3{font-size:18px;color:var(--ink);margin:28px 0 12px;font-weight:700;}
+  p{margin:0 0 16px;}
+  .card{background:var(--white);border:1px solid var(--line);border-radius:6px;padding:24px 28px;margin:20px 0;}
+  .callout{border-left:4px solid var(--navy);background:var(--navy-10);padding:20px 24px;margin:24px 0;border-radius:0 6px 6px 0;}
+  .callout .label{margin-bottom:8px;display:block;}
+  .callout.warn{border-left-color:var(--warn);background:var(--warn-bg);}
+  .callout.warn .label{color:var(--warn);}
+  .callout.correct{border-left-color:var(--correct);background:var(--correct-bg);}
+  .callout.correct .label{color:var(--correct);}
+  table.principle-table{width:100%;border-collapse:collapse;margin:20px 0;background:var(--white);border:1px solid var(--line);}
+  table.principle-table th{font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:13px;text-align:left;color:var(--white);background:var(--navy);padding:12px 18px;font-weight:500;}
+  table.principle-table td{padding:14px 18px;border-bottom:1px solid var(--line);vertical-align:top;font-size:14px;}
+  table.principle-table tr:last-child td{border-bottom:none;}
+  table.principle-table td.decision-col{font-weight:700;color:var(--navy);}
+  code.inline{font-family:'JetBrains Mono','Noto Sans KR',monospace;background:var(--navy-10);color:var(--navy);padding:2px 6px;border-radius:3px;font-size:13.5px;}
+  pre.code-block{font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:13px;background:#0d1b2a;color:#dce8f5;padding:18px 22px;border-radius:6px;overflow-x:auto;line-height:1.6;margin:16px 0;}
+  pre.code-block .cm{color:#7fa8cc;}
+  ul.plain{margin:0 0 16px;padding-left:20px;}
+  ul.plain li{margin-bottom:8px;}
+
+  /* function group container diagram */
+  .fg-diagram{background:var(--white);border:1px solid var(--line);border-radius:6px;padding:24px;margin:20px 0;}
+  .fg-outer{border:1.5px dashed var(--navy);border-radius:8px;padding:18px;}
+  .fg-outer .fg-title{font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:12px;color:var(--navy);display:block;margin-bottom:12px;font-weight:700;}
+  .fg-top{background:var(--navy-10);border:1px solid var(--navy);border-radius:6px;padding:10px 14px;font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:12.5px;color:var(--navy);margin-bottom:10px;text-align:center;font-weight:700;}
+  .fg-modules{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+  .fg-mod{background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:10px;text-align:center;font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:12.5px;color:var(--ink);}
+  @media (max-width:560px){.fg-modules{grid-template-columns:1fr;}}
+
+  .foundation-map{background:var(--white);border:1px solid var(--line);border-radius:6px;padding:24px;margin:20px 0;font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:13px;color:var(--ink);line-height:1.9;}
+  .foundation-map .fm-root{color:var(--navy);font-weight:700;}
+  .foundation-map .fm-node{color:var(--sub);}
+
+  .takeaway{margin-top:56px;padding:28px 32px;background:var(--navy);color:var(--white);border-radius:6px;}
+  .takeaway .label{color:#a9c2dc;margin-bottom:10px;display:block;}
+  .takeaway .sentence{font-family:'DM Serif Display','Noto Sans KR',serif;font-size:22px;line-height:1.5;}
+  .nav-footer{display:flex;justify-content:space-between;margin-top:48px;padding-top:24px;border-top:1px solid var(--line);font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:13px;color:var(--sub);}
+  @media (max-width:480px){
+    header.top{padding:12px 20px;}
+    .wrap{padding:40px 20px 72px;}
+    h1{font-size:30px;}
+    h2.section-title{font-size:22px;}
+    .card, .callout, .takeaway, .origin-card, .fg-diagram, .foundation-map{padding:18px 20px;}
+  }
+
+  .nav-footer a{color:var(--sub);text-decoration:none;}
+  .nav-footer a:hover{color:var(--navy);text-decoration:underline;}
+  .nav-footer .nav-index{font-weight:700;color:var(--navy);}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="series-tag">SAP Legacy Architecture Evolution &nbsp;·&nbsp; <b>LA07</b></div>
+  <nav>PART 4 — Chapter 7 / 12</nav>
+</header>
+
+<div class="wrap">
+
+  <div class="eyebrow">PART 4. ABAP Programming Legacy — Programming Paradigm Axis</div>
+  <h1>Function Group & Global Variable</h1>
+  <div class="subtitle">
+    LA01~LA06이 "SAP는 왜 이렇게 설계되었는가"를 다뤘다면, LA07부터는 그 결정이 <b>개발자가 코드를 작성하는
+    방식</b>에 남긴 흔적을 다룬다. 핵심 질문은 하나다 — 왜 SAP는 Class/Object보다 Function Group과
+    Function Module 중심으로 발전했는가?
+  </div>
+
+  <div class="origin-card">
+    <div>
+      <span class="origin-label">Origin Architecture Decision</span>
+      <div class="origin-chain">
+        <span class="from">Early Enterprise Programming Model Constraint</span>
+        <span class="arrow">→</span>
+        <span class="to">Procedural ABAP Programming Model</span>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="section-title"><span class="num">7.1</span> Legacy Origin — Procedural Programming과 Modularization</h2>
+
+  <p>초기 ABAP은 절차형(Procedural) 언어였다. Class/Object 개념(ABAP Objects)은 훨씬 이후에 도입되었고,
+  그 전까지 개발자가 로직을 재사용 가능한 단위로 나누는 방법은 Object가 아니라 <b>Function Module</b>
+  이었다. 여러 개의 Function Module을 하나의 단위로 묶어 관리하는 컨테이너가 <b>Function Group</b>이다.</p>
+
+  <h2 class="section-title"><span class="num">7.2</span> Technical Mechanism — Function Group / TOP Include / Global Data</h2>
+
+  <div class="fg-diagram">
+    <div class="fg-outer">
+      <span class="fg-title">Function Group (Container)</span>
+      <div class="fg-top">TOP Include — Global Data 선언 영역</div>
+      <div class="fg-modules">
+        <div class="fg-mod">Function Module 1</div>
+        <div class="fg-mod">Function Module 2</div>
+        <div class="fg-mod">Function Module 3</div>
+      </div>
+    </div>
+  </div>
+
+  <p>Function Group은 TOP Include라는 공통 영역을 가지며, 여기 선언된 변수는 그 Function Group에
+  속한 모든 Function Module이 파라미터 전달 없이 공유해서 읽고 쓸 수 있다.</p>
+
+  <pre class="code-block"><span class="cm">" TOP Include (예: SAPLZFG_EXAMPLE)</span>
+DATA: gv_counter TYPE i.       <span class="cm">" Function Group 전체가 공유하는 Global Data</span>
+
+FUNCTION Z_FM_INITIALIZE.
+  gv_counter = 0.
+ENDFUNCTION.
+
+FUNCTION Z_FM_INCREMENT.
+  gv_counter = gv_counter + 1.   <span class="cm">" 파라미터 없이 Global Data 직접 참조</span>
+ENDFUNCTION.</pre>
+
+  <h2 class="section-title"><span class="num">7.3</span> Why It Worked — 당시 환경에서의 합리성</h2>
+
+  <p>이 구조는 실수가 아니라 당시 SAP Dialog Transaction 처리 모델과 잘 맞았다. 하나의 사용자 세션
+  안에서 여러 Function Module을 순차 호출할 때, 매번 대용량 데이터를 파라미터로 주고받는 대신 <b>Shared
+  Memory Context(Function Group의 Global Data)</b>를 통해 상태를 공유하면 처리 효율이 높았다. 제한된
+  Memory와 Roll Area 안에서 동작해야 했던 Dialog Transaction 환경에서는 합리적인 선택이었다. 즉
+  <b>Explicit Data Passing에서 Implicit Shared Context로의 이동</b>이 이 시기 Architecture Decision의
+  본질이다.</p>
+
+  <h2 class="section-title"><span class="num">7.4</span> Modern Debt — Side Effect와 Hidden Dependency</h2>
+
+  <table class="principle-table">
+    <tr><th>영역</th><th>문제</th></tr>
+    <tr>
+      <td>Side Effect</td>
+      <td>Function Module 호출이 Caller가 알 수 없는 Global State를 변경할 수 있음</td>
+    </tr>
+    <tr>
+      <td>Hidden Dependency</td>
+      <td>특정 초기화 Function Module을 먼저 호출해야만 이후 호출이 올바르게 동작 — 호출 순서 의존성이
+      코드에 명시되지 않음</td>
+    </tr>
+    <tr>
+      <td>Testing Difficulty</td>
+      <td>Function Module 하나만 독립적으로 Unit Test하려면 Global State 전체를 함께 설정해야 함</td>
+    </tr>
+  </table>
+
+  <div class="callout warn">
+    <span class="label">Architecture Misconception Warning</span>
+    Function Group의 Global Variable은 개발자의 실수가 아니다. Object Orientation이 언어 차원에서
+    지원되지 않던 시대에, 제한된 Memory 환경에서 Modularization을 구현하기 위한 <b>당시의 Programming
+    Model</b>이었다.
+  </div>
+
+  <h2 class="section-title"><span class="num">7.5</span> S/4HANA Evolution — ABAP Objects / CDS / RAP</h2>
+
+  <p>이후 도입된 ABAP Objects는 Class와 Instance 단위로 상태를 캡슐화해, Global Data에 의존하지 않고도
+  상태를 명시적으로 관리할 수 있게 했다(Encapsulation). CDS는 단순히 "다음 세대 언어 문법"이 아니라
+  <b>Data Semantics Layer 자체의 진화</b>로, 데이터 모델링 계층에서 의미를 명시한다. RAP(RESTful ABAP
+  Programming Model)는 이 위에서 Business Object를 Behavior Definition으로 캡슐화한다. 전체 방향은
+  다음과 같다.</p>
+
+  <pre class="code-block">Procedural ABAP
+        ↓
+ABAP Objects        (Encapsulation)
+        ↓
+CDS                  (Semantic Data Model)
+        ↓
+RAP                  (Business Object + Behavior)</pre>
+
+  <p>즉 <b>암묵적 Global State에서 명시적 Instance 기반 State로</b>, 그리고 다시 <b>Semantic Data
+  Model과 Business Object 단위 캡슐화</b>로 이동한 것이다.</p>
+
+  <div class="callout correct">
+    <span class="label">Architecture Reading Point</span>
+    LA07은 Programming Paradigm 축의 첫 사례다. 다음 챕터인 LA08(Internal Table Header Line)은 같은
+    축에서 "Memory Model Simplification"이 어떻게 암묵적 데이터 컨텍스트로 이어졌는지를 다룬다.
+  </div>
+
+  <div class="foundation-map">
+    <span class="fm-root">PART 4 — Development Architecture Decisions</span><br>
+    LA07 Programming Model <span class="fm-node">(현재)</span><br>
+    → LA08 Code Style → LA09 UI Coupling → LA10 User Interaction<br>
+    → LA11 Customization Culture → LA12 Delivery Model
+  </div>
+
+  <div class="takeaway">
+    <span class="label">One Sentence Takeaway</span>
+    <div class="sentence">
+      Function Group과 Global Variable은 초기 ABAP에서 Modularization과 Transaction Efficiency를
+      확보하기 위한 합리적인 Programming Model이었다. 현대 SAP Architecture는 이를 제거하는 것이 아니라
+      Explicit Object, Semantic Model, Business Object 기반 구조로 진화시키고 있다.
+    </div>
+  </div>
+
+  <div class="nav-footer">
+    <a href="LA06.html">◀ LA06 — Batch Processing 중심 운영</a>
+    <a href="La_Index.html" class="nav-index">목차</a>
+    <a href="LA08.html">LA08 — Internal Table Header Line ▶</a>
+  </div>
+
+</div>
+
+</body>
+</html>

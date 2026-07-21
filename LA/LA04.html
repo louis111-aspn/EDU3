@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LA04. MANDT Client Dependency | SAP Legacy Architecture Evolution</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Noto+Sans+KR:wght@400;500;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#003366; --navy-10:#e6ecf3; --bg:#f0f3f8; --ink:#1a1a1a; --sub:#5a6472; --line:#d7deea;
+    --white:#ffffff; --warn:#8a5a00; --warn-bg:#fdf3e3; --correct:#0f5c33; --correct-bg:#e7f5ec;
+  }
+  *{box-sizing:border-box;}
+  html,body{overflow-x:clip;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:'Noto Sans KR', sans-serif;font-size:15px;line-height:1.7;word-break:keep-all;overflow-wrap:break-word;}
+  .label{font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:13px;letter-spacing:0.04em;color:var(--navy);text-transform:uppercase;}
+  header.top{position:sticky;top:0;z-index:20;background:var(--white);border-bottom:1px solid var(--line);padding:14px 40px;display:flex;align-items:center;justify-content:space-between;}
+  header.top .series-tag{font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:13px;color:var(--sub);}
+  header.top .series-tag b{color:var(--navy);}
+  header.top nav{font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:13px;color:var(--sub);}
+  .wrap{max-width:880px;margin:0 auto;padding:56px 32px 96px;}
+  .eyebrow{font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:13px;color:var(--navy);letter-spacing:0.06em;margin-bottom:14px;}
+  h1{font-family:'DM Serif Display','Noto Sans KR',serif;font-size:42px;line-height:1.3;color:var(--navy);margin:0 0 12px;}
+  .subtitle{font-size:16px;color:var(--sub);margin-bottom:28px;}
+  .origin-card{background:var(--navy);color:var(--white);border-radius:6px;padding:22px 28px;margin-bottom:36px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;}
+  .origin-card .origin-label{font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:12px;color:#a9c2dc;letter-spacing:0.04em;display:block;margin-bottom:6px;}
+  .origin-chain{display:flex;align-items:center;gap:14px;font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:15px;flex-wrap:wrap;}
+  .origin-chain .from{color:#cfe0f0;}
+  .origin-chain .arrow{color:#7fa8cc;}
+  .origin-chain .to{background:rgba(255,255,255,0.12);padding:4px 12px;border-radius:4px;font-weight:700;}
+  h2.section-title{font-family:'DM Serif Display','Noto Sans KR',serif;font-size:30px;color:var(--navy);margin:56px 0 20px;display:flex;align-items:baseline;gap:12px;}
+  h2.section-title .num{font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:16px;color:var(--sub);font-style:normal;}
+  h3{font-size:18px;color:var(--ink);margin:28px 0 12px;font-weight:700;}
+  p{margin:0 0 16px;}
+  .card{background:var(--white);border:1px solid var(--line);border-radius:6px;padding:24px 28px;margin:20px 0;}
+  .callout{border-left:4px solid var(--navy);background:var(--navy-10);padding:20px 24px;margin:24px 0;border-radius:0 6px 6px 0;}
+  .callout .label{margin-bottom:8px;display:block;}
+  .callout.warn{border-left-color:var(--warn);background:var(--warn-bg);}
+  .callout.warn .label{color:var(--warn);}
+  .callout.correct{border-left-color:var(--correct);background:var(--correct-bg);}
+  .callout.correct .label{color:var(--correct);}
+  table.principle-table{width:100%;border-collapse:collapse;margin:20px 0;background:var(--white);border:1px solid var(--line);}
+  table.principle-table th{font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:13px;text-align:left;color:var(--white);background:var(--navy);padding:12px 18px;font-weight:500;}
+  table.principle-table td{padding:14px 18px;border-bottom:1px solid var(--line);vertical-align:top;font-size:14px;}
+  table.principle-table tr:last-child td{border-bottom:none;}
+  table.principle-table td.decision-col{font-weight:700;color:var(--navy);}
+  code.inline{font-family:'JetBrains Mono','Noto Sans KR',monospace;background:var(--navy-10);color:var(--navy);padding:2px 6px;border-radius:3px;font-size:13.5px;}
+  pre.code-block{font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:13px;background:#0d1b2a;color:#dce8f5;padding:18px 22px;border-radius:6px;overflow-x:auto;line-height:1.6;margin:16px 0;}
+  pre.code-block .cm{color:#7fa8cc;}
+  ul.plain{margin:0 0 16px;padding-left:20px;}
+  ul.plain li{margin-bottom:8px;}
+
+  /* client isolation diagram */
+  .client-diagram{background:var(--white);border:1px solid var(--line);border-radius:6px;padding:24px;margin:20px 0;}
+  .physical-box{border:1.5px dashed var(--sub);border-radius:6px;padding:16px;text-align:center;}
+  .physical-box .p-label{font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:12px;color:var(--sub);display:block;margin-bottom:12px;}
+  .clients-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+  .client-box{background:var(--navy-10);border:1px solid var(--navy);border-radius:6px;padding:12px;text-align:center;font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:13px;color:var(--navy);font-weight:700;}
+  .client-box span{display:block;font-weight:400;color:var(--sub);font-size:11.5px;margin-top:4px;}
+  @media (max-width:560px){.clients-row{grid-template-columns:1fr;}}
+
+  .takeaway{margin-top:56px;padding:28px 32px;background:var(--navy);color:var(--white);border-radius:6px;}
+  .takeaway .label{color:#a9c2dc;margin-bottom:10px;display:block;}
+  .takeaway .sentence{font-family:'DM Serif Display','Noto Sans KR',serif;font-size:22px;line-height:1.5;}
+  .nav-footer{display:flex;justify-content:space-between;margin-top:48px;padding-top:24px;border-top:1px solid var(--line);font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:13px;color:var(--sub);}
+  @media (max-width:480px){
+    header.top{padding:12px 20px;}
+    .wrap{padding:40px 20px 72px;}
+    h1{font-size:30px;}
+    h2.section-title{font-size:22px;}
+    .card, .callout, .takeaway, .origin-card, .client-diagram{padding:18px 20px;}
+  }
+
+  .nav-footer a{color:var(--sub);text-decoration:none;}
+  .nav-footer a:hover{color:var(--navy);text-decoration:underline;}
+  .nav-footer .nav-index{font-weight:700;color:var(--navy);}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="series-tag">SAP Legacy Architecture Evolution &nbsp;·&nbsp; <b>LA04</b></div>
+  <nav>PART 2 — Chapter 4 / 8</nav>
+</header>
+
+<div class="wrap">
+
+  <div class="eyebrow">PART 2. 데이터 Representation의 역사와 한계</div>
+  <h1>MANDT Client Dependency</h1>
+  <div class="subtitle">
+    LA02·LA03이 Data Representation 축이었다면, LA04는 축 자체가 바뀐다. 질문은 "왜 MANDT가 존재했는가"가
+    아니라, <b>하나의 물리적 SAP 시스템 안에서 여러 Business Environment를 어떻게 논리적으로 격리하려 했는가</b>다.
+  </div>
+
+  <div class="origin-card">
+    <div>
+      <span class="origin-label">Origin Architecture Decision (LA01 연결)</span>
+      <div class="origin-chain">
+        <span class="from">Logical Isolation</span>
+        <span class="arrow">→</span>
+        <span class="to">MANDT Client Dependency</span>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="section-title"><span class="num">4.1</span> Legacy Origin — 하나의 시스템, 여러 Business Environment</h2>
+
+  <p>과거에는 하나의 SAP 시스템(하나의 Application Server 집합, 하나의 Database)을 구축하는 비용 자체가
+  매우 컸다. 그런데 기업은 대개 하나의 사업만 운영하지 않는다 — 본사와 자회사, 실 운영 환경과 교육/테스트
+  환경, 여러 국가 법인이 동시에 존재한다. 사업 단위마다 별도의 물리적 시스템을 두는 것은 당시로서는
+  감당하기 어려운 비용이었다.</p>
+
+  <p>SAP의 해법은 <b>하나의 물리적 시스템 위에, 여러 개의 논리적 Client(Mandant)를 두는 것</b>이었다.
+  같은 프로그램·같은 테이블 구조를 공유하면서도, 데이터는 Client 단위로 완전히 분리되도록 설계했다.</p>
+
+  <div class="client-diagram">
+    <div class="physical-box">
+      <span class="p-label">하나의 물리적 SAP System (하나의 DB, 하나의 Application Server 집합)</span>
+      <div class="clients-row">
+        <div class="client-box">Client 100<span>운영 (Production)</span></div>
+        <div class="client-box">Client 200<span>테스트 (QA)</span></div>
+        <div class="client-box">Client 300<span>교육/샌드박스</span></div>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="section-title"><span class="num">4.2</span> Technical Mechanism — MANDT as Key Field</h2>
+
+  <p>이 논리적 분리는 Database Table 설계 차원에서 구현된다. Customizing, Master Data, Transaction
+  Data를 담는 <b>Client-dependent Table</b>은 예외 없이 <code class="inline">MANDT</code>를 Table의
+  첫 번째 Primary Key Field로 갖는다.</p>
+
+  <pre class="code-block"><span class="cm">" Client-dependent Table의 전형적인 Key 구조</span>
+KNA1 (Customer Master)
+  MANDT   <span class="cm">" Client — 항상 첫 번째 Key</span>
+  KUNNR   <span class="cm">" Customer Number</span>
+
+<span class="cm">" 반면 Client-independent Table (예: ABAP Repository 객체)은</span>
+<span class="cm">" MANDT 없이 전체 System에서 공유된다</span></pre>
+
+  <div class="callout">
+    <span class="label">Important Concept</span>
+    모든 SAP Table이 MANDT를 갖는 것은 아니다. ABAP Dictionary는 Client-dependent Object(대부분의
+    Transaction Data, 일부 Configuration Data)와 Cross-client Object(일부 Repository Object,
+    System-wide Control Data)를 구분해서 관리한다. MANDT는 전자에만 적용된다.
+  </div>
+
+  <p>사용자가 SAP GUI에 로그인할 때 Client(100/200/300)를 먼저 선택하는 이유가 여기 있다 — 로그인
+  Session에 Client가 고정되면, <b>SAP Runtime Environment는 이 Client Context를 기반으로
+  Client-dependent Data Access를 제어</b>한다. Open SQL 경로에서는 이 제어가 일관되게 적용되지만,
+  Native SQL이나 일부 직접 DB 접근 경로에서는 동일하게 보장되지 않는다는 점은 유의할 부분이다.</p>
+
+  <h2 class="section-title"><span class="num">4.3</span> 현대 문제 — Cloud Tenant Architecture와의 충돌</h2>
+
+  <p>이 모델은 "하나의 시스템, 여러 논리적 구역"이라는 전제 위에 서 있다. 문제는 Cloud SaaS 시대의
+  Multi-tenancy가 요구하는 격리 수준이 다르다는 점이다.</p>
+
+  <table class="principle-table">
+    <tr><th>영역</th><th>격차</th></tr>
+    <tr>
+      <td>격리 단위</td>
+      <td>MANDT는 같은 DB/코드 위의 Row 단위 격리. Cloud Multi-tenancy는 Tenant별 독립적인
+      Infrastructure·Scaling·보안 경계를 전제로 함</td>
+    </tr>
+    <tr>
+      <td>External Query 복잡화</td>
+      <td>SAP Kernel을 거치지 않는 Raw SQL/외부 도구 접근에서는 MANDT 조건을 개발자가 직접 챙겨야 함</td>
+    </tr>
+    <tr>
+      <td>데이터 접근 제약</td>
+      <td>Client 간 데이터 이동(Client Copy 등)은 SAP 표준 절차를 거쳐야 하며, 임의의 Cross-Client
+      Query는 설계상 지원 대상이 아님</td>
+    </tr>
+  </table>
+
+  <div class="callout warn">
+    <span class="label">Architecture Misconception Warning</span>
+    MANDT는 Cloud Multi-tenancy의 "실패한 버전"이 아니다. MANDT는 초기 Enterprise ERP 환경에서
+    하나의 시스템 자원을 여러 Business Environment가 공유하기 위한 합리적인 Isolation Strategy였다.
+    현대 Cloud Architecture에서는 Isolation Boundary가 Application Layer에서 Infrastructure/Tenant
+    Layer로 이동하면서 그 역할이 변화하였다.
+  </div>
+
+  <h2 class="section-title"><span class="num">4.4</span> S/4HANA / BTP 시대 대응 방향</h2>
+
+  <p>S/4HANA에서도 MANDT 구조 자체는 기술적으로 유지된다. 다만 Public Cloud/RISE with SAP와 같은
+  현대 배포 모델에서는, 실질적인 격리 경계가 Client Level이 아니라 <b>System 또는 Tenant Level</b>로
+  이동한다 — 즉 고객마다 별도의 System Instance를 할당하는 방식이 Cloud Multi-tenancy의 기본 전제에
+  더 가깝다.</p>
+
+  <ul class="plain">
+    <li>MANDT는 여전히 존재하지만, Cloud 환경에서는 "여러 사업부를 하나의 System 안에 욱여넣는 수단"이
+    아니라 System 내부의 운영/테스트 구역 분리 등 제한된 용도로 쓰이는 경우가 많음</li>
+    <li>Tenant 간 완전한 격리가 필요한 경우, MANDT가 아니라 별도 System/Tenant 배치가 아키텍처 결정
+    사항이 됨</li>
+  </ul>
+
+  <pre class="code-block"><span class="cm">Legacy Isolation Layer</span>
+Client
+  └─ System
+
+<span class="cm">Modern Isolation Layer</span>
+Tenant
+  └─ Identity
+       └─ Service Boundary</pre>
+
+  <p>즉 현대 Cloud Architecture로의 이동은 단순히 "Client를 없애는 것"이 아니라, 격리 책임이
+  <b>Identity Management / Authorization / Service Isolation / Cloud Tenant Governance</b> 영역으로
+  옮겨가는 과정이다.</p>
+
+  <div class="callout correct">
+    <span class="label">Architecture Reading Point</span>
+    LA04는 LA01의 Logical Isolation 축을 여는 첫 사례다. LA02·LA03(Data Representation 축)과는 다른
+    갈래이며, 다음 챕터인 LA05(Header-Item Data Model)는 다시 Database Architecture 축으로 이동한다.
+  </div>
+
+  <div class="takeaway">
+    <span class="label">One Sentence Takeaway</span>
+    <div class="sentence">
+      MANDT는 Legacy Debt가 아니라 시대가 요구했던 Isolation Strategy이며, SAP Architecture의 변화는
+      데이터를 나누는 방식에서 Business Boundary를 정의하는 방식으로 진화한 과정이다.
+    </div>
+  </div>
+
+  <div class="nav-footer">
+    <a href="LA03.html">◀ LA03 — Currency Decimal Shift</a>
+    <a href="La_Index.html" class="nav-index">목차</a>
+    <a href="LA05.html">LA05 — Header-Item Data Model ▶</a>
+  </div>
+
+</div>
+
+</body>
+</html>

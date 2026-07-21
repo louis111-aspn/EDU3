@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Edition | SAP Legacy Architecture Evolution</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Noto+Sans+KR:wght@400;500;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{--navy:#003366;--bg:#f0f3f8;--ink:#1a1a1a;--sub:#5a6472;--line:#d7deea;--white:#ffffff;}
+  *{box-sizing:border-box;}
+  html,body{overflow-x:clip;}
+  body{
+    margin:0;background:var(--bg);color:var(--ink);
+    font-family:'Noto Sans KR', sans-serif;font-size:15px;line-height:1.7;
+    word-break:keep-all;overflow-wrap:break-word;
+    min-height:100vh;display:flex;align-items:center;justify-content:center;
+  }
+  .wrap{max-width:520px;margin:0 auto;padding:64px 32px;text-align:center;}
+  .eyebrow{
+    font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:12px;letter-spacing:0.12em;
+    color:var(--navy);text-transform:uppercase;margin-bottom:20px;
+  }
+  h1{font-family:'DM Serif Display','Noto Sans KR',serif;font-size:32px;line-height:1.35;color:var(--navy);margin:0 0 8px;}
+  .edition-tag{font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:13px;color:var(--sub);margin-bottom:48px;}
+  .stats{
+    display:flex;justify-content:center;gap:32px;margin-bottom:48px;
+    font-family:'JetBrains Mono','Noto Sans KR',monospace;
+  }
+  .stat{text-align:center;}
+  .stat .num{font-family:'DM Serif Display','Noto Sans KR',serif;font-size:28px;color:var(--navy);}
+  .stat .lbl{font-size:11px;color:var(--sub);letter-spacing:0.06em;text-transform:uppercase;margin-top:4px;}
+  .divider{width:40px;height:1px;background:var(--line);margin:40px auto;}
+  .credit{font-size:14px;color:var(--ink);margin-bottom:6px;}
+  .credit .org{font-weight:700;color:var(--navy);}
+  .version{font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:12px;color:var(--sub);margin-top:24px;}
+  .colophon-quote{
+    font-family:'DM Serif Display','Noto Sans KR',serif;font-style:italic;font-size:15px;
+    color:var(--sub);margin-top:56px;line-height:1.7;
+  }
+  .nav-footer{
+    margin-top:56px;padding-top:20px;border-top:1px solid var(--line);
+    display:flex;justify-content:space-between;
+    font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:12px;
+  }
+  .nav-footer a{color:var(--sub);text-decoration:none;}
+  .nav-footer a:hover{color:var(--navy);text-decoration:underline;}
+  .nav-footer .nav-index{font-weight:700;color:var(--navy);}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="eyebrow">ASPN BAC</div>
+  <h1>SAP Legacy Architecture Evolution</h1>
+  <div class="edition-tag">First Edition</div>
+
+  <div class="stats">
+    <div class="stat"><div class="num">5</div><div class="lbl">Parts</div></div>
+    <div class="stat"><div class="num">20</div><div class="lbl">Chapters</div></div>
+    <div class="stat"><div class="num">1</div><div class="lbl">Epilogue</div></div>
+  </div>
+
+  <div class="divider"></div>
+
+  <p class="credit">Created by <span class="org">ASPN BAC</span></p>
+  <p class="version">Version 1.0 · 2026</p>
+
+  <div class="colophon-quote">
+    "This series explains not only how SAP architecture evolved,<br>but why it evolved."
+  </div>
+
+  <div class="nav-footer">
+    <a href="Epilogue.html">◀ Epilogue</a>
+    <a href="La_Index.html" class="nav-index">목차</a>
+    <a href="La_Index.html">처음으로 ▶</a>
+  </div>
+</div>
+
+</body>
+</html>
