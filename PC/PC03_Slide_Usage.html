@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PC01 · 발표의 본질</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Noto+Sans+KR:wght@400;500;700;900&family=JetBrains+Mono&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#003366;
+    --navy-10:#e6edf5;
+    --navy-05:#f0f5fa;
+    --bg:#f0f3f8;
+    --ink:#1a2433;
+    --sub:#4a5568;
+    --warn:#8a5a00;
+    --warn-bg:#fdf3e0;
+    --correct:#0f6b3f;
+    --correct-bg:#e8f5ee;
+    --wrong:#8a1f1f;
+    --wrong-bg:#fbe9e9;
+    --card-border:#d8e0ea;
+  }
+  *{box-sizing:border-box;}
+  html{overflow-x:clip;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Noto Sans KR', sans-serif;
+    font-size:15px;
+    line-height:1.75;
+    word-break:keep-all;
+    overflow-wrap:break-word;
+    overflow-x:clip;
+  }
+  code, .mono{font-family:'JetBrains Mono','Noto Sans KR',monospace;}
+
+  header.top{
+    background:var(--navy);
+    color:#fff;
+    padding:48px 96px 40px;
+  }
+  header.top .eyebrow{
+    font-size:13px;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    opacity:.75;
+    margin-bottom:10px;
+  }
+  header.top .back-link{
+    display:inline-block;
+    font-size:13px;
+    color:rgba(255,255,255,.8);
+    text-decoration:none;
+    margin-bottom:14px;
+    border-bottom:1px solid rgba(255,255,255,.4);
+    padding-bottom:2px;
+  }
+  header.top .back-link:hover{color:#fff; border-bottom-color:#fff;}
+    header.top h1{
+    font-family:'DM Serif Display', serif;
+    font-size:42px;
+    font-weight:400;
+    margin:0 0 16px;
+  }
+  header.top .hero-msg{
+    font-size:16px;
+    max-width:760px;
+    opacity:.92;
+    border-left:3px solid rgba(255,255,255,.5);
+    padding-left:16px;
+  }
+
+  nav.sticky{
+    position:sticky;
+    top:0;
+    z-index:50;
+    background:#fff;
+    border-bottom:1px solid var(--card-border);
+    display:flex;
+    gap:4px;
+    padding:0 96px;
+    overflow-x:auto;
+  }
+  nav.sticky a{
+    display:block;
+    padding:16px 18px;
+    font-size:14px;
+    font-weight:500;
+    color:var(--sub);
+    text-decoration:none;
+    border-bottom:3px solid transparent;
+    white-space:nowrap;
+  }
+  nav.sticky a:hover{color:var(--navy);}
+  nav.sticky a.active{color:var(--navy);border-bottom-color:var(--navy);}
+
+  main{padding:56px 96px 96px; max-width:980px; margin:0 auto;}
+
+  section.block{margin-bottom:72px; scroll-margin-top:64px;}
+  .section-label{
+    font-size:13px;
+    font-weight:700;
+    color:var(--navy);
+    letter-spacing:.06em;
+    margin-bottom:8px;
+  }
+  h2.action-title{
+    font-family:'DM Serif Display', serif;
+    font-weight:400;
+    font-size:30px;
+    line-height:1.4;
+    color:var(--ink);
+    margin:0 0 28px;
+    padding-bottom:20px;
+    border-bottom:2px solid var(--navy);
+  }
+
+  p.lead{font-size:16px; color:var(--sub); margin-bottom:24px;}
+
+  .callout{
+    border-radius:4px;
+    padding:20px 24px;
+    margin:20px 0;
+    font-size:15px;
+  }
+  .callout .label{
+    font-size:13px;
+    font-weight:700;
+    letter-spacing:.04em;
+    margin-bottom:8px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .callout.navy{background:var(--navy-05); border-left:4px solid var(--navy);}
+  .callout.navy .label{color:var(--navy);}
+  .callout.warn{background:var(--warn-bg); border-left:4px solid var(--warn);}
+  .callout.warn .label{color:var(--warn);}
+  .callout.correct{background:var(--correct-bg); border-left:4px solid var(--correct);}
+  .callout.correct .label{color:var(--correct);}
+  .callout.wrong{background:var(--wrong-bg); border-left:4px solid var(--wrong);}
+  .callout.wrong .label{color:var(--wrong);}
+
+  .compare{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:20px;
+    margin:28px 0;
+  }
+  .compare .col{
+    border:1px solid var(--card-border);
+    border-radius:6px;
+    overflow:hidden;
+    background:#fff;
+  }
+  .compare .col.emph{border:2px solid var(--navy);}
+  .compare .col h3{
+    margin:0;
+    padding:16px 20px;
+    font-size:16px;
+    font-family:'Noto Sans KR', sans-serif;
+    font-weight:700;
+    background:var(--navy-10);
+    color:var(--navy);
+  }
+  .compare .col.emph h3{background:var(--navy); color:#fff;}
+  .compare .col ul{margin:0; padding:18px 22px; list-style:none;}
+  .compare .col li{
+    position:relative;
+    padding-left:18px;
+    margin-bottom:12px;
+    font-size:14px;
+    color:var(--sub);
+  }
+  .compare .col li::before{
+    content:"—";
+    position:absolute; left:0; color:var(--navy);
+  }
+
+  .card{
+    background:#fff;
+    border:1px solid var(--card-border);
+    border-radius:6px;
+    padding:24px;
+    margin:20px 0;
+  }
+
+  .takeaways{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:16px;
+    margin:28px 0;
+  }
+  .takeaways .item{
+    background:#fff;
+    border:1px solid var(--card-border);
+    border-top:3px solid var(--navy);
+    border-radius:4px;
+    padding:20px;
+  }
+  .takeaways .num{
+    font-family:'JetBrains Mono','Noto Sans KR',monospace;
+    font-size:13px;
+    color:var(--navy);
+    font-weight:700;
+    margin-bottom:8px;
+  }
+  .takeaways p{margin:0; font-size:14px; color:var(--ink);}
+
+  .flow{
+    display:flex;
+    align-items:stretch;
+    gap:0;
+    margin:24px 0;
+    flex-wrap:wrap;
+  }
+  .flow .step{
+    flex:1;
+    min-width:140px;
+    background:#fff;
+    border:1px solid var(--card-border);
+    padding:16px 14px;
+    text-align:center;
+    font-size:13px;
+    font-weight:700;
+    color:var(--navy);
+    position:relative;
+  }
+  .flow .step .sub{
+    display:block;
+    font-weight:400;
+    color:var(--sub);
+    font-size:12px;
+    margin-top:6px;
+  }
+  .flow .arrow{
+    display:flex; align-items:center; justify-content:center;
+    padding:0 6px; color:var(--navy); font-size:16px;
+  }
+
+  .scope-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:20px;
+    margin:24px 0;
+  }
+  .scope-grid .box{
+    border-radius:6px;
+    padding:22px 24px;
+  }
+  .scope-grid .in{background:var(--correct-bg); border-left:4px solid var(--correct);}
+  .scope-grid .out{background:var(--wrong-bg); border-left:4px solid var(--wrong);}
+  .scope-grid h4{margin:0 0 12px; font-size:14px; letter-spacing:.02em;}
+  .scope-grid .in h4{color:var(--correct);}
+  .scope-grid .out h4{color:var(--wrong);}
+  .scope-grid ul{margin:0; padding-left:18px; font-size:14px; color:var(--ink);}
+  .scope-grid li{margin-bottom:8px;}
+
+  .quiz{
+    background:#fff;
+    border:1px solid var(--card-border);
+    border-radius:6px;
+    padding:24px;
+    margin:20px 0;
+  }
+  .quiz .q{font-size:15px; font-weight:700; margin-bottom:14px;}
+  .quiz .opt{
+    display:block;
+    width:100%;
+    text-align:left;
+    padding:12px 16px;
+    margin-bottom:8px;
+    border:1px solid var(--card-border);
+    border-radius:4px;
+    background:#fbfcfe;
+    cursor:pointer;
+    font-size:14px;
+    font-family:inherit;
+    color:var(--ink);
+  }
+  .quiz .opt:hover{border-color:var(--navy);}
+  .quiz .opt.correct-ans{background:var(--correct-bg); border-color:var(--correct);}
+  .quiz .opt.wrong-ans{background:var(--wrong-bg); border-color:var(--wrong);}
+  .quiz .fb{
+    margin-top:10px;
+    font-size:13px;
+    padding:12px 14px;
+    border-radius:4px;
+    display:none;
+  }
+  .quiz .fb.show{display:block;}
+  .quiz .fb.ok{background:var(--correct-bg); color:var(--correct);}
+  .quiz .fb.no{background:var(--wrong-bg); color:var(--wrong);}
+
+  .checklist{list-style:none; padding:0; margin:20px 0;}
+  .checklist li{
+    display:flex; gap:12px; align-items:flex-start;
+    padding:12px 0;
+    border-bottom:1px solid var(--card-border);
+    font-size:14px;
+  }
+  .checklist input{margin-top:3px; accent-color:var(--navy);}
+
+  .summary-box{
+    background:var(--navy);
+    color:#fff;
+    border-radius:6px;
+    padding:28px 32px;
+    margin-top:40px;
+  }
+  .summary-box .section-label{color:#cfe0f2;}
+  .summary-box h3{
+    font-family:'DM Serif Display', serif;
+    font-weight:400;
+    font-size:22px;
+    margin:0 0 16px;
+  }
+  .summary-box ol{margin:0; padding-left:20px; font-size:14px; opacity:.95;}
+  .summary-box li{margin-bottom:8px;}
+
+  footer.qa-gate{
+    max-width:980px;
+    margin:0 auto 80px;
+    padding:0 96px;
+  }
+  details.qa{
+    background:#fff;
+    border:1px dashed var(--card-border);
+    border-radius:6px;
+    padding:18px 22px;
+    font-size:13px;
+    color:var(--sub);
+  }
+  details.qa summary{
+    cursor:pointer;
+    font-weight:700;
+    color:var(--navy);
+    font-size:13px;
+  }
+  details.qa ul{margin:12px 0 0; padding-left:18px;}
+  details.qa li{margin-bottom:6px;}
+
+  .badge-row{display:flex; gap:8px; flex-wrap:wrap; margin-top:12px;}
+  .badge{
+    display:inline-flex; align-items:center; gap:6px;
+    font-family:'JetBrains Mono','Noto Sans KR',monospace;
+    font-size:11px;
+    padding:4px 10px;
+    border-radius:20px;
+    background:var(--navy-10);
+    color:var(--navy);
+    border:1px solid var(--navy);
+  }
+  .badge.reuse{background:#fff; color:var(--sub); border-color:var(--card-border);}
+
+  .hero-exercise{
+    background:#fff;
+    border:2px solid var(--navy);
+    border-radius:8px;
+    padding:32px;
+    margin:0 0 64px;
+  }
+  .hero-exercise .ex-label{
+    font-size:13px; font-weight:700; color:var(--navy);
+    letter-spacing:.06em; margin-bottom:6px;
+  }
+  .hero-exercise h2{
+    font-family:'DM Serif Display', serif; font-weight:400;
+    font-size:24px; margin:0 0 24px; line-height:1.4;
+  }
+  .ex-options{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:20px;}
+  .ex-opt{
+    text-align:left; cursor:pointer; font-family:inherit;
+    background:var(--navy-05); border:1px solid var(--card-border);
+    border-radius:6px; padding:20px; font-size:14px; line-height:1.7; color:var(--ink);
+  }
+  .ex-opt .tag{display:block; font-size:12px; font-weight:700; color:var(--navy); margin-bottom:8px;}
+  .ex-opt:hover{border-color:var(--navy);}
+  .ex-opt.picked-right{background:var(--correct-bg); border-color:var(--correct);}
+  .ex-opt.picked-wrong{background:var(--wrong-bg); border-color:var(--wrong);}
+  .ex-reveal{
+    display:none; margin-top:8px; padding:20px 24px;
+    background:var(--navy); color:#fff; border-radius:6px; font-size:14px; line-height:1.8;
+  }
+  .ex-reveal.show{display:block;}
+  .ex-reveal strong{color:#cfe0f2;}
+
+
+  /* PC02 신규 컴포넌트 */
+  .pyramid{display:flex; flex-direction:column; align-items:center; gap:10px; margin:32px 0;}
+  .pyramid .lvl1{
+    width:100%; max-width:340px; background:var(--navy); color:#fff;
+    text-align:center; padding:16px; border-radius:4px; font-weight:700; font-size:14px;
+  }
+  .pyramid .lvl2{display:flex; gap:10px; width:100%; max-width:640px;}
+  .pyramid .lvl2 .box{
+    flex:1; background:var(--navy-10); border:1px solid var(--navy);
+    padding:12px 10px; text-align:center; font-size:13px; color:var(--navy); border-radius:4px; font-weight:700;
+  }
+  .pyramid .lvl3{display:flex; gap:10px; width:100%; max-width:900px;}
+  .pyramid .lvl3 .box{
+    flex:1; background:#fff; border:1px dashed var(--card-border);
+    padding:10px; text-align:center; font-size:12px; color:var(--sub); border-radius:4px;
+  }
+
+  .audience-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin:24px 0;}
+  .audience-grid .card2{
+    background:#fff; border:1px solid var(--card-border); border-radius:6px; overflow:hidden;
+  }
+  .audience-grid .head{
+    background:var(--navy); color:#fff; padding:12px 16px; font-size:13px; font-weight:700;
+  }
+  .audience-grid .body{padding:16px; font-size:13.5px; color:var(--ink); line-height:1.7;}
+  .audience-grid .tag{
+    display:inline-block; font-size:11px; color:var(--sub); margin-bottom:8px;
+    font-family:'JetBrains Mono','Noto Sans KR',monospace;
+  }
+
+  .ba-pair{
+    background:#fff; border:1px solid var(--card-border); border-radius:6px;
+    padding:18px 22px; margin:14px 0;
+  }
+  .ba-pair .before{color:var(--wrong); font-size:14px; margin-bottom:8px;}
+  .ba-pair .after{color:var(--correct); font-size:14px; font-weight:500;}
+  .ba-pair .before .tag, .ba-pair .after .tag{
+    font-family:'JetBrains Mono','Noto Sans KR',monospace; font-size:11px; font-weight:700; margin-right:8px;
+  }
+
+
+  /* PC03 신규 컴포넌트 — Hero Before/After (Hero Exercise 대체, Template v1.1 §2.1) */
+  .hero-ba{
+    background:#fff; border:2px solid var(--navy); border-radius:8px;
+    padding:32px; margin:0 0 64px;
+  }
+  .hero-ba .ex-label{font-size:13px; font-weight:700; color:var(--navy); letter-spacing:.06em; margin-bottom:6px;}
+  .hero-ba h2{font-family:'DM Serif Display', serif; font-weight:400; font-size:24px; margin:0 0 24px; line-height:1.4;}
+  .hero-ba .cols{display:grid; grid-template-columns:1fr 40px 1fr; gap:12px; align-items:stretch; margin-bottom:20px;}
+  .hero-ba .col{border-radius:6px; padding:20px 22px;}
+  .hero-ba .col.before{background:var(--wrong-bg); border-left:4px solid var(--wrong);}
+  .hero-ba .col.after{background:var(--correct-bg); border-left:4px solid var(--correct);}
+  .hero-ba .col h4{margin:0 0 12px; font-size:13px; font-weight:700; letter-spacing:.04em;}
+  .hero-ba .col.before h4{color:var(--wrong);}
+  .hero-ba .col.after h4{color:var(--correct);}
+  .hero-ba .col ul{margin:0; padding-left:18px; font-size:14px; color:var(--ink);}
+  .hero-ba .col li{margin-bottom:10px;}
+  .hero-ba .center-arrow{display:flex; align-items:center; justify-content:center; font-size:22px; color:var(--navy);}
+  .hero-ba button.reveal-btn{
+    display:block; margin:4px auto 0; padding:10px 20px; border-radius:20px;
+    background:var(--navy); color:#fff; border:none; font-size:13px; font-weight:700;
+    cursor:pointer; font-family:inherit;
+  }
+  .hero-ba button.reveal-btn:hover{opacity:.9;}
+
+
+  /* Chapter Prev/Next Navigation */
+  .chapter-nav{display:flex; gap:16px; margin:48px 0 0;}
+  .chapter-nav a{
+    flex:1; padding:18px 22px; border:1px solid var(--card-border); border-radius:6px;
+    text-decoration:none; color:var(--ink); background:#fff; transition:border-color .15s;
+  }
+  .chapter-nav a:hover{border-color:var(--navy);}
+  .chapter-nav a.next{text-align:right;}
+  .chapter-nav .direction{
+    display:block; font-size:12px; color:var(--sub); margin-bottom:4px;
+    font-family:'JetBrains Mono','Noto Sans KR',monospace;
+  }
+  .chapter-nav .title{font-weight:700; color:var(--navy); font-size:14px;}
+
+  @media (max-width:768px){
+    .chapter-nav{flex-direction:column;}
+
+    .ex-options{grid-template-columns:1fr;}
+    header.top, main, nav.sticky, footer.qa-gate{padding-left:20px; padding-right:20px;}
+    header.top h1{font-size:30px;}
+    .compare, .scope-grid, .takeaways{grid-template-columns:1fr;}
+    .flow{flex-direction:column;}
+    .flow .arrow{transform:rotate(90deg); padding:6px 0;}
+    .audience-grid{grid-template-columns:1fr;}
+    .pyramid .lvl2, .pyramid .lvl3{flex-direction:column; max-width:100%;}
+    .hero-ba .cols{grid-template-columns:1fr;}
+    .hero-ba .center-arrow{transform:rotate(90deg); padding:6px 0;}
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="eyebrow">PC Series · Presentation &amp; Communication · PC03</div>
+  <a class="back-link" href="pc_index.html">← PC Series Index</a>
+  <h1>슬라이드 활용법</h1>
+  <div class="hero-msg">슬라이드는 청중이 읽는 문서가 아니라, 발표자의 말을 돕는 보조 장치다.</div>
+</header>
+
+<nav class="sticky" id="navTabs">
+  <a href="#s31" class="active">3.1 시각 보조</a>
+  <a href="#s32">3.2 읽지 않고 설명하기</a>
+  <a href="#s33">3.3 한 슬라이드-한 메시지</a>
+  <a href="#s34">3.4 본문 vs 백업</a>
+  <a href="#s35">3.5 화면 전환·애니메이션</a>
+</nav>
+
+<main>
+
+  <!-- Hero Before/After (Hero Exercise 대체, Template v1.1 §2.1 Exception Rule) -->
+  <div class="hero-ba" id="heroBA">
+    <div class="ex-label">먼저 비교해보기</div>
+    <h2>같은 발표라도, 슬라이드가 이렇게 다르면 청중의 경험도 완전히 달라진다</h2>
+    <div class="cols">
+      <div class="col before">
+        <h4>✕ BEFORE</h4>
+        <ul>
+          <li>청중이 제목을 읽는다</li>
+          <li>청중이 글머리표를 읽는다</li>
+          <li>청중이 표를 읽는다</li>
+          <li>청중은 슬라이드를 읽는다</li>
+        </ul>
+      </div>
+      <div class="center-arrow">→</div>
+      <div class="col after">
+        <h4>✓ AFTER</h4>
+        <ul>
+          <li>제목은 결론만 말한다</li>
+          <li>다이어그램이 구조를 설명한다</li>
+          <li>발표자가 의미를 설명한다</li>
+          <li>청중은 발표를 듣는다</li>
+        </ul>
+      </div>
+    </div>
+    <button class="reveal-btn" id="baRevealBtn">왜 이 차이가 만들어지는가?</button>
+    <div class="ex-reveal" id="baReveal"></div>
+  </div>
+
+  <!-- 3.1 -->
+  <section class="block" id="s31">
+    <div class="section-label">3.1</div>
+    <h2 class="action-title">슬라이드는 청중이 읽는 문서가 아니라 발표자의 말을 돕는 보조 장치다</h2>
+
+    <div class="callout wrong">
+      <div class="label">✕ 흔한 오해</div>
+      혹시 놓치는 정보가 있을까 봐, 슬라이드에 말할 내용을 전부 문장으로 적어 넣는다. "안전하게" 느껴지지만, 이는 슬라이드의 역할을 착각한 것이다.
+    </div>
+
+    <div class="callout correct">
+      <div class="label">✓ 실제 원칙</div>
+      슬라이드가 모든 것을 말하면 발표자는 그 자리에 있을 이유가 없어진다. 슬라이드는 최소한의 구조(결론·핵심 수치·다이어그램)만 보여주고, 의미와 맥락은 발표자의 말이 채운다.
+    </div>
+
+    <div class="ba-pair">
+      <div class="before"><span class="tag">BEFORE</span>슬라이드에 전달할 내용을 문장 6줄로 나열한다</div>
+      <div class="after"><span class="tag">AFTER</span>슬라이드에는 결론 한 줄과 다이어그램만 남기고, 나머지는 말로 설명한다</div>
+    </div>
+
+    <div class="takeaways">
+      <div class="item"><div class="num">TAKEAWAY 01</div><p>슬라이드에 모든 내용을 담는 것은 안전한 습관이 아니라 발표자의 역할을 스스로 지우는 습관이다.</p></div>
+      <div class="item"><div class="num">TAKEAWAY 02</div><p>슬라이드가 보여줄 것은 구조이고, 발표자가 채울 것은 의미다.</p></div>
+      <div class="item"><div class="num">TAKEAWAY 03</div><p>슬라이드를 줄이는 것을 두려워하지 않는다 — 줄어든 자리는 발표자의 말이 채운다.</p></div>
+    </div>
+  </section>
+
+  <!-- 3.2 -->
+  <section class="block" id="s32">
+    <div class="section-label">3.2</div>
+    <h2 class="action-title">슬라이드를 그대로 읽는 순간 발표자는 청중보다 느리게 정보를 전달하게 된다</h2>
+
+    <p class="lead">청중의 읽기 속도는 발표자의 말하기 속도보다 훨씬 빠르다. 슬라이드가 화면에 뜨는 순간 청중은 이미 다 읽었는데, 발표자가 그 문장을 다시 소리 내어 읽으면 발표자는 청중보다 뒤처진 사람이 된다.</p>
+
+    <div class="card">
+      <p style="margin-bottom:12px;"><span class="mono" style="color:var(--wrong); font-weight:700;">읽는 발표</span> — 슬라이드 문장을 그대로 소리 내어 따라 읽는다. 청중은 이미 읽은 내용을 다시 듣는다.</p>
+      <p style="margin:0;"><span class="mono" style="color:var(--correct); font-weight:700;">설명하는 발표</span> — 슬라이드에 없는 것을 말한다: "왜 이 수치가 중요한지", "이것이 다음 결정에 어떤 의미인지".</p>
+    </div>
+
+    <div class="callout navy">
+      <div class="label">실전 규칙</div>
+      슬라이드에 적힌 문장을 그대로 입 밖으로 낸다면, 그 슬라이드는 이미 필요 이상의 문장을 담고 있다는 신호다. 발표자의 말은 항상 슬라이드에 적히지 않은 것을 채워야 한다.
+    </div>
+
+    <div class="takeaways">
+      <div class="item"><div class="num">TAKEAWAY 01</div><p>청중의 읽기 속도는 발표자의 말하기 속도보다 빠르다 — 이 격차가 지루함의 근원이다.</p></div>
+      <div class="item"><div class="num">TAKEAWAY 02</div><p>슬라이드를 그대로 읽고 있다면, 슬라이드 자체를 줄여야 한다는 신호로 받아들인다.</p></div>
+      <div class="item"><div class="num">TAKEAWAY 03</div><p>발표자의 말은 슬라이드에 없는 의미·맥락·판단을 더하는 역할을 해야 한다.</p></div>
+    </div>
+  </section>
+
+  <!-- 3.3 -->
+  <section class="block" id="s33">
+    <div class="section-label">3.3</div>
+    <h2 class="action-title">한 슬라이드에 메시지가 두 개 이상이면 청중은 둘 다 놓친다</h2>
+
+    <p class="lead">슬라이드 하나에 결론과 배경, 향후 계획을 동시에 담으면 청중은 무엇이 이 슬라이드의 핵심인지 스스로 판단해야 한다. 그 판단에 쓰이는 시간만큼 발표자의 설명은 뒤로 밀린다.</p>
+
+    <div class="ba-pair">
+      <div class="before"><span class="tag">BEFORE</span>슬라이드 하나에 "결론 + 배경 설명 + 향후 계획"을 모두 담는다</div>
+      <div class="after"><span class="tag">AFTER</span>슬라이드 하나 = 결론 하나. 배경과 향후 계획은 각각 별도 슬라이드로 분리한다</div>
+    </div>
+
+    <div class="callout correct">
+      <div class="label">✓ 점검법</div>
+      슬라이드를 만들고 나서 "이 슬라이드의 Action Title을 한 문장으로 다시 요약할 수 있는가"를 확인한다. 요약이 두 문장 이상 필요하다면, 그 슬라이드는 둘로 나뉘어야 한다.
+    </div>
+
+    <div class="takeaways">
+      <div class="item"><div class="num">TAKEAWAY 01</div><p>메시지가 두 개면 청중은 둘 중 어느 것이 진짜 핵심인지 스스로 판단해야 하고, 그 과정에서 집중이 흩어진다.</p></div>
+      <div class="item"><div class="num">TAKEAWAY 02</div><p>Action Title을 한 문장으로 요약할 수 없다면 슬라이드를 분리해야 한다는 신호다.</p></div>
+      <div class="item"><div class="num">TAKEAWAY 03</div><p>슬라이드 수가 늘어나는 것은 나쁜 신호가 아니다 — 메시지가 섞이는 것이 나쁜 신호다.</p></div>
+    </div>
+  </section>
+
+  <!-- 3.4 -->
+  <section class="block" id="s34">
+    <div class="section-label">3.4</div>
+    <h2 class="action-title">본문 슬라이드는 결론을 전달하고, 백업 슬라이드는 방어를 위해 존재한다</h2>
+
+    <p class="lead">모든 근거를 본문에 다 넣으려는 순간, 발표는 근거의 나열이 되어버린다. 본문과 백업을 구분하는 기준은 "이 자료가 지금 결론을 전달하는 데 필요한가, 아니면 질문이 나왔을 때만 필요한가"이다.</p>
+
+    <div class="scope-grid">
+      <div class="box in">
+        <h4>본문 슬라이드에 포함</h4>
+        <ul>
+          <li>결론(Action Title)과 그것을 직접 뒷받침하는 핵심 근거 2~3개</li>
+          <li>청중이 지금 이 순간 이해해야 할 최소한의 데이터</li>
+          <li>다음 결정으로 이어지는 흐름을 보여주는 요약 다이어그램</li>
+        </ul>
+      </div>
+      <div class="box out">
+        <h4>백업 슬라이드로 이동</h4>
+        <ul>
+          <li>상세 계산 과정, 원본 데이터 테이블</li>
+          <li>예외 케이스, 대안 검토 이력</li>
+          <li>"혹시 물어보면 답할" 수준의 세부 사항</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="takeaways">
+      <div class="item"><div class="num">TAKEAWAY 01</div><p>본문 슬라이드의 기준은 "결론 전달에 필요한가"이고, 백업 슬라이드의 기준은 "질문에 답하기 위해 필요한가"이다.</p></div>
+      <div class="item"><div class="num">TAKEAWAY 02</div><p>근거가 많다는 것은 준비가 잘 됐다는 뜻이지, 본문에 다 넣어야 한다는 뜻은 아니다.</p></div>
+      <div class="item"><div class="num">TAKEAWAY 03</div><p>백업 슬라이드가 많을수록 오히려 본문은 더 가벼워질 수 있다 — 두려움 없이 자료를 옮긴다.</p></div>
+    </div>
+  </section>
+
+  <!-- 3.5 -->
+  <section class="block" id="s35">
+    <div class="section-label">3.5</div>
+    <h2 class="action-title">Reveal 순서가 설명 순서와 어긋나면 청중은 발표자보다 먼저 결론에 도달해 버린다</h2>
+
+    <p class="lead">애니메이션과 화면 전환은 장식이 아니라 설명의 일부다. 화면에 무엇을, 언제, 어떤 순서로 드러낼지가 청중이 논리를 따라오는 속도를 결정한다.</p>
+
+    <div class="flow">
+      <div class="step">Bad Slide<span class="sub">모든 근거가 동시에 노출됨</span></div>
+      <div class="arrow">→</div>
+      <div class="step">Problem Analysis<span class="sub">청중이 결론 도달 전에 근거부터 읽어버림</span></div>
+      <div class="arrow">→</div>
+      <div class="step">Good Slide<span class="sub">Reveal 순서=설명 순서로 재구성</span></div>
+    </div>
+
+    <div class="callout wrong">
+      <div class="label">✕ 언제 쓰면 안 되는가</div>
+      단순한 정보 하나를 강조하겠다고 여러 단계의 등장 효과를 넣는 것. 정보가 단순하면 애니메이션 없이 한 번에 보여주는 것이 더 명확하다.
+    </div>
+
+    <div class="callout correct">
+      <div class="label">✓ 언제 써야 하는가</div>
+      여러 근거를 순서대로 쌓아 하나의 결론에 도달시키는 논증 구조일 때. 이때는 발표자가 말하는 순서와 화면에 등장하는 순서가 정확히 일치해야 한다 — 청중이 화면을 먼저 읽고 발표자의 말을 기다리게 만들면 안 된다.
+    </div>
+
+    <div class="takeaways">
+      <div class="item"><div class="num">TAKEAWAY 01</div><p>애니메이션은 장식이 아니라, 청중이 논리를 따라오는 속도를 조절하는 도구다.</p></div>
+      <div class="item"><div class="num">TAKEAWAY 02</div><p>단순한 정보에는 애니메이션을 쓰지 않는다 — 오히려 명확함을 해친다.</p></div>
+      <div class="item"><div class="num">TAKEAWAY 03</div><p>Reveal 순서는 반드시 발표자의 설명 순서와 일치해야 하며, 어긋나면 청중이 먼저 결론에 도달해버린다.</p></div>
+    </div>
+  </section>
+
+  <!-- Quick Check -->
+  <section class="block">
+    <div class="section-label">Quick Check</div>
+    <h2 class="action-title" style="border-bottom:none; padding-bottom:0;">스스로 점검하기</h2>
+
+    <div class="quiz" data-q="1">
+      <div class="q">Q1. 슬라이드 초안을 검토하다가, 본인이 발표 중 슬라이드 문장을 거의 그대로 읽고 있다는 것을 깨달았습니다. 가장 먼저 해야 할 일은?</div>
+      <button class="opt" data-correct="false">더 자신감 있게, 더 크게 읽는 연습을 한다</button>
+      <button class="opt" data-correct="true">슬라이드의 문장 수를 줄이고, 말로 채울 의미를 따로 준비한다</button>
+      <button class="opt" data-correct="false">읽는 속도를 청중의 읽기 속도에 맞춰 천천히 읽는다</button>
+      <div class="fb"></div>
+    </div>
+
+    <div class="quiz" data-q="2">
+      <div class="q">Q2. 한 슬라이드에 "이번 분기 성과 + 다음 분기 계획"이 함께 담겨 있습니다. Action Title을 한 문장으로 요약하려니 두 문장이 필요합니다. 가장 적절한 조치는?</div>
+      <button class="opt" data-correct="false">두 문장을 하나로 억지로 합쳐서 제목을 만든다</button>
+      <button class="opt" data-correct="true">슬라이드를 둘로 분리한다</button>
+      <button class="opt" data-correct="false">제목 없이 내용만 나열한다</button>
+      <div class="fb"></div>
+    </div>
+
+    <div class="quiz" data-q="3">
+      <div class="q">Q3. 근거 A→B→C 순서로 쌓아 결론에 도달하는 슬라이드를 만들고 있습니다. 애니메이션을 어떻게 적용해야 하는가?</div>
+      <button class="opt" data-correct="false">A, B, C를 한 번에 모두 보여주고 발표자가 순서대로 짚어준다</button>
+      <button class="opt" data-correct="true">발표자가 A를 설명할 때 A만 나타나고, B를 설명할 때 B가 나타나도록 순서를 맞춘다</button>
+      <button class="opt" data-correct="false">애니메이션 없이 최대한 빨리 다음 슬라이드로 넘어간다</button>
+      <div class="fb"></div>
+    </div>
+  </section>
+
+  <!-- Chapter Summary -->
+  <div class="summary-box">
+    <div class="section-label">Chapter Summary</div>
+    <h3>PC03이 남기는 세 문장</h3>
+    <ol>
+      <li>슬라이드는 청중이 읽는 문서가 아니라 발표자의 말을 돕는 보조 장치이며, 모든 것을 담으려는 순간 발표자의 자리는 사라진다.</li>
+      <li>한 슬라이드에는 메시지 하나만 담아야 하고, 나머지 근거는 본문이 아니라 백업으로, 배경과 계획은 별도 슬라이드로 분리한다.</li>
+      <li>화면 전환과 애니메이션은 장식이 아니라 설명의 일부이며, Reveal 순서가 발표자의 설명 순서와 일치할 때만 제 역할을 한다.</li>
+    </ol>
+  </div>
+
+  <div class="chapter-nav">
+    <a class="prev" href="PC02_Message_Structuring.html"><span class="direction">◀ PREV · PC02</span><span class="title">메시지 구조화</span></a>
+    <a class="next" href="PC04_Explanation_and_Delivery.html"><span class="direction">NEXT · PC04 ▶</span><span class="title">설명과 전달의 기술</span></a>
+  </div>
+
+</main>
+
+<footer class="qa-gate">
+  <details class="qa">
+    <summary>QA Gate — 내부 검증 메모 (PC_Series_Constitution v1.1 §6, Template v1.1 §4 기준)</summary>
+    <ul>
+      <li>기술적 정확성: 본 챕터는 SAP 기능을 다루지 않으므로 해당 없음 (Constitution §6 예외 처리)</li>
+      <li>실무 적용 가능성: Before/After(본문 6줄→결론 1줄), 본문/백업 구분 기준, Reveal 순서 원칙 모두 실제 슬라이드 제작에 즉시 적용 가능</li>
+      <li>예시의 일관성: Hero Before/After(청중 경험 4항목 대비)는 PC03 신규 예시로 등록 필요</li>
+      <li>교육 밀도: 5개 절(3.1~3.5), Learning Rhythm Rule에 따라 각 절마다 callout/ba-pair/scope-grid/flow 중 최소 1개 시각 요소 배치 완료</li>
+      <li>용어 일관성: GR/SAC Constitution과 충돌 없음</li>
+      <li>Template §2.1 Exception Rule 적용: 본 챕터는 시각 전달 기법 자체를 다루므로 Hero Exercise 대신 Hero Before/After를 사용함</li>
+      <li>
+        Explainability Check:<br>
+        ☐ 이 장만 읽고 주니어가 "고객에게 설명"할 수 있는가? → <strong>Yes</strong> — Hero Before/After로 슬라이드의 역할 차이를 체감하고, 3.1~3.5가 시각 보조 원칙→읽지 않기→메시지 분리→본문/백업 구분→Reveal 순서로 이어지는 실행 가능한 절차를 제공함
+      </li>
+      <li>
+        Can be applied immediately?:<br>
+        ☐ 오늘 슬라이드 하나를 바로 고칠 수 있는가? → <strong>Yes</strong> — 3.3의 "Action Title 한 문장 요약 테스트"와 3.4의 본문/백업 분류 기준은 기존 슬라이드에 즉시 대입 가능
+      </li>
+      <li>Example Ownership Registry 갱신: "슬라이드 Before/After 4항목 대비"(Hero Before/After, Primary: PC03)를 Constitution §7에 등록 필요</li>
+    </ul>
+  </details>
+</footer>
+
+<script>
+  // Sticky nav active state on scroll
+  const sections = document.querySelectorAll('section.block[id]');
+  const navLinks = document.querySelectorAll('#navTabs a');
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(sec => {
+      const rect = sec.getBoundingClientRect();
+      if (rect.top <= 100) current = sec.id;
+    });
+    navLinks.forEach(a => {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+    });
+  });
+
+  // Hero Before/After reveal
+  document.getElementById('baRevealBtn').addEventListener('click', () => {
+    const reveal = document.getElementById('baReveal');
+    reveal.innerHTML = '<strong>이 차이는 우연이 아닙니다.</strong> BEFORE는 슬라이드가 모든 정보를 문서처럼 담고 있어서, 청중이 발표자보다 먼저 슬라이드를 다 읽어버립니다. AFTER는 슬라이드가 구조만 보여주고 의미는 발표자의 말이 채우기 때문에, 청중은 발표자를 계속 따라가게 됩니다. PC03은 이 차이를 만드는 다섯 가지 원칙을 다룹니다.'
+      + '<div class="badge-row" style="margin-top:14px;"><span class="badge" style="border-color:#fff; color:#fff; background:transparent;">Primary Example · PC03</span></div>';
+    reveal.classList.add('show');
+    document.getElementById('baRevealBtn').style.display = 'none';
+  });
+
+  // Quiz interaction
+  document.querySelectorAll('.quiz').forEach(quiz => {
+    const opts = quiz.querySelectorAll('.opt');
+    const fb = quiz.querySelector('.fb');
+    opts.forEach(opt => {
+      opt.addEventListener('click', () => {
+        if (quiz.dataset.answered) return;
+        quiz.dataset.answered = 'true';
+        const isCorrect = opt.dataset.correct === 'true';
+        opts.forEach(o => {
+          if (o.dataset.correct === 'true') o.classList.add('correct-ans');
+          else if (o === opt) o.classList.add('wrong-ans');
+        });
+        const msgs = {
+          '1': '슬라이드를 그대로 읽고 있다는 것은 슬라이드에 문장이 너무 많다는 신호입니다. 줄이고, 말로 채울 의미를 준비하세요.',
+          '2': '한 문장으로 요약되지 않는다면 메시지가 두 개라는 뜻이며, 슬라이드를 분리해야 합니다.',
+          '3': 'Reveal 순서는 반드시 발표자의 설명 순서와 일치해야 청중이 발표자를 따라오게 됩니다.'
+        };
+        fb.textContent = isCorrect ? '정답입니다. ' + msgs[quiz.dataset.q] : '다시 생각해보세요. 정답이 표시되어 있습니다.';
+        fb.className = 'fb show ' + (isCorrect ? 'ok' : 'no');
+      });
+    });
+  });
+</script>
+
+</body>
+</html>

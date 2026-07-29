@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PC01 · 발표의 본질</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Noto+Sans+KR:wght@400;500;700;900&family=JetBrains+Mono&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#003366;
+    --navy-10:#e6edf5;
+    --navy-05:#f0f5fa;
+    --bg:#f0f3f8;
+    --ink:#1a2433;
+    --sub:#4a5568;
+    --warn:#8a5a00;
+    --warn-bg:#fdf3e0;
+    --correct:#0f6b3f;
+    --correct-bg:#e8f5ee;
+    --wrong:#8a1f1f;
+    --wrong-bg:#fbe9e9;
+    --card-border:#d8e0ea;
+  }
+  *{box-sizing:border-box;}
+  html{overflow-x:clip;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Noto Sans KR', sans-serif;
+    font-size:15px;
+    line-height:1.75;
+    word-break:keep-all;
+    overflow-wrap:break-word;
+    overflow-x:clip;
+  }
+  code, .mono{font-family:'JetBrains Mono','Noto Sans KR',monospace;}
+
+  header.top{
+    background:var(--navy);
+    color:#fff;
+    padding:48px 96px 40px;
+  }
+  header.top .eyebrow{
+    font-size:13px;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    opacity:.75;
+    margin-bottom:10px;
+  }
+  header.top h1{
+    font-family:'DM Serif Display', serif;
+    font-size:42px;
+    font-weight:400;
+    margin:0 0 16px;
+  }
+  header.top .hero-msg{
+    font-size:16px;
+    max-width:760px;
+    opacity:.92;
+    border-left:3px solid rgba(255,255,255,.5);
+    padding-left:16px;
+  }
+
+  nav.sticky{
+    position:sticky;
+    top:0;
+    z-index:50;
+    background:#fff;
+    border-bottom:1px solid var(--card-border);
+    display:flex;
+    gap:4px;
+    padding:0 96px;
+    overflow-x:auto;
+  }
+  nav.sticky a{
+    display:block;
+    padding:16px 18px;
+    font-size:14px;
+    font-weight:500;
+    color:var(--sub);
+    text-decoration:none;
+    border-bottom:3px solid transparent;
+    white-space:nowrap;
+  }
+  nav.sticky a:hover{color:var(--navy);}
+  nav.sticky a.active{color:var(--navy);border-bottom-color:var(--navy);}
+
+  main{padding:56px 96px 96px; max-width:980px; margin:0 auto;}
+
+  section.block{margin-bottom:72px; scroll-margin-top:64px;}
+  .section-label{
+    font-size:13px;
+    font-weight:700;
+    color:var(--navy);
+    letter-spacing:.06em;
+    margin-bottom:8px;
+  }
+  h2.action-title{
+    font-family:'DM Serif Display', serif;
+    font-weight:400;
+    font-size:30px;
+    line-height:1.4;
+    color:var(--ink);
+    margin:0 0 28px;
+    padding-bottom:20px;
+    border-bottom:2px solid var(--navy);
+  }
+
+  p.lead{font-size:16px; color:var(--sub); margin-bottom:24px;}
+
+  .callout{
+    border-radius:4px;
+    padding:20px 24px;
+    margin:20px 0;
+    font-size:15px;
+  }
+  .callout .label{
+    font-size:13px;
+    font-weight:700;
+    letter-spacing:.04em;
+    margin-bottom:8px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .callout.navy{background:var(--navy-05); border-left:4px solid var(--navy);}
+  .callout.navy .label{color:var(--navy);}
+  .callout.warn{background:var(--warn-bg); border-left:4px solid var(--warn);}
+  .callout.warn .label{color:var(--warn);}
+  .callout.correct{background:var(--correct-bg); border-left:4px solid var(--correct);}
+  .callout.correct .label{color:var(--correct);}
+  .callout.wrong{background:var(--wrong-bg); border-left:4px solid var(--wrong);}
+  .callout.wrong .label{color:var(--wrong);}
+
+  .compare{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:20px;
+    margin:28px 0;
+  }
+  .compare .col{
+    border:1px solid var(--card-border);
+    border-radius:6px;
+    overflow:hidden;
+    background:#fff;
+  }
+  .compare .col.emph{border:2px solid var(--navy);}
+  .compare .col h3{
+    margin:0;
+    padding:16px 20px;
+    font-size:16px;
+    font-family:'Noto Sans KR', sans-serif;
+    font-weight:700;
+    background:var(--navy-10);
+    color:var(--navy);
+  }
+  .compare .col.emph h3{background:var(--navy); color:#fff;}
+  .compare .col ul{margin:0; padding:18px 22px; list-style:none;}
+  .compare .col li{
+    position:relative;
+    padding-left:18px;
+    margin-bottom:12px;
+    font-size:14px;
+    color:var(--sub);
+  }
+  .compare .col li::before{
+    content:"—";
+    position:absolute; left:0; color:var(--navy);
+  }
+
+  .card{
+    background:#fff;
+    border:1px solid var(--card-border);
+    border-radius:6px;
+    padding:24px;
+    margin:20px 0;
+  }
+
+  .takeaways{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:16px;
+    margin:28px 0;
+  }
+  .takeaways .item{
+    background:#fff;
+    border:1px solid var(--card-border);
+    border-top:3px solid var(--navy);
+    border-radius:4px;
+    padding:20px;
+  }
+  .takeaways .num{
+    font-family:'JetBrains Mono','Noto Sans KR',monospace;
+    font-size:13px;
+    color:var(--navy);
+    font-weight:700;
+    margin-bottom:8px;
+  }
+  .takeaways p{margin:0; font-size:14px; color:var(--ink);}
+
+  .flow{
+    display:flex;
+    align-items:stretch;
+    gap:0;
+    margin:24px 0;
+    flex-wrap:wrap;
+  }
+  .flow .step{
+    flex:1;
+    min-width:140px;
+    background:#fff;
+    border:1px solid var(--card-border);
+    padding:16px 14px;
+    text-align:center;
+    font-size:13px;
+    font-weight:700;
+    color:var(--navy);
+    position:relative;
+  }
+  .flow .step .sub{
+    display:block;
+    font-weight:400;
+    color:var(--sub);
+    font-size:12px;
+    margin-top:6px;
+  }
+  .flow .arrow{
+    display:flex; align-items:center; justify-content:center;
+    padding:0 6px; color:var(--navy); font-size:16px;
+  }
+
+  .scope-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:20px;
+    margin:24px 0;
+  }
+  .scope-grid .box{
+    border-radius:6px;
+    padding:22px 24px;
+  }
+  .scope-grid .in{background:var(--correct-bg); border-left:4px solid var(--correct);}
+  .scope-grid .out{background:var(--wrong-bg); border-left:4px solid var(--wrong);}
+  .scope-grid h4{margin:0 0 12px; font-size:14px; letter-spacing:.02em;}
+  .scope-grid .in h4{color:var(--correct);}
+  .scope-grid .out h4{color:var(--wrong);}
+  .scope-grid ul{margin:0; padding-left:18px; font-size:14px; color:var(--ink);}
+  .scope-grid li{margin-bottom:8px;}
+
+  .quiz{
+    background:#fff;
+    border:1px solid var(--card-border);
+    border-radius:6px;
+    padding:24px;
+    margin:20px 0;
+  }
+  .quiz .q{font-size:15px; font-weight:700; margin-bottom:14px;}
+  .quiz .opt{
+    display:block;
+    width:100%;
+    text-align:left;
+    padding:12px 16px;
+    margin-bottom:8px;
+    border:1px solid var(--card-border);
+    border-radius:4px;
+    background:#fbfcfe;
+    cursor:pointer;
+    font-size:14px;
+    font-family:inherit;
+    color:var(--ink);
+  }
+  .quiz .opt:hover{border-color:var(--navy);}
+  .quiz .opt.correct-ans{background:var(--correct-bg); border-color:var(--correct);}
+  .quiz .opt.wrong-ans{background:var(--wrong-bg); border-color:var(--wrong);}
+  .quiz .fb{
+    margin-top:10px;
+    font-size:13px;
+    padding:12px 14px;
+    border-radius:4px;
+    display:none;
+  }
+  .quiz .fb.show{display:block;}
+  .quiz .fb.ok{background:var(--correct-bg); color:var(--correct);}
+  .quiz .fb.no{background:var(--wrong-bg); color:var(--wrong);}
+
+  .checklist{list-style:none; padding:0; margin:20px 0;}
+  .checklist li{
+    display:flex; gap:12px; align-items:flex-start;
+    padding:12px 0;
+    border-bottom:1px solid var(--card-border);
+    font-size:14px;
+  }
+  .checklist input{margin-top:3px; accent-color:var(--navy);}
+
+  .summary-box{
+    background:var(--navy);
+    color:#fff;
+    border-radius:6px;
+    padding:28px 32px;
+    margin-top:40px;
+  }
+  .summary-box .section-label{color:#cfe0f2;}
+  .summary-box h3{
+    font-family:'DM Serif Display', serif;
+    font-weight:400;
+    font-size:22px;
+    margin:0 0 16px;
+  }
+  .summary-box ol{margin:0; padding-left:20px; font-size:14px; opacity:.95;}
+  .summary-box li{margin-bottom:8px;}
+
+  footer.qa-gate{
+    max-width:980px;
+    margin:0 auto 80px;
+    padding:0 96px;
+  }
+  details.qa{
+    background:#fff;
+    border:1px dashed var(--card-border);
+    border-radius:6px;
+    padding:18px 22px;
+    font-size:13px;
+    color:var(--sub);
+  }
+  details.qa summary{
+    cursor:pointer;
+    font-weight:700;
+    color:var(--navy);
+    font-size:13px;
+  }
+  details.qa ul{margin:12px 0 0; padding-left:18px;}
+  details.qa li{margin-bottom:6px;}
+
+  .badge-row{display:flex; gap:8px; flex-wrap:wrap; margin-top:12px;}
+  .badge{
+    display:inline-flex; align-items:center; gap:6px;
+    font-family:'JetBrains Mono','Noto Sans KR',monospace;
+    font-size:11px;
+    padding:4px 10px;
+    border-radius:20px;
+    background:var(--navy-10);
+    color:var(--navy);
+    border:1px solid var(--navy);
+  }
+  .badge.reuse{background:#fff; color:var(--sub); border-color:var(--card-border);}
+
+  .hero-exercise{
+    background:#fff;
+    border:2px solid var(--navy);
+    border-radius:8px;
+    padding:32px;
+    margin:0 0 64px;
+  }
+  .hero-exercise .ex-label{
+    font-size:13px; font-weight:700; color:var(--navy);
+    letter-spacing:.06em; margin-bottom:6px;
+  }
+  .hero-exercise h2{
+    font-family:'DM Serif Display', serif; font-weight:400;
+    font-size:24px; margin:0 0 24px; line-height:1.4;
+  }
+  .ex-options{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:20px;}
+  .ex-opt{
+    text-align:left; cursor:pointer; font-family:inherit;
+    background:var(--navy-05); border:1px solid var(--card-border);
+    border-radius:6px; padding:20px; font-size:14px; line-height:1.7; color:var(--ink);
+  }
+  .ex-opt .tag{display:block; font-size:12px; font-weight:700; color:var(--navy); margin-bottom:8px;}
+  .ex-opt:hover{border-color:var(--navy);}
+  .ex-opt.picked-right{background:var(--correct-bg); border-color:var(--correct);}
+  .ex-opt.picked-wrong{background:var(--wrong-bg); border-color:var(--wrong);}
+  .ex-reveal{
+    display:none; margin-top:8px; padding:20px 24px;
+    background:var(--navy); color:#fff; border-radius:6px; font-size:14px; line-height:1.8;
+  }
+  .ex-reveal.show{display:block;}
+  .ex-reveal strong{color:#cfe0f2;}
+
+
+  /* PC02 신규 컴포넌트 */
+  .pyramid{display:flex; flex-direction:column; align-items:center; gap:10px; margin:32px 0;}
+  .pyramid .lvl1{
+    width:100%; max-width:340px; background:var(--navy); color:#fff;
+    text-align:center; padding:16px; border-radius:4px; font-weight:700; font-size:14px;
+  }
+  .pyramid .lvl2{display:flex; gap:10px; width:100%; max-width:640px;}
+  .pyramid .lvl2 .box{
+    flex:1; background:var(--navy-10); border:1px solid var(--navy);
+    padding:12px 10px; text-align:center; font-size:13px; color:var(--navy); border-radius:4px; font-weight:700;
+  }
+  .pyramid .lvl3{display:flex; gap:10px; width:100%; max-width:900px;}
+  .pyramid .lvl3 .box{
+    flex:1; background:#fff; border:1px dashed var(--card-border);
+    padding:10px; text-align:center; font-size:12px; color:var(--sub); border-radius:4px;
+  }
+
+  .audience-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin:24px 0;}
+  .audience-grid .card2{
+    background:#fff; border:1px solid var(--card-border); border-radius:6px; overflow:hidden;
+  }
+  .audience-grid .head{
+    background:var(--navy); color:#fff; padding:12px 16px; font-size:13px; font-weight:700;
+  }
+  .audience-grid .body{padding:16px; font-size:13.5px; color:var(--ink); line-height:1.7;}
+  .audience-grid .tag{
+    display:inline-block; font-size:11px; color:var(--sub); margin-bottom:8px;
+    font-family:'JetBrains Mono','Noto Sans KR',monospace;
+  }
+
+  .ba-pair{
+    background:#fff; border:1px solid var(--card-border); border-radius:6px;
+    padding:18px 22px; margin:14px 0;
+  }
+  .ba-pair .before{color:var(--wrong); font-size:14px; margin-bottom:8px;}
+  .ba-pair .after{color:var(--correct); font-size:14px; font-weight:500;}
+  .ba-pair .before .tag, .ba-pair .after .tag{
+    font-family:'JetBrains Mono','Noto Sans KR',monospace; font-size:11px; font-weight:700; margin-right:8px;
+  }
+
+
+  /* PC03 신규 컴포넌트 — Hero Before/After (Hero Exercise 대체, Template v1.1 §2.1) */
+  .hero-ba{
+    background:#fff; border:2px solid var(--navy); border-radius:8px;
+    padding:32px; margin:0 0 64px;
+  }
+  .hero-ba .ex-label{font-size:13px; font-weight:700; color:var(--navy); letter-spacing:.06em; margin-bottom:6px;}
+  .hero-ba h2{font-family:'DM Serif Display', serif; font-weight:400; font-size:24px; margin:0 0 24px; line-height:1.4;}
+  .hero-ba .cols{display:grid; grid-template-columns:1fr 40px 1fr; gap:12px; align-items:stretch; margin-bottom:20px;}
+  .hero-ba .col{border-radius:6px; padding:20px 22px;}
+  .hero-ba .col.before{background:var(--wrong-bg); border-left:4px solid var(--wrong);}
+  .hero-ba .col.after{background:var(--correct-bg); border-left:4px solid var(--correct);}
+  .hero-ba .col h4{margin:0 0 12px; font-size:13px; font-weight:700; letter-spacing:.04em;}
+  .hero-ba .col.before h4{color:var(--wrong);}
+  .hero-ba .col.after h4{color:var(--correct);}
+  .hero-ba .col ul{margin:0; padding-left:18px; font-size:14px; color:var(--ink);}
+  .hero-ba .col li{margin-bottom:10px;}
+  .hero-ba .center-arrow{display:flex; align-items:center; justify-content:center; font-size:22px; color:var(--navy);}
+  .hero-ba button.reveal-btn{
+    display:block; margin:4px auto 0; padding:10px 20px; border-radius:20px;
+    background:var(--navy); color:#fff; border:none; font-size:13px; font-weight:700;
+    cursor:pointer; font-family:inherit;
+  }
+  .hero-ba button.reveal-btn:hover{opacity:.9;}
+
+
+  /* Landing Page 전용 컴포넌트 */
+  .journey{display:flex; flex-direction:column; gap:14px; margin:32px 0;}
+  .stage{border:1px solid var(--card-border); border-radius:8px; overflow:hidden; background:#fff;}
+  .stage .stage-head{background:var(--navy); color:#fff; padding:12px 20px; font-weight:700; font-size:14px; letter-spacing:.03em;}
+  .stage .stage-body{display:flex; gap:12px; padding:18px 20px; flex-wrap:wrap;}
+  .stage .chip{
+    flex:1; min-width:160px; background:var(--navy-05); border:1px solid var(--navy);
+    border-radius:6px; padding:12px 16px; font-size:13px; color:var(--navy); font-weight:700;
+  }
+  .stage .chip .sub{display:block; font-weight:400; color:var(--sub); font-size:12px; margin-top:4px;}
+  .stage .chip a{color:var(--navy); text-decoration:none;}
+  .stage .chip a:hover{text-decoration:underline;}
+
+  table.reg-table{width:100%; border-collapse:collapse; margin:24px 0; font-size:14px;}
+  table.reg-table th{background:var(--navy); color:#fff; text-align:left; padding:12px 16px; font-size:13px; font-weight:700;}
+  table.reg-table td{padding:12px 16px; border-bottom:1px solid var(--card-border); background:#fff; vertical-align:top;}
+  table.reg-table tr:hover td{background:var(--navy-05);}
+  table.reg-table a{color:var(--navy); font-weight:700; text-decoration:none;}
+  table.reg-table a:hover{text-decoration:underline;}
+
+  table.compliance{width:100%; border-collapse:collapse; margin:20px 0; font-size:13px; text-align:center;}
+  table.compliance th, table.compliance td{padding:10px 8px; border:1px solid var(--card-border);}
+  table.compliance th{background:var(--navy); color:#fff; font-weight:700;}
+  table.compliance td:first-child, table.compliance th:first-child{text-align:left; font-weight:700; color:var(--ink);}
+  table.compliance td.ok{color:var(--correct); font-weight:700; background:var(--correct-bg);}
+  table.compliance td.no{color:var(--sub); background:#fafafa;}
+  table.compliance td.warn{color:var(--warn); font-weight:700; background:var(--warn-bg);}
+
+  .arch-stack{display:flex; flex-direction:column; gap:2px; margin:28px 0; max-width:720px;}
+  .arch-stack .layer{
+    padding:16px 22px; color:#fff; font-size:14px; font-weight:700;
+  }
+  .arch-stack .layer .sub{display:block; font-weight:400; font-size:12.5px; opacity:.85; margin-top:4px;}
+  .arch-stack .layer.l0{background:var(--ink);}
+  .arch-stack .layer.l1{background:var(--navy);}
+  .arch-stack .layer.l2{background:#2d5a8c;}
+  .arch-stack .layer.l3{background:#4a7bab;}
+  .arch-stack .layer.l4{background:#6f9ac4;}
+
+  @media (max-width:768px){
+    .stage .stage-body{flex-direction:column;}
+    .ex-options{grid-template-columns:1fr;}
+    header.top, main, nav.sticky, footer.qa-gate{padding-left:20px; padding-right:20px;}
+    header.top h1{font-size:30px;}
+    .compare, .scope-grid, .takeaways{grid-template-columns:1fr;}
+    .flow{flex-direction:column;}
+    .flow .arrow{transform:rotate(90deg); padding:6px 0;}
+    .audience-grid{grid-template-columns:1fr;}
+    .pyramid .lvl2, .pyramid .lvl3{flex-direction:column; max-width:100%;}
+    .hero-ba .cols{grid-template-columns:1fr;}
+    .hero-ba .center-arrow{transform:rotate(90deg); padding:6px 0;}
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="eyebrow">Presentation Capability Series</div>
+  <h1>PC Series</h1>
+  <div class="hero-msg">좋은 발표는 전달 기술이 아니라, 구조화 → 설명 → 상호작용 → 개선의 반복 과정이다.</div>
+</header>
+
+<nav class="sticky" id="navTabs">
+  <a href="#why" class="active">왜 필요한가</a>
+  <a href="#journey">Learning Journey</a>
+  <a href="#registry">Chapter Registry</a>
+  <a href="#architecture">Architecture View</a>
+  <a href="#compliance">Template Compliance</a>
+</nav>
+
+<main>
+
+  <!-- Why -->
+  <section class="block" id="why">
+    <div class="section-label">왜 이 시리즈가 필요한가</div>
+    <h2 class="action-title" style="border-bottom:none; padding-bottom:0;">SAP 컨설턴트는 기능을 아는 것과 그것을 고객에게 이해시키는 것 사이의 간극에서 실패한다</h2>
+
+    <p class="lead">BC/GR/SAC 시리즈가 "무엇을 아는가"를 다룬다면, PC 시리즈는 "아는 것을 어떻게 고객이 이해하도록 전달하는가"를 다룬다. 대상은 발표 경험이 적은 주니어 컨설턴트이며, 목표는 대중 강연 스킬이 아니라 워크숍·설계 리뷰·Steering Committee·교육 현장에서 실제로 쓰이는 설명력이다.</p>
+
+    <div class="callout navy">
+      <div class="label">Hero Message</div>
+      좋은 컨설턴트는 많이 말하는 사람이 아니라, 복잡한 내용을 쉽게 이해시키는 사람이다.
+    </div>
+  </section>
+
+  <!-- Learning Journey -->
+  <section class="block" id="journey">
+    <div class="section-label">Learning Journey</div>
+    <h2 class="action-title" style="border-bottom:none; padding-bottom:0;">7개 챕터는 Build → Explain → Operate → Improve라는 하나의 역량 흐름으로 이어진다</h2>
+
+    <div class="journey">
+      <div class="stage">
+        <div class="stage-head">BUILD — 무엇을, 누구에게, 어떻게 보여줄 것인가</div>
+        <div class="stage-body">
+          <div class="chip"><a href="PC01_Nature_of_Presentation.html">PC01 · Structure</a><span class="sub">발표의 본질 — 감동이 아니라 이해가 목표</span></div>
+          <div class="chip"><a href="PC02_Message_Structuring.html">PC02 · Audience</a><span class="sub">청중을 먼저 정하고 그에 맞춰 구조화</span></div>
+          <div class="chip"><a href="PC03_Slide_Usage.html">PC03 · Visual</a><span class="sub">슬라이드는 보조 장치, 발표자가 본체</span></div>
+        </div>
+      </div>
+      <div class="stage">
+        <div class="stage-head">EXPLAIN — 설명하고, 질문에 대응한다</div>
+        <div class="stage-body">
+          <div class="chip"><a href="PC04_Explanation_and_Delivery.html">PC04 · Explanation Delivery</a><span class="sub">Concept→Business Decision까지 이어지는 전달</span></div>
+          <div class="chip"><a href="PC05_QA_and_Discussion.html">PC05 · Question Handling</a><span class="sub">질문의 의도를 먼저 확인하고 응답</span></div>
+        </div>
+      </div>
+      <div class="stage">
+        <div class="stage-head">OPERATE — 세션 전체를 운영한다</div>
+        <div class="stage-body">
+          <div class="chip"><a href="PC06_Situational_Strategy.html">PC06 · Facilitation</a><span class="sub">서로 다른 청중이 공존하는 상황을 관리</span></div>
+        </div>
+      </div>
+      <div class="stage">
+        <div class="stage-head">IMPROVE — 반복해서 역량으로 만든다</div>
+        <div class="stage-body">
+          <div class="chip"><a href="PC07_Practice_and_Checklist.html">PC07 · Learning Loop</a><span class="sub">Prepare→Practice→Present→Reflect→Improve</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Chapter Registry -->
+  <section class="block" id="registry">
+    <div class="section-label">Chapter Registry</div>
+    <h2 class="action-title" style="border-bottom:none; padding-bottom:0;">각 챕터는 서로 다른 질문 하나와 소유 개념 하나를 책임진다</h2>
+
+    <table class="reg-table">
+      <tr><th>Chapter</th><th>Owns</th><th>Question</th></tr>
+      <tr><td><a href="PC01_Nature_of_Presentation.html">PC01</a></td><td>Presentation Mindset (감동 vs 이해)</td><td>발표란 무엇을 위한 행위인가?</td></tr>
+      <tr><td><a href="PC02_Message_Structuring.html">PC02</a></td><td>Audience Analysis, Pyramid, MECE</td><td>누구에게 말하는가?</td></tr>
+      <tr><td><a href="PC03_Slide_Usage.html">PC03</a></td><td>Visual Communication 원칙</td><td>어떻게 보이게 할 것인가?</td></tr>
+      <tr><td><a href="PC04_Explanation_and_Delivery.html">PC04</a></td><td>Explanation Delivery Sequence</td><td>어떻게 이해시키는가?</td></tr>
+      <tr><td><a href="PC05_QA_and_Discussion.html">PC05</a></td><td>Question Handling Pattern</td><td>질문을 어떻게 다루는가?</td></tr>
+      <tr><td><a href="PC06_Situational_Strategy.html">PC06</a></td><td>Presentation Facilitation Pattern</td><td>상황을 어떻게 운영하는가?</td></tr>
+      <tr><td><a href="PC07_Practice_and_Checklist.html">PC07</a></td><td>Presentation Learning Loop</td><td>어떻게 반복해서 개선하는가?</td></tr>
+    </table>
+  </section>
+
+  <!-- Architecture View -->
+  <section class="block" id="architecture">
+    <div class="section-label">Architecture View</div>
+    <h2 class="action-title" style="border-bottom:none; padding-bottom:0;">네 개의 소유 패턴이 서로 다른 단위 위에 쌓여 있다</h2>
+
+    <p class="lead">Constitution이 소유한 것과 각 챕터가 소유한 것은 서로 다른 레이어다. 하나가 다른 하나를 대체하지 않는다.</p>
+
+    <div class="arch-stack">
+      <div class="layer l0">Constitution §3 — Standard Explanation Pattern<span class="sub">Concept → Mechanism → Business Value → Customer Impact → (Optional) Recommendation — 무엇을 설명할 것인가</span></div>
+      <div class="layer l1">PC04 — Explanation Delivery Sequence<span class="sub">Audience Context → Why This Matters → Pattern 적용 → Business Decision — 설명 하나를 어떻게 전달하는가</span></div>
+      <div class="layer l2">PC05 — Question Handling Pattern<span class="sub">Question → Clarify Intent → Answer Core Point → Connect Business Context → Confirm Understanding — 질문 하나에 어떻게 대응하는가</span></div>
+      <div class="layer l3">PC06 — Presentation Facilitation Pattern<span class="sub">Objective Alignment → Audience Engagement → Discussion Control → Decision/Next Step — 세션 전체를 어떻게 운영하는가</span></div>
+      <div class="layer l4">PC07 — Presentation Learning Loop<span class="sub">Prepare → Practice → Present → Reflect → Improve — PC01~PC06을 어떻게 반복 훈련으로 전환하는가 (신규 Pattern 아님, Closure 역할)</span></div>
+    </div>
+
+    <div class="callout correct">
+      <div class="label">✓ 검증 완료 (Ownership Collision Check)</div>
+      전 챕터 HTML의 Primary Example/Concept 뱃지와 Constitution §7 Registry를 전수 조사한 결과, 동일 개념이 두 챕터에 Primary로 중복 배정된 사례는 없다. Constitution 소유 개념(Standard Explanation Pattern)이 챕터로 내려와 재정의된 사례도 없다.
+    </div>
+  </section>
+
+  <!-- Template Compliance -->
+  <section class="block" id="compliance">
+    <div class="section-label">Template Compliance Matrix</div>
+    <h2 class="action-title" style="border-bottom:none; padding-bottom:0;">7개 챕터 HTML 파일을 실제로 검사한 결과다</h2>
+
+    <p class="lead">아래 표는 추정이 아니라 각 HTML 파일을 직접 검사(grep)한 결과다. Mandatory 컴포넌트(Hero Message·Misconception→Correction·Quick Check)는 7개 챕터 모두에서 확인되었다.</p>
+
+    <table class="compliance">
+      <tr><th>Component</th><th>PC01</th><th>PC02</th><th>PC03</th><th>PC04</th><th>PC05</th><th>PC06</th><th>PC07</th></tr>
+      <tr><td>Hero Message <span class="mono">(Mandatory)</span></td><td class="ok">✓</td><td class="ok">✓</td><td class="ok">✓</td><td class="ok">✓</td><td class="ok">✓</td><td class="ok">✓</td><td class="ok">✓</td></tr>
+      <tr><td>Misconception→Correction <span class="mono">(Mandatory)</span></td><td class="ok">✓</td><td class="ok">✓</td><td class="ok">✓</td><td class="ok">✓</td><td class="ok">✓</td><td class="ok">✓</td><td class="ok">✓</td></tr>
+      <tr><td>Quick Check 판단형 <span class="mono">(Mandatory)</span></td><td class="ok">✓</td><td class="ok">✓</td><td class="ok">✓</td><td class="ok">✓</td><td class="ok">✓</td><td class="ok">✓</td><td class="ok">✓</td></tr>
+      <tr><td>Hero Exercise <span class="mono">(Recommended)</span></td><td class="ok">✓</td><td class="ok">✓</td><td class="warn">△ B/A 대체</td><td class="ok">✓</td><td class="ok">✓</td><td class="ok">✓</td><td class="no">–</td></tr>
+      <tr><td>Before/After <span class="mono">(Strongly Rec.)</span></td><td class="warn">△ 서술형</td><td class="ok">✓ 4쌍</td><td class="ok">✓ Hero+2</td><td class="ok">✓ 2</td><td class="ok">✓ 1</td><td class="warn">△ 서술형</td><td class="ok">✓ 1</td></tr>
+      <tr><td>Checklist <span class="mono">(Optional)</span></td><td class="no">–</td><td class="no">–</td><td class="no">–</td><td class="ok">✓</td><td class="ok">✓</td><td class="ok">✓</td><td class="ok">✓ ×3</td></tr>
+    </table>
+
+    <div class="callout warn">
+      <div class="label">△ 표기 설명</div>
+      PC03·PC06은 Before/After를 전용 <span class="mono">.ba-pair</span> 컴포넌트 대신 서술형 비교(카드/Hero Before-After)로 구현했다. 원칙은 지켜졌으나 컴포넌트 형식이 완전히 통일되지는 않았다 — Template v1.2에서 통일 여부를 검토할 수 있다.
+    </div>
+  </section>
+
+  <!-- Release Info -->
+  <div class="summary-box">
+    <div class="section-label">Release Package v1.0 — Version Manifest</div>
+    <h3>Freeze 구성 문서</h3>
+    <ol>
+      <li>Constitution — PC_Series_Constitution v1.1</li>
+      <li>Template — PC_Series_HTML_Template v1.1</li>
+      <li>Chapters — PC01~PC07 (7편, 본 인덱스에서 전체 링크 제공)</li>
+      <li>Registry — Example Ownership Registry v1.0 (Constitution §7 내 관리)</li>
+      <li>QA — HTML 태그 균형 / 링크 정합성 / 콘솔 에러 검증 통과 (Final QA 섹션 참조)</li>
+    </ol>
+  </div>
+
+  <!-- Freeze Declaration -->
+  <div class="summary-box" style="background:var(--ink);">
+    <div class="section-label" style="color:#c9d2de;">Release Status</div>
+    <h3>Frozen</h3>
+    <p style="font-size:14px; opacity:.9; margin:0 0 16px;">Freeze Scope</p>
+    <ol>
+      <li>PC_Series_Constitution v1.1</li>
+      <li>PC_Series_HTML_Template v1.1</li>
+      <li>PC01~PC07 HTML</li>
+      <li>Example Ownership Registry</li>
+      <li>pc_index.html (본 페이지)</li>
+    </ol>
+    <p style="font-size:14px; opacity:.9; margin:16px 0 0;">Future Changes — 새 개정은 v1.2 리뷰를 거쳐야 하며, 구조적 패턴(Ownership Stack) 변경은 별도 버전 평가가 필요하다.</p>
+  </div>
+
+</main>
+
+<footer class="qa-gate">
+  <details class="qa">
+    <summary>Final QA — Series Freeze 전 검증 로그</summary>
+    <ul>
+      <li>Ownership Collision Check: 전 챕터 Primary Example/Concept 뱃지 및 Constitution §7 Registry 전수 조사 — 중복 없음 확인. Registry 내 중복 우려 항목(Universal Journal 제네릭 placeholder) 1건 정리 완료</li>
+      <li>Learning Dependency Check: PC01·PC02에서 발견된 PC0X 역참조 3건은 모두 서술적 언급/등록 메모(QA Gate·Registry)이며, 실제 선행 학습을 요구하는 의존성이 아님을 확인. PC03~PC07에서 역참조 없음</li>
+      <li>Template Compliance Matrix: 실측 완료 (본 페이지 §Template Compliance 참조). Mandatory 컴포넌트 7/7 챕터 충족</li>
+      <li>Version 상태: Constitution v1.1(Lock), Template v1.1(Lock) — 이번 패키징 작업으로 인한 추가 버전 변경 없음</li>
+    </ul>
+  </details>
+</footer>
+
+<script>
+  const sections = document.querySelectorAll('section.block[id]');
+  const navLinks = document.querySelectorAll('#navTabs a');
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(sec => {
+      const rect = sec.getBoundingClientRect();
+      if (rect.top <= 100) current = sec.id;
+    });
+    navLinks.forEach(a => {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+    });
+  });
+</script>
+
+</body>
+</html>
