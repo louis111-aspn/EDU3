@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BAC Consultant Career Path Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#003366;
+  --navy-soft:#EAF0F6;
+  --gray-line:#DCE1E6;
+  --gray-text:#333333;
+  --gray-mid:#6B7280;
+  --white:#FFFFFF;
+  --pad-x: 96px;
+  --gutter: 20px;
+}
+*{box-sizing:border-box; margin:0; padding:0;}
+html{scroll-behavior:smooth;}
+body{
+  font-family:'Noto Sans KR','Inter',sans-serif;
+  color:var(--gray-text);
+  background:var(--white);
+  line-height:1.6;
+  word-break:keep-all;
+  overflow-wrap:break-word;
+}
+.eng{font-family:'Inter','Noto Sans KR',sans-serif;}
+
+/* ---------- Sticky Nav ---------- */
+.navbar{
+  position:sticky; top:0; z-index:100;
+  background:var(--white);
+  border-bottom:1px solid var(--gray-line);
+  overflow-x:clip;
+}
+.navbar-inner{
+  max-width:1200px; margin:0 auto;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:18px var(--pad-x);
+}
+.navbar .brand{
+  font-family:'Inter',sans-serif; font-weight:800; font-size:14px;
+  color:var(--navy); letter-spacing:0.06em;
+}
+.navbar .tabs{ display:flex; gap:28px; flex-wrap:wrap; }
+.navbar .tabs a{
+  font-family:'Inter',sans-serif; font-size:13px; font-weight:600;
+  color:var(--gray-mid); text-decoration:none; white-space:nowrap;
+  padding-bottom:4px; border-bottom:2px solid transparent;
+  transition:color .15s, border-color .15s;
+}
+.navbar .tabs a:hover, .navbar .tabs a:focus-visible{ color:var(--navy); border-color:var(--navy); }
+
+/* ---------- Layout Grid ---------- */
+.section{
+  max-width:1200px; margin:0 auto;
+  padding:72px var(--pad-x);
+  border-bottom:1px solid var(--gray-line);
+}
+.section:last-of-type{ border-bottom:none; }
+.eyebrow{
+  font-family:'Inter',sans-serif; font-size:12px; font-weight:700;
+  letter-spacing:0.14em; text-transform:uppercase; color:var(--navy);
+  margin-bottom:14px;
+}
+.action-title{
+  font-size:28px; font-weight:800; color:var(--gray-text);
+  line-height:1.45; max-width:960px;
+  padding-bottom:24px; margin-bottom:40px;
+  border-bottom:3px solid var(--navy);
+}
+.action-title b{ color:var(--navy); }
+
+/* ---------- Cover ---------- */
+.cover{
+  max-width:1200px; margin:0 auto;
+  padding:120px var(--pad-x) 90px;
+}
+.cover .eyebrow{ margin-bottom:22px; }
+.cover h1{
+  font-family:'Inter',sans-serif;
+  font-size:44px; font-weight:800; color:var(--navy);
+  line-height:1.3; letter-spacing:-0.01em;
+  margin-bottom:26px;
+}
+.cover .lede{
+  font-size:20px; font-weight:700; color:var(--gray-text);
+  max-width:760px; margin-bottom:36px;
+}
+.cover .meta{
+  display:flex; gap:var(--gutter); flex-wrap:wrap;
+  font-family:'Inter',sans-serif; font-size:12px; color:var(--gray-mid);
+  border-top:1px solid var(--gray-line); padding-top:20px;
+}
+.cover .meta span{ padding-right:20px; border-right:1px solid var(--gray-line); }
+.cover .meta span:last-child{ border-right:none; }
+
+/* ---------- Grid utilities ---------- */
+.grid-2{ display:grid; grid-template-columns:1fr 1fr; gap:var(--gutter); }
+.grid-3{ display:grid; grid-template-columns:repeat(3,1fr); gap:var(--gutter); }
+.grid-4{ display:grid; grid-template-columns:repeat(4,1fr); gap:var(--gutter); }
+.grid-5{ display:grid; grid-template-columns:repeat(5,1fr); gap:var(--gutter); }
+
+/* ---------- Card ---------- */
+.card{
+  background:var(--white);
+  border:1px solid var(--gray-line);
+  border-top:3px solid var(--navy);
+  padding:24px 22px;
+}
+.card h3{
+  font-size:15px; font-weight:700; color:var(--navy); margin-bottom:8px;
+}
+.card p{ font-size:14px; color:var(--gray-text); }
+
+/* ---------- Stage Flow (4 stages) ---------- */
+.stage-flow{ display:flex; align-items:stretch; gap:0; margin-bottom:36px; }
+.stage-box{
+  flex:1; background:var(--white); border:1px solid var(--gray-line);
+  border-top:4px solid var(--navy); padding:22px 18px; text-align:center;
+  position:relative;
+}
+.stage-box .num{ font-family:'Inter',sans-serif; font-size:12px; font-weight:700; color:var(--navy); letter-spacing:0.08em; }
+.stage-box .name{ font-size:17px; font-weight:800; color:var(--gray-text); margin:8px 0 10px; }
+.stage-box .q{ font-size:13px; color:var(--gray-mid); }
+.stage-arrow{
+  display:flex; align-items:center; justify-content:center;
+  width:36px; font-family:'Inter',sans-serif; font-size:18px; color:var(--navy); font-weight:700;
+}
+
+/* ---------- Comparison table ---------- */
+table.compare{ width:100%; border-collapse:collapse; }
+table.compare th, table.compare td{
+  border:1px solid var(--gray-line); padding:14px 18px; font-size:14px; text-align:left; vertical-align:top;
+}
+table.compare thead th{
+  font-family:'Inter',sans-serif; font-size:12px; font-weight:700;
+  letter-spacing:0.06em; text-transform:uppercase;
+  background:var(--navy); color:var(--white); border-color:var(--navy);
+}
+table.compare tbody tr:nth-child(even){ background:var(--navy-soft); }
+table.compare td.them{ color:var(--gray-mid); }
+table.compare td.thousand{ color:var(--gray-text); font-weight:600; }
+
+/* ---------- Callout / Quote ---------- */
+.callout{
+  border-left:4px solid var(--navy); background:var(--navy-soft);
+  padding:20px 24px; font-size:16px; font-weight:700; color:var(--navy);
+  margin-top:8px;
+}
+
+/* ---------- Axis bars ---------- */
+.axis-row{ display:grid; grid-template-columns:140px 1fr; align-items:center; gap:16px; margin-bottom:10px; }
+.axis-row .label{ font-size:13px; font-weight:600; color:var(--gray-text); text-align:right; }
+.axis-row .bar-track{ background:var(--navy-soft); height:14px; border:1px solid var(--gray-line); }
+.axis-row .bar-fill{ background:var(--navy); height:100%; }
+.stage-col-title{
+  font-family:'Inter',sans-serif; font-size:13px; font-weight:800; color:var(--navy);
+  text-align:center; margin-bottom:16px; padding-bottom:8px; border-bottom:2px solid var(--navy);
+}
+
+/* ---------- Numbered method list ---------- */
+.method{
+  display:grid; grid-template-columns:44px 1fr; gap:18px;
+  padding:20px 0; border-bottom:1px solid var(--gray-line);
+}
+.method:last-child{ border-bottom:none; }
+.method .idx{
+  font-family:'Inter',sans-serif; font-size:20px; font-weight:800; color:var(--navy);
+}
+.method h4{ font-size:16px; font-weight:700; margin-bottom:6px; }
+.method .path{
+  font-family:'Inter',sans-serif; font-size:13px; color:var(--navy); font-weight:600;
+  margin-top:6px; letter-spacing:0.01em;
+}
+
+/* ---------- Self-check ---------- */
+.check-list{ display:flex; flex-direction:column; gap:0; }
+.check-item{
+  display:flex; align-items:flex-start; gap:14px;
+  padding:16px 0; border-bottom:1px solid var(--gray-line);
+}
+.check-item:last-child{ border-bottom:none; }
+.check-box{
+  flex:0 0 20px; width:20px; height:20px; border:2px solid var(--navy); margin-top:2px;
+}
+.check-item p{ font-size:15px; }
+
+/* ---------- Closing path ---------- */
+.closing-flow{ display:flex; flex-direction:column; gap:0; max-width:640px; margin:0 auto 40px; }
+.closing-step{
+  border:1px solid var(--gray-line); border-left:4px solid var(--navy);
+  padding:16px 22px; font-size:16px; font-weight:700; text-align:center;
+}
+.closing-arrow{ text-align:center; font-family:'Inter',sans-serif; color:var(--navy); font-size:16px; padding:4px 0; }
+.closing-quote{
+  text-align:center; max-width:760px; margin:0 auto;
+  font-size:20px; font-weight:800; color:var(--navy); line-height:1.6;
+}
+.closing-quote span{ display:block; font-size:13px; font-weight:500; color:var(--gray-mid); margin-top:16px; }
+
+/* ---------- Section title (small) ---------- */
+.subhead{ font-size:15px; font-weight:700; color:var(--gray-text); margin:36px 0 16px; }
+.subhead:first-child{ margin-top:0; }
+
+footer{
+  padding:40px var(--pad-x); text-align:center;
+  font-family:'Inter',sans-serif; font-size:12px; color:var(--gray-mid);
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width:900px){
+  :root{ --pad-x:24px; }
+  .navbar .tabs{ display:none; }
+  .grid-2, .grid-3, .grid-4, .grid-5{ grid-template-columns:1fr; }
+  .stage-flow{ flex-direction:column; }
+  .stage-arrow{ width:100%; height:24px; transform:rotate(90deg); }
+  .cover h1{ font-size:30px; }
+  .action-title{ font-size:22px; }
+  .axis-row{ grid-template-columns:90px 1fr; }
+}
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="navbar-inner">
+    <div class="brand eng">BAC CAREER PATH GUIDE</div>
+    <div class="tabs">
+      <a href="#s1">01. Identity</a>
+      <a href="#s2">02. Stage</a>
+      <a href="#s3">03. One of Thousand</a>
+      <a href="#s4">04. Growth Axes</a>
+      <a href="#s5">05. How to Grow</a>
+      <a href="#s6">06. Self Check</a>
+      <a href="#s7">Next Step</a>
+    </div>
+  </div>
+</nav>
+
+<header class="cover">
+  <div class="eyebrow eng">BAC BUSINESS UNIT · CAREER GUIDE</div>
+  <h1>BAC Consultant<br>Career Path Guide</h1>
+  <p class="lede">"SAP를 아는 사람"에서 "SAP로 고객의 Business를 바꾸는 사람"으로 —<br>
+  BAC Consultant가 지금 어디에 있고, 앞으로 어떤 사람이 되어야 하는지 알려주는 짧고 강한 가이드입니다.</p>
+  <div class="meta eng">
+    <span>SCOPE · Career Identity, Not HR Evaluation</span>
+    <span>READING TIME · 5–20 min</span>
+    <span>FOR · All BAC Consultants</span>
+  </div>
+</header>
+
+<!-- 1. Identity -->
+<section class="section" id="s1">
+  <div class="eyebrow eng">01 · IDENTITY</div>
+  <div class="action-title">BAC Consultant는 SAP 기능을 <b>구현하는 사람</b>이 아니라, SAP로 고객의 <b>Business 문제를 해결하는 사람</b>이어야 함</div>
+
+  <div class="grid-3" style="margin-bottom:32px;">
+    <div class="card">
+      <h3>From</h3>
+      <p>SAP 기능을 정확히 구현하는 Technology 실행자</p>
+    </div>
+    <div class="card">
+      <h3>Combination</h3>
+      <p>Technology + Business + Consulting가 결합된 문제 해결자</p>
+    </div>
+    <div class="card">
+      <h3>To</h3>
+      <p>SAP를 도구로 고객의 Business 변화를 이끄는 파트너</p>
+    </div>
+  </div>
+
+  <div class="callout">"SAP를 아는 사람"에서 "SAP로 고객의 Business를 바꾸는 사람"으로.</div>
+</section>
+
+<!-- 2. Stage -->
+<section class="section" id="s2">
+  <div class="eyebrow eng">02 · GROWTH STAGE</div>
+  <div class="action-title">Consultant의 성장은 <b>4단계</b>로 구분되며, 각 단계는 <b>답해야 할 질문이 다름</b></div>
+
+  <div class="stage-flow">
+    <div class="stage-box">
+      <div class="num eng">STAGE 1</div>
+      <div class="name">Specialist</div>
+      <div class="q">"이 기능을 제대로 할 수 있는가?"</div>
+    </div>
+    <div class="stage-arrow eng">→</div>
+    <div class="stage-box">
+      <div class="num eng">STAGE 2</div>
+      <div class="name">Consultant</div>
+      <div class="q">"고객의 문제를 해결할 수 있는가?"</div>
+    </div>
+    <div class="stage-arrow eng">→</div>
+    <div class="stage-box">
+      <div class="num eng">STAGE 3</div>
+      <div class="name">Solution Architect</div>
+      <div class="q">"전체 Solution을 설계할 수 있는가?"</div>
+    </div>
+    <div class="stage-arrow eng">→</div>
+    <div class="stage-box">
+      <div class="num eng">STAGE 4</div>
+      <div class="name">Trusted Advisor</div>
+      <div class="q">"고객이 무엇을 해야 하는지 제안할 수 있는가?"</div>
+    </div>
+  </div>
+</section>
+
+<!-- 3. One of Them -->
+<section class="section" id="s3">
+  <div class="eyebrow eng">03 · ONE OF THEM → ONE OF THOUSAND</div>
+  <div class="action-title">One of Thousand란 SAP를 <b>가장 많이 아는 사람</b>이 아니라, Business와 Technology 사이의 <b>가장 어려운 문제를 해결할 수 있는 사람</b>임</div>
+
+  <table class="compare">
+    <thead>
+      <tr><th>구분</th><th>One of Them</th><th>One of Thousand</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>요구 대응</td><td class="them">요구사항을 받는다</td><td class="thousand">문제를 정의한다</td></tr>
+      <tr><td>실행 방식</td><td class="them">기능을 구현한다</td><td class="thousand">Solution을 설계한다</td></tr>
+      <tr><td>관점의 범위</td><td class="them">자기 Module을 본다</td><td class="thousand">E2E Process를 본다</td></tr>
+      <tr><td>커뮤니케이션</td><td class="them">SAP 기능을 설명한다</td><td class="thousand">Business Impact를 설명한다</td></tr>
+      <tr><td>문제 발생 시</td><td class="them">개발을 요청한다</td><td class="thousand">대안을 설계한다</td></tr>
+      <tr><td>프로젝트 역할</td><td class="them">프로젝트를 수행한다</td><td class="thousand">고객의 변화를 이끈다</td></tr>
+      <tr><td>지식 관계</td><td class="them">Knowledge를 소비한다</td><td class="thousand">Knowledge를 만든다</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- 4. Growth Axes -->
+<section class="section" id="s4">
+  <div class="eyebrow eng">04 · FIVE GROWTH AXES</div>
+  <div class="action-title">Consultant는 <b>5가지 축</b>으로 성장하며, 성장할수록 무게중심이 <b>Technology에서 Business·Consulting으로</b> 이동함</div>
+
+  <div class="grid-5" style="margin-bottom:44px;">
+    <div class="card"><h3>① Business</h3><p>고객의 산업과 업무를 이해한다</p></div>
+    <div class="card"><h3>② Technology</h3><p>SAP와 Data/AI 기술을 깊이 이해한다</p></div>
+    <div class="card"><h3>③ Solution</h3><p>개별 기능을 넘어 E2E Solution을 설계한다</p></div>
+    <div class="card"><h3>④ Consulting</h3><p>고객의 문제를 구조화하고 답을 제시한다</p></div>
+    <div class="card"><h3>⑤ Leadership</h3><p>프로젝트와 사람, 지식을 이끈다</p></div>
+  </div>
+
+  <div class="grid-4">
+    <div>
+      <div class="stage-col-title eng">JUNIOR</div>
+      <div class="axis-row"><div class="label">Technology</div><div class="bar-track"><div class="bar-fill" style="width:90%"></div></div></div>
+      <div class="axis-row"><div class="label">Business</div><div class="bar-track"><div class="bar-fill" style="width:30%"></div></div></div>
+      <div class="axis-row"><div class="label">Consulting</div><div class="bar-track"><div class="bar-fill" style="width:20%"></div></div></div>
+    </div>
+    <div>
+      <div class="stage-col-title eng">SENIOR</div>
+      <div class="axis-row"><div class="label">Technology</div><div class="bar-track"><div class="bar-fill" style="width:70%"></div></div></div>
+      <div class="axis-row"><div class="label">Business</div><div class="bar-track"><div class="bar-fill" style="width:70%"></div></div></div>
+      <div class="axis-row"><div class="label">Consulting</div><div class="bar-track"><div class="bar-fill" style="width:60%"></div></div></div>
+    </div>
+    <div>
+      <div class="stage-col-title eng">ARCHITECT</div>
+      <div class="axis-row"><div class="label">Technology</div><div class="bar-track"><div class="bar-fill" style="width:50%"></div></div></div>
+      <div class="axis-row"><div class="label">Business</div><div class="bar-track"><div class="bar-fill" style="width:90%"></div></div></div>
+      <div class="axis-row"><div class="label">Consulting</div><div class="bar-track"><div class="bar-fill" style="width:90%"></div></div></div>
+    </div>
+    <div>
+      <div class="stage-col-title eng">ADVISOR</div>
+      <div class="axis-row"><div class="label">Technology</div><div class="bar-track"><div class="bar-fill" style="width:30%"></div></div></div>
+      <div class="axis-row"><div class="label">Business</div><div class="bar-track"><div class="bar-fill" style="width:100%"></div></div></div>
+      <div class="axis-row"><div class="label">Consulting</div><div class="bar-track"><div class="bar-fill" style="width:100%"></div></div></div>
+      <div class="axis-row"><div class="label">Leadership</div><div class="bar-track"><div class="bar-fill" style="width:90%"></div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 5. How to Grow -->
+<section class="section" id="s5">
+  <div class="eyebrow eng">05 · HOW TO GROW</div>
+  <div class="action-title">자격증이나 교육과정 나열이 아니라, <b>4가지 성장 방법</b>을 실천할 때 Consultant는 성장함</div>
+
+  <div class="method">
+    <div class="idx eng">01</div>
+    <div>
+      <h4>더 어려운 문제를 맡아라</h4>
+      <div class="path eng">Task → Module → E2E → Architecture → Transformation</div>
+    </div>
+  </div>
+  <div class="method">
+    <div class="idx eng">02</div>
+    <div>
+      <h4>자신의 영역 밖을 보라</h4>
+      <div class="path eng">Module → Process → Business → Enterprise</div>
+    </div>
+  </div>
+  <div class="method">
+    <div class="idx eng">03</div>
+    <div>
+      <h4>고객과 직접 이야기하라</h4>
+      <div class="path eng">지시받기 → 질문하기 → 제안하기 → 의사결정 지원</div>
+    </div>
+  </div>
+  <div class="method">
+    <div class="idx eng">04</div>
+    <div>
+      <h4>자신의 경험을 자산으로 만들어라</h4>
+      <div class="path eng">경험 → Insight → Methodology → Knowledge → Brand</div>
+    </div>
+  </div>
+</section>
+
+<!-- 6. Self Check -->
+<section class="section" id="s6">
+  <div class="eyebrow eng">06 · SELF CHECK</div>
+  <div class="action-title">나의 현재 위치는 <b>7가지 질문</b>에 스스로 답하는 것에서 확인할 수 있음</div>
+
+  <div class="check-list">
+    <div class="check-item"><div class="check-box"></div><p>나는 지금 SAP 기능을 잘하는 사람인가, 아니면 Business 문제를 해결할 수 있는 사람인가?</p></div>
+    <div class="check-item"><div class="check-box"></div><p>내 Module 밖의 Process를 이해하는가?</p></div>
+    <div class="check-item"><div class="check-box"></div><p>고객에게 "왜 이렇게 해야 하는지" 설명할 수 있는가?</p></div>
+    <div class="check-item"><div class="check-box"></div><p>내가 만든 Solution을 다른 Consultant에게 설명하고 전수할 수 있는가?</p></div>
+    <div class="check-item"><div class="check-box"></div><p>고객이 요구하기 전에 개선안을 제안할 수 있는가?</p></div>
+    <div class="check-item"><div class="check-box"></div><p>프로젝트가 끝나도 나만의 Knowledge Asset이 남는가?</p></div>
+  </div>
+</section>
+
+<!-- 7. Closing -->
+<section class="section" id="s7">
+  <div class="eyebrow eng" style="text-align:center;">NEXT STEP</div>
+  <div class="action-title" style="border:none; text-align:center; max-width:none; margin-left:auto; margin-right:auto;">당신의 다음 단계는 무엇인가?</div>
+
+  <div class="closing-flow">
+    <div class="closing-step">기능을 잘하는 Consultant</div>
+    <div class="closing-arrow eng">↓</div>
+    <div class="closing-step">문제를 해결하는 Consultant</div>
+    <div class="closing-arrow eng">↓</div>
+    <div class="closing-step">Solution을 설계하는 Consultant</div>
+    <div class="closing-arrow eng">↓</div>
+    <div class="closing-step">고객의 방향을 제시하는 Consultant</div>
+  </div>
+
+  <p class="closing-quote">BAC의 Career Path는 직급을 올라가는 과정이 아니라<br>"내가 해결할 수 있는 문제의 크기"를 키워가는 과정이다.
+    <span class="eng">BAC CAREER PATH GUIDE — CLOSING MESSAGE</span>
+  </p>
+</section>
+
+<footer class="eng">BAC BUSINESS UNIT · CAREER PATH GUIDE · INTERNAL USE ONLY</footer>
+
+</body>
+</html>
